@@ -6,6 +6,8 @@ var queue = require('./makeQueue.js');
 get.Data;
 get.Get;
 get.Cities;
+get.qDriver;
+get.qPassanger;
 
 post.Post;
 post.qDriver;

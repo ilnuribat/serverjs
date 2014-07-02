@@ -18,6 +18,16 @@ var Data = Var.app.get('/data', function(request, response) {
   response.send(Var.data);
 });
 
+var qDriver = Var.app.get('/qdriver', function(request, response) {
+  response.send(Var.qDriver);
+});
+
+var qPassanger = Var.app.get('/qpassanger', function(request, response) {
+  response.send(Var.qPassanger);
+});
+
 exports.Data = Data;
 exports.Get = Get;
 exports.Cities = Cities;
+exports.qDriver = qDriver;
+exports.qPassanger = qPassanger;
