@@ -1,7 +1,7 @@
 var Var = require('./variables.js');
 var get = require('./getServer.js');
 var post = require('./postServer.js');
-var QueueExe = require('./makeQueue.js');
+var queue = require('./makeQueue.js');
 
 get.Data;
 get.Get;
@@ -11,8 +11,7 @@ post.Post;
 post.qDriver;
 post.qPassanger;
 
-QueueExe.findQueue;
+queue.find;
 
 Var.app.listen(80);
-
 console.log("Server started");
