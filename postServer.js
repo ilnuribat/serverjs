@@ -55,10 +55,10 @@ var qPassanger = Var.app.post('/qpassanger', function(request, response) {
   passanger_in_queue["booked"] = booked;
 
   Var.qPassanger.push(passanger_in_queue);
+  console.log(Var.qPassanger);
 
   response.send(Var.qPassanger);
 
-  console.log(Var.qPassanger);
 });
 
 exports.Post = Post;
