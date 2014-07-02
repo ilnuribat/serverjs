@@ -1,10 +1,12 @@
 var Var = require('./variables.js');
 
-function findQueue() {//находим в очереди совпадения, так скажем
+var findQueue = function find_queue() {//находим в очереди совпадения, так скажем
   console.log("findQueue started");
-  for(var i = 0; i < Var.QPassanger.lenght; i++){
-    var booked = Var.QPassanger[i]["booked"];
+  for(var i = 0; i < Var.qPassanger.lenght; i++){
+    var booked = Var.qPassanger[i]["booked"];
     console.log("id ", i, "with booked ", booked, " seats");
   }
-  setTimeout(findQueue, 1000);
+  setTimeout(find_queue, 1000);
 }
+
+exports.findQueue = findQueue;
