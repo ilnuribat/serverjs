@@ -1,12 +1,27 @@
 var Var = require('./variables.js');
 
-var findQueue = function find_queue() {//находим в очереди совпадения, так скажем
-  console.log("findQueue started");
-  for(var i = 0; i < Var.qPassanger.lenght; i++){
-    var booked = Var.qPassanger[i]["booked"];
-    console.log("id ", i, "with booked ", booked, " seats");
+function find_queue() {
+//встречаем людей
+  
+  for(rowPassanger in Var.qPassanger){
+    var booked = Var.qPassanger[rowPassanger]["booked"];
+    var passangerID = Var.qPassanger[rowPassanger]["id"];
+    
+    //console.log(row + " id = " + Var.qPassanger[row]["id"]);
+    //console.log("   with booked " + booked + " seats");
+    for(rowDriver in Var.qDriver) {
+      var driverID = Var.qDriver[rowDriver]["id"];
+      var driverSeats = Var.qDriver[rowDriver]["seats"];
+      if(booked <= driverSeats) { // можно посадить пассажира на эту машину
+        for(var BOOKEDiter = 0; BOOKEDiter < booked; BOOKEDiter ++)
+          Var.qDriver[rowDriver]["phone_numbers"].push(passangerID);
+        Var.qDriver[rowDriver]["seats"] = Var.qDriver[rowDriver]["seats"] - booked;
+        Var.qPassanger[rowPassanger]["phone_number"] = driverID;
+      }      
+    }
+    console.log(Var.qPassanger);
   }
-  setTimeout(find_queue, 1000);
+  setTimeout(find_queue, 5000);
 }
 
-exports.findQueue = findQueue;
+exports.find = find_queue();
