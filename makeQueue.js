@@ -2,13 +2,9 @@ var Var = require('./variables.js');
 
 function find_queue() {
 //встречаем людей
-  
   for(rowPassanger in Var.qPassanger){
     var booked = Var.qPassanger[rowPassanger]["booked"];
     var passangerID = Var.qPassanger[rowPassanger]["id"];
-    
-    //console.log(row + " id = " + Var.qPassanger[row]["id"]);
-    //console.log("   with booked " + booked + " seats");
     for(rowDriver in Var.qDriver) {
       var driverID = Var.qDriver[rowDriver]["id"];
       var driverSeats = Var.qDriver[rowDriver]["seats"];
@@ -19,7 +15,6 @@ function find_queue() {
         Var.qPassanger[rowPassanger]["phone_number"] = driverID;
       }      
     }
-    console.log(Var.qPassanger);
   }
   setTimeout(find_queue, 5000);
 }
