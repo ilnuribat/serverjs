@@ -36,7 +36,9 @@ var qDriver = Var.app.post('/qdriver', function(request, response) {
   driver_in_queue["seats"] = seats;
 
   Var.qDriver.push(driver_in_queue);
-  response.send(Var.QDriver);
+  console.log(Var.qDriver);
+
+  response.send(Var.qDriver);
 });
 
 var qPassanger = Var.app.post('/qpassanger', function(request, response) {
