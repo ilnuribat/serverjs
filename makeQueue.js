@@ -12,6 +12,11 @@ function find_queue() {
         for(var BOOKEDiter = 0; BOOKEDiter < booked; BOOKEDiter ++)
           Var.qDriver[rowDriver]["phone_numbers"].push(passangerID);
         Var.qDriver[rowDriver]["seats"] = Var.qDriver[rowDriver]["seats"] - booked;
+	//Снимаем с очереди водителя, если у него не осталось мест
+	//if(Var.qDriver[rowDriver]["seats"] == 0)
+	  //delete Var.qDriver[rowDriver];
+	//Так же мы смогли посадить пассажира, его тоже снимаем с очереди
+	//delete Var.qPassanger[rowPassanger];
         Var.qPassanger[rowPassanger]["phone_number"] = driverID;
       }      
     }

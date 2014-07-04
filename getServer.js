@@ -13,8 +13,11 @@ var Cities = Var.app.get('/cities', function(request, response) {
 });
 
 var Data = Var.app.get('/data', function(request, response) {
-  response.set('Content-Type', 'application/json');
+//  response.set('Content-Type', 'application/json');
 //  response.send(JSON.stringify(Var.data));
+  Var.data["0"]["passanger_count"] = Var.qPassanger.length;
+  Var.data["0"]["driver_count"] = Var.qDriver.length;
+  Var.data["0"]["success_count"] = -1;
   response.send(Var.data);
 });
 
