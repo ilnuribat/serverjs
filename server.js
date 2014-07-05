@@ -9,7 +9,7 @@ get.Cities;
 get.qDriver;
 get.qPassanger;
 
-post.Post;
+//post.Post;
 post.qDriver;
 post.qPassanger;
 

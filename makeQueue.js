@@ -2,9 +2,10 @@ var Var = require('./variables.js');
 
 function find_queue() {
 //встречаем людей
-  for(rowPassanger in Var.qPassanger){
-    var booked = Var.qPassanger[rowPassanger]["booked"];
-    var passangerID = Var.qPassanger[rowPassanger]["id"];
+  //for(iPass in Var.qPassanger){
+  for(var iPass = 0; iPass < Var.qPassanger.length; iPass ++) {
+    var booked = Var.qPassanger[iPass]["booked"];
+    var passangerID = Var.qPassanger[iPass]["id"];
     for(rowDriver in Var.qDriver) {
       var driverID = Var.qDriver[rowDriver]["id"];
       var driverSeats = Var.qDriver[rowDriver]["seats"];
@@ -16,8 +17,8 @@ function find_queue() {
 	//if(Var.qDriver[rowDriver]["seats"] == 0)
 	  //delete Var.qDriver[rowDriver];
 	//Так же мы смогли посадить пассажира, его тоже снимаем с очереди
-	//delete Var.qPassanger[rowPassanger];
-        Var.qPassanger[rowPassanger]["phone_number"] = driverID;
+	//delete Var.qPassanger[iPass];
+        Var.qPassanger[iPass]["phone_number"] = driverID;
       }      
     }
   }

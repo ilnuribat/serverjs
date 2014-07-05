@@ -61,6 +61,6 @@ var qPassanger = Var.app.post('/qpassanger', function(request, response) {
 
 });
 
-exports.Post = Post;
+//exports.Post = Post;
 exports.qDriver = qDriver;
 exports.qPassanger = qPassanger;
