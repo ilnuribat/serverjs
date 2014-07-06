@@ -7,9 +7,16 @@ var Get = Var.app.get('/get', function(request, response) {
 var Cities = Var.app.get('/cities', function(request, response) {
   Var.fileSystem.readFile('./cities.txt', 'utf-8', function(error, FSdata) {
     if(error) throw error;
-    console.log("Hello from getCitiesServer.js");
+    console.log(request.body);
     response.send(FSdata);
   })
+});
+
+var url = Var.app.get('/url', function(request, response) {
+  var pathname = Var.url.parse(request.url).pathname;
+  response.write(pathname + "\n");
+  response.write("ilnuribat@gmail.com");
+  response.end();
 });
 
 var Data = Var.app.get('/data', function(request, response) {
@@ -34,3 +41,4 @@ exports.Get = Get;
 exports.Cities = Cities;
 exports.qDriver = qDriver;
 exports.qPassanger = qPassanger;
+exports.url = url;

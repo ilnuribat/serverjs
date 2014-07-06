@@ -8,8 +8,8 @@ get.Get;
 get.Cities;
 get.qDriver;
 get.qPassanger;
+get.url;
 
-//post.Post;
 post.qDriver;
 post.qPassanger;
 

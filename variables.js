@@ -4,7 +4,7 @@ var express = require('express');
 var extend = require('util')._extend;
 var app = express();
 var bodyParser = require('body-parser');
-
+var url = require('url');
 app.use(bodyParser.urlencoded());
 
 var fileSystem = require('fs');
@@ -40,14 +40,12 @@ var driver_in_queue = {
 
 var qDriver = [];
 var qPassanger = [];
+var met = [];
 
-//exports.express = express;
-//exports.extend = extend;
+exports.met = met;
 exports.app = app;
-//exports.bodyParser = bodyParser;
 exports.fileSystem = fileSystem;
-//exports.time_status_obj = time_status_obj;
 exports.data = data;
 exports.qDriver = qDriver;
 exports.qPassanger = qPassanger;
-
+exports.url = url;
