@@ -14,8 +14,10 @@ var Cities = Var.app.get('/cities', function(request, response) {
 
 var url = Var.app.get('/url', function(request, response) {
   var pathname = Var.url.parse(request.url).pathname;
+  
   response.write(pathname + "\n");
-  response.write("ilnuribat@gmail.com");
+  response.write("it's working\n");
+  response.write(JSON.stringify(request));
   response.end();
 });
 
@@ -36,6 +38,9 @@ var qPassanger = Var.app.get('/qpassanger', function(request, response) {
   response.send(Var.qPassanger);
 });
 
+var met = Var.app.get('/met', function(request, response) {
+  response.send(Var.met);
+});
 exports.Data = Data;
 exports.Get = Get;
 exports.Cities = Cities;

@@ -9,6 +9,9 @@ app.use(bodyParser.urlencoded());
 
 var fileSystem = require('fs');
 
+//Когда я начинал это писать, только Бог и я понимали, что я делаю
+// Сейчас остался только Бог
+
 var time_status_obj = {
   "passanger_count": 0,
   "driver_count": 0,

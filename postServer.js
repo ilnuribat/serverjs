@@ -1,4 +1,5 @@
 var Var = require('./variables.js');
+var queue = require('./makeQueue.js');
 
 var Post = Var.app.post('/post', function(request, response) {
   var hData = request.body;
@@ -29,7 +30,7 @@ var qDriver = Var.app.post('/qdriver', function(request, response) {
   var driver_in_queue = {
     "id": 0,
     "seats": 0,
-    "phone_numbers": []		//Это то, что потом будем заполнять
+    "passangersNumbers": []		//Это то, что потом будем заполнять
   }
 
   driver_in_queue["id"] = id;
@@ -37,7 +38,7 @@ var qDriver = Var.app.post('/qdriver', function(request, response) {
 
   Var.qDriver.push(driver_in_queue);
   //console.log(Var.qDriver);
-
+  //queue.find;
   response.send(Var.qDriver);
 });
 
@@ -49,14 +50,14 @@ var qPassanger = Var.app.post('/qpassanger', function(request, response) {
   var passanger_in_queue = {
     "id": 0,
     "booked": 0,
-    "phone_number": 0		//это то, что потом будем заполнять
+    "driversNumber": 0		//это то, что потом будем заполнять
   }
   passanger_in_queue["id"] = id;
   passanger_in_queue["booked"] = booked;
 
   Var.qPassanger.push(passanger_in_queue);
   //console.log(Var.qPassanger);
-
+  //queue.find;
   response.send(Var.qPassanger);
 
 });
