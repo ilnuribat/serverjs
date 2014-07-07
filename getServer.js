@@ -14,11 +14,11 @@ var Cities = Var.app.get('/cities', function(request, response) {
 
 var url = Var.app.get('/url', function(request, response) {
   var pathname = Var.url.parse(request.url).pathname;
-  
-  response.write(pathname + "\n");
-  response.write("it's working\n");
-  response.write(JSON.stringify(request));
-  response.end();
+  response.set({'content-type': 'application/json'});  
+//  response.write(pathname + "\n");
+//  response.write("it's working\n");
+  response.send(JSON.stringify(request.body));
+//  response.end();
 });
 
 var Data = Var.app.get('/data', function(request, response) {
