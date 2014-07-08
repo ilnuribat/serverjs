@@ -30,15 +30,13 @@ var qDriver = Var.app.post('/qdriver', function(request, response) {
   var driver_in_queue = {
     "id": 0,
     "seats": 0,
-    "passangersNumbers": []		//Это то, что потом будем заполнять
+    "passangersNumbers": []		//Номера всех пассажиров
   }
 
   driver_in_queue["id"] = id;
   driver_in_queue["seats"] = seats;
 
   Var.qDriver.push(driver_in_queue);
-  //console.log(Var.qDriver);
-  //queue.find;
   response.send(Var.qDriver);
 });
 
@@ -56,8 +54,6 @@ var qPassanger = Var.app.post('/qpassanger', function(request, response) {
   passanger_in_queue["booked"] = booked;
 
   Var.qPassanger.push(passanger_in_queue);
-  //console.log(Var.qPassanger);
-  //queue.find;
   response.send(Var.qPassanger);
 
 });

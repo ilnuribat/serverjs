@@ -9,9 +9,6 @@ app.use(bodyParser.urlencoded());
 
 var fileSystem = require('fs');
 
-//Когда я начинал это писать, только Бог и я понимали, что я делаю
-// Сейчас остался только Бог
-
 var time_status_obj = {
   "passanger_count": 0,
   "driver_count": 0,
@@ -27,7 +24,7 @@ var data = {
   "15": extend({}, time_status_obj),
   "18": extend({}, time_status_obj),
   "21": extend({}, time_status_obj)
-} 
+}
 
 var passanger_in_queue = {
   "id": "0",	//this is the phone number of passanger
@@ -41,9 +38,21 @@ var driver_in_queue = {
   "phone_numbers": [] // array of phone numbers
 }
 
+var time = {
+  "0": extend({}, Queue),
+  "3": extend({}, Queue),
+  "6": extend({}, Queue),
+  "9": extend({}, Queue),
+  "12": extend({}, Queue),
+  "15": extend({}, Queue),
+  "18": extend({}, Queue),
+  "21": extend({}, Queue)
+}
+
 var qDriver = [];
 var qPassanger = [];
 var met = [];
+var Queue = [];
 
 exports.met = met;
 exports.app = app;

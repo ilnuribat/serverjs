@@ -14,7 +14,7 @@ var Cities = Var.app.get('/cities', function(request, response) {
 
 var url = Var.app.get('/url', function(request, response) {
   var pathname = Var.url.parse(request.url).pathname;
-  response.set({'content-type': 'application/json'});  
+  response.set('Content-Type', 'application/json'); 
 //  response.write(pathname + "\n");
 //  response.write("it's working\n");
   response.send(JSON.stringify(request.body));
