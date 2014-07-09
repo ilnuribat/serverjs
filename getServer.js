@@ -1,4 +1,6 @@
 var Var = require('./variables.js');
+var Url = require("url");
+var qs = require("querystring");
 
 var Get = Var.app.get('/get', function(request, response) {
   response.send("Hello from getServer.js");
@@ -12,13 +14,14 @@ var Cities = Var.app.get('/cities', function(request, response) {
   })
 });
 
+
+//УРРРАААА АРгентина вышла в финал!
+//Шутка, получилось разобрать гет запрос по параметрам
 var url = Var.app.get('/url', function(request, response) {
-  var pathname = Var.url.parse(request.url).pathname;
-  response.set('Content-Type', 'application/json'); 
-//  response.write(pathname + "\n");
-//  response.write("it's working\n");
-  response.send(JSON.stringify(request.body));
-//  response.end();
+  var query = Url.parse(request.url).query;
+  var params = qs.parse(query);
+  response.send(JSON.stringify(params));
+  console.log(params);
 });
 
 var Data = Var.app.get('/data', function(request, response) {
@@ -41,6 +44,7 @@ var qPassanger = Var.app.get('/qpassanger', function(request, response) {
 var met = Var.app.get('/met', function(request, response) {
   response.send(Var.met);
 });
+
 exports.Data = Data;
 exports.Get = Get;
 exports.Cities = Cities;
