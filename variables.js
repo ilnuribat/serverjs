@@ -39,14 +39,14 @@ var driver_in_queue = {
 }
 
 var time = {
-  "0": extend({}, Queue),
-  "3": extend({}, Queue),
-  "6": extend({}, Queue),
-  "9": extend({}, Queue),
-  "12": extend({}, Queue),
-  "15": extend({}, Queue),
-  "18": extend({}, Queue),
-  "21": extend({}, Queue)
+  "0": "yes",
+  "3": "yes",
+  "6": "yes",
+  "9": "yes",
+  "12": "yes",
+  "15": "yes",
+  "18": "yes",
+  "21": "yes"
 }
 
 var qDriver = [];
@@ -61,3 +61,6 @@ exports.data = data;
 exports.qDriver = qDriver;
 exports.qPassanger = qPassanger;
 exports.url = url;
+exports.time = time;
+exports.driver_in_queue = driver_in_queue;
+exports.passanger_in_queue = passanger_in_queue;
