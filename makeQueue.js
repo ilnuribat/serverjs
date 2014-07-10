@@ -40,7 +40,7 @@ function find_queue() {
           
           
           
-          console.log(Var[TIME].met);
+          console.log(Var.met[TIME]);
           Var.qPassanger[TIME][iPass]["driversNumber"] = driverID;     //Даем номер водителя пассажиру
           
           if(Var.qDriver[TIME][iDrive]["seats"] == 0){
