@@ -26,35 +26,53 @@ var qDriver = Var.app.post('/qdriver', function(request, response) {
   var body = request.body;
   var id = body["id"];
   var seats = body["seats"];
-
+  var time = body["time"];
+  
+  //обработка ошибки: время должно быть введено в запросе
+  if(Var.time[time] != "yes") {
+    console.log("wrong data type: time format is not correct or doesn't exist");
+    return ;
+  }
+  
   var driver_in_queue = {
     "id": 0,
     "seats": 0,
+    "time": 0,
     "passangersNumbers": []		//Номера всех пассажиров
   }
 
   driver_in_queue["id"] = id;
   driver_in_queue["seats"] = seats;
-
-  Var.qDriver.push(driver_in_queue);
-  response.send(Var.qDriver);
+  driver_in_queue["time"] = time;
+  
+  Var.qDriver[time].push(driver_in_queue);
+  response.send(Var.qDriver[time]);
 });
 
 var qPassanger = Var.app.post('/qpassanger', function(request, response) {
   var body = request.body;
   var id = body["id"];
   var booked = body["booked"];
+  var time = body["time"];
+  
+  if(Var.time[time] != "yes") {
+    console.log("wrong data type: time format is not correct or doesn't exist");
+    return ;
+  }
   
   var passanger_in_queue = {
     "id": 0,
     "booked": 0,
+    "time": 0,
     "driversNumber": 0		//это то, что потом будем заполнять
   }
+  
   passanger_in_queue["id"] = id;
   passanger_in_queue["booked"] = booked;
-
-  Var.qPassanger.push(passanger_in_queue);
-  response.send(Var.qPassanger);
+  passanger_in_queue["time"] = time;
+  
+  Var.qPassanger[time].push(passanger_in_queue);
+  response.send(Var.qPassanger[time]);
 
 });
 

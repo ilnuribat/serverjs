@@ -25,12 +25,13 @@ var url = Var.app.get('/url', function(request, response) {
 });
 
 var Data = Var.app.get('/data', function(request, response) {
-//  response.set('Content-Type', 'application/json');
-//  response.send(JSON.stringify(Var.data));
-  Var.data["0"]["passanger_count"] = Var.qPassanger.length;
-  Var.data["0"]["driver_count"] = Var.qDriver.length;
-  Var.data["0"]["success_count"] = -1;
-  response.send(Var.data);
+  response.set('Content-Type', 'application/json');
+  for(var time in Var.time) {
+    Var.data[time]["passanger_count"] = Var.qPassanger[time].length;
+    Var.data[time]["driver_count"] = Var.qDriver[time].length;
+    Var.data[time]["success_count"] = 0;
+  }
+  response.send(JSON.stringify(Var.data));
 });
 
 var qDriver = Var.app.get('/qdriver', function(request, response) {
