@@ -9,8 +9,9 @@ function find_queue() {
   for(var TIME in Var.time) {
   
     //Если в очереди никого нет
-    if(Var.qDriver[TIME].length + Var.qPassanger[TIME].length == 0) {
+    if(Var.qDriver[TIME].length * Var.qPassanger[TIME].length == 0) {
       console.log("empty hour: " + TIME);
+      
     } else console.log(Var.qDriver[TIME].length + Var.qPassanger[TIME].length);
     
     //Цикл по всем Пассажирам
@@ -49,6 +50,7 @@ function find_queue() {
         }
       } else {
         Var.qPassanger[TIME].splice(iPass, 1);
+        console.log("passanger removed from queue");
       }
     }
     
