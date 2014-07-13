@@ -1,3 +1,4 @@
+use server
 CREATE TABLE time(
     id INTEGER PRIMARY KEY NOT NULL,
     name TEXT,
@@ -55,20 +56,20 @@ CREATE TABLE qPassanger(
     FOREIGN KEY (id_direction)REFERENCES  direction(id)
 );
 
-INSERT INTO `TIME` (`ID`, `NAME`) VALUES(1, '0');
-INSERT INTO `TIME` (`ID`, `NAME`) VALUES(2, '3');
-INSERT INTO `TIME` (`ID`, `NAME`) VALUES(3, '6');
-INSERT INTO `TIME` (`ID`, `NAME`) VALUES(4, '9');
-INSERT INTO `TIME` (`ID`, `NAME`) VALUES(5, '12');
-INSERT INTO `TIME` (`ID`, `NAME`) VALUES(6, '15');
-INSERT INTO `TIME` (`ID`, `NAME`) VALUES(7, '18');
-INSERT INTO `TIME` (`ID`, `NAME`) VALUES(8, '21');
-
-INSERT INTO `TOWNS` (`ID`, `NAME`, `RUSSIANNAME`) VALUES(1, 'Ufa', 'Уфа');
-INSERT INTO `TOWNS` (`ID`, `NAME`, `RUSSIANNAME`) VALUES(1, 'Sibay', 'Сибай');
-INSERT INTO `TOWNS` (`ID`, `NAME`, `RUSSIANNAME`) VALUES(1, 'Uchaly', 'Учалы');
-
-INSERT INTO `DIRECTION`(`ID`, `ID_SOURCE`, `ID_DESTINATION`) VALUES(1, 1, 2);
-INSERT INTO `DIRECTION`(`ID`, `ID_SOURCE`, `ID_DESTINATION`) VALUES(2, 1, 3);
-INSERT INTO `DIRECTION`(`ID`, `ID_SOURCE`, `ID_DESTINATION`) VALUES(3, 2, 1);
-INSERT INTO `DIRECTION`(`ID`, `ID_SOURCE`, `ID_DESTINATION`) VALUES(4, 3, 1);
+INSERT INTO `time` (`id`, `name`) VALUES(1, '0');
+INSERT INTO `time` (`id`, `name`) VALUES(2, '3');
+INSERT INTO `time` (`id`, `name`) VALUES(3, '6');
+INSERT INTO `time` (`id`, `name`) VALUES(4, '9');
+INSERT INTO `time` (`id`, `name`) VALUES(5, '12');
+INSERT INTO `time` (`id`, `name`) VALUES(6, '15');
+INSERT INTO `time` (`id`, `name`) VALUES(7, '18');
+INSERT INTO `time` (`id`, `name`) VALUES(8, '21');
+ 
+INSERT INTO `towns` (`id`, `name`, `russianname`) VALUES(1, 'Ufa', 'Уфа');
+INSERT INTO `towns` (`id`, `name`, `russianname`) VALUES(1, 'Sibay', 'Сибай');
+INSERT INTO `towns` (`id`, `name`, `russianname`) VALUES(1, 'Uchaly', 'Учалы');
+ 
+INSERT INTO `direction`(`id`, `id_source`, `id_destination`) VALUES(1, 1, 2);
+INSERT INTO `direction`(`id`, `id_source`, `id_destination`) VALUES(2, 1, 3);
+INSERT INTO `direction`(`id`, `id_source`, `id_destination`) VALUES(3, 2, 1);
+INSERT INTO `direction`(`id`, `id_source`, `id_destination`) VALUES(4, 3, 1);
