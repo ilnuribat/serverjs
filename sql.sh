@@ -1,23 +1,55 @@
-CREATE TABLE `direction` (
-  `ID` INT NOT NULL AUTO_INCREMENT,
-  `id_source` INT,
-  `id_destination` INT,
-  PRIMARY KEY  (`ID`)
+CREATE TABLE time(
+    id INTEGER PRIMARY KEY NOT NULL,
+    name TEXT
 );
 
-CREATE TABLE `towns` (
-  `ID` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR,
-  PRIMARY KEY  (`ID`)
+CREATE TABLE towns(
+    id INTEGER PRIMARY KEY NOT NULL,
+    name TEXT
 );
 
-CREATE TABLE `driver` (
-
+CREATE TABLE direction(
+        id INTEGER PRIMARY KEY NOT NULL,
+        id_source INTEGER,
+        id_destination INTEGER,
+        FOREIGN KEY (id_source) REFERENCES towns(id),
+        FOREIGN KEY (id_destination) REFERENCES towns(id)
 );
 
-CREATE TABLE `passanger` (
-
+CREATE TABLE driver(
+    id INTEGER PRIMARY KEY NOT NULL,
+    name TEXT,
+    phone TEXT,
+    access INTEGER
 );
 
-ALTER TABLE `direction` ADD CONSTRAINT `direction_fk1` FOREIGN KEY (`id_source`) REFERENCES towns(`ID`);
-ALTER TABLE `direction` ADD CONSTRAINT `direction_fk2` FOREIGN KEY (`id_destination`) REFERENCES towns(`ID`);
+CREATE TABLE passanger(
+    id INTEGER PRIMARY KEY NOT NULL,
+    name TEXT,
+    phone TEXT,
+    driversPhone TEXT
+);
+
+CREATE TABLE qDriver(
+    id INTEGER PRIMARY KEY NOT NULL,
+    id_driver INTEGER,
+    id_time INTEGER,
+    id_direction INTEGER,
+    seats INTEGER,
+    qOrder INTEGER,
+    FOREIGN KEY (id_driver) REFERENCES driver(id),
+    FOREIGN KEY (id_time)REFERENCES  time(id),
+    FOREIGN KEY (id_direction)REFERENCES  direction(id)
+);
+
+CREATE TABLE qPassanger(
+    id INTEGER PRIMARY KEY NOT NULL,
+    id_passanger INTEGER,
+    id_time INTEGER,
+    id_direction INTEGER,
+    booked INTEGER,
+    qOrder INTEGER,
+    FOREIGN KEY (id_passanger) REFERENCES passanger(id),
+    FOREIGN KEY (id_time)REFERENCES  time(id),
+    FOREIGN KEY (id_direction)REFERENCES  direction(id)
+);
