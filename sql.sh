@@ -1,6 +1,7 @@
 CREATE TABLE time(
     id INTEGER PRIMARY KEY NOT NULL,
-    name TEXT
+    name TEXT,
+    russianName TEXT
 );
 
 CREATE TABLE towns(
