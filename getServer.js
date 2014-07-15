@@ -1,6 +1,5 @@
 var Var = require('./variables.js');
-var Url = require("url");
-var qs = require("querystring");
+var sql = require('./sql.js');
 
 var Get = Var.app.get('/get', function(request, response) {
   response.send("Hello from getServer.js");
@@ -14,12 +13,11 @@ var Cities = Var.app.get('/cities', function(request, response) {
   })
 });
 
-
 //УРРРАААА АРгентина вышла в финал!
 //Шутка, получилось разобрать гет запрос по параметрам
 var url = Var.app.get('/url', function(request, response) {
-  var query = Url.parse(request.url).query;
-  var params = qs.parse(query);
+  var query = Var.url.parse(request.url).query;
+  var params = Var.queryString.parse(query);
   response.send(JSON.stringify(params));
   console.log(params);
 });
@@ -46,9 +44,20 @@ var met = Var.app.get('/met', function(request, response) {
   response.send(Var.met);
 });
 
+var sqlGet = Var.app.get('/sql', function(request, response) {
+  var query = Var.url.parse(request.url).query;
+  var params = Var.queryString.parse(query);
+  var data = sql.main("SELECT * FROM " + params["table"]);
+  console.log('get ', data);
+  
+  response.send(data);
+  response.end();
+});
+
 exports.Data = Data;
 exports.Get = Get;
 exports.Cities = Cities;
 exports.qDriver = qDriver;
 exports.qPassanger = qPassanger;
 exports.url = url;
+exports.sqlGet = sqlGet;

@@ -2,7 +2,7 @@ var Var = require('./variables.js');
 
 //встречаем людей
 function find_queue() {
-  setTimeout(find_queue, 5000);
+  //setTimeout(find_queue, 5000);
   
   //Цикл по временам - на каждом интервале по 2 очереди: пассажиры и водители
   //всего 8 интервалов времени с 00:00 - 03:00, 03:00 - 06:00, и т.д с шагом в 3 часа
@@ -10,7 +10,7 @@ function find_queue() {
   
     //Если в очереди никого нет
     if(Var.qDriver[TIME].length * Var.qPassanger[TIME].length == 0) {
-      console.log("empty hour: " + TIME);
+      //console.log("empty hour: " + TIME);
       
     } else console.log(Var.qDriver[TIME].length + Var.qPassanger[TIME].length);
     

@@ -6,15 +6,17 @@ var app = express();
 var bodyParser = require('body-parser');
 var url = require('url');
 app.use(bodyParser.urlencoded());
-
+var mysql = require('mysql');
 var fileSystem = require('fs');
+var Url = require("url");
+var queryString = require("querystring");
+var clone = require('clone');
 
 var time_status_obj = {
   "passanger_count": 0,
   "driver_count": 0,
   "success_count": 0
 }
-
 var data = {
   "0": extend({}, time_status_obj),
   "3": extend({}, time_status_obj),
@@ -25,19 +27,16 @@ var data = {
   "18": extend({}, time_status_obj),
   "21": extend({}, time_status_obj)
 }
-
 var passanger_in_queue = {
   "id": "0",	//this is the phone number of passanger
   "seats": "0",	//how many seats he wants to book
   "phone_of_driver": "0" //
 }
-
 var driver_in_queue = {
   "id": "0", //this is the phone number of driver
   "seats": "0", // how many seats are free in his car
   "phone_numbers": [] // array of phone numbers
 }
-
 var time = {
   "0": "yes",
   "3": "yes",
@@ -48,7 +47,6 @@ var time = {
   "18": "yes",
   "21": "yes"
 }
-
 var qDriver = {
   "0":  [],
   "3":  [],
@@ -59,7 +57,6 @@ var qDriver = {
   "18": [],
   "21": []
 };
-
 var qPassanger = {
   "0":  [],
   "3":  [],
@@ -70,7 +67,6 @@ var qPassanger = {
   "18": [],
   "21": []
 };
-
 var met = {
   "0":  [],
   "3":  [],
@@ -81,8 +77,10 @@ var met = {
   "18": [],
   "21": []
 };
-
 var Queue = [];
+var sqlData;
+
+
 
 exports.met = met;
 exports.app = app;
@@ -94,3 +92,6 @@ exports.url = url;
 exports.time = time;
 exports.driver_in_queue = driver_in_queue;
 exports.passanger_in_queue = passanger_in_queue;
+exports.mysql = mysql;
+exports.url = url;
+exports.queryString = queryString;
