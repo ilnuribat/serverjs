@@ -13,6 +13,7 @@ get.sqlGet;
 
 post.qDriver;
 post.qPassanger;
+post.registration;
 
 //queue.find;
 

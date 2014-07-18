@@ -1,27 +1,24 @@
 var Var = require('./variables.js');
 var queue = require('./makeQueue.js');
+var sql = require('./sql.js');
 
-var Post = Var.app.post('/post', function(request, response) {
-  var hData = request.body;
-  var Time = hData["time"];
-  var human = hData["human"];
-  var successPost = 0;
-  if(Time == 0 || Time == 3 || Time == 6 || Time == 9 ||
-    Time == 12 || Time == 15 || Time == 18 || Time == 21) {
-    if(human == "passanger_count" || human == "driver_count") {
-      Var.data[Time][human] ++;
-      successPost = 1;
-    }
-    Var.data[Time]["success_count"] ++;
+//Регистрация водителя, пассажира
+var registration = Var.app.post('/registration', function(request, response) {
+  var body = request.body;
+  var name = body['name'];
+  var phone = body['phone'];
+  var human = body['human'];
+  if(human == 'driver') {
+    sql.main('insert into `driver`(`name`, `phone`, `access`) values ("' + name + '", "' + phone + '", 1);', function (error, rows) { });
+    response.send('success registration');
   }
-  if(successPost == 1) {
-    console.log(Var.data);
-    response.send("server: data recieved");
+  if(human == 'passanger') {
+    sql.main('insert into `passanger`(`name`, `phone`) values ("' + name + '", "' + phone + '");', function (error, rows) {console.log(error + '\n' + rows) });
+    response.send('success registration');
   }
-  else 
-    response.send("server: wrong DATA type");
 });
 
+//По этому адресу должно прийти запрос на добавление в очередь.
 var qDriver = Var.app.post('/qdriver', function(request, response) {
   var body = request.body;
   var id = body["id"];
@@ -78,3 +75,4 @@ var qPassanger = Var.app.post('/qpassanger', function(request, response) {
 
 exports.qDriver = qDriver;
 exports.qPassanger = qPassanger;
+exports.registration = registration;

@@ -1,18 +1,18 @@
 use server
 CREATE TABLE time(
-    id INTEGER PRIMARY KEY NOT NULL,
+    id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     name TEXT,
     russianName TEXT
 );
 
 CREATE TABLE towns(
-    id INTEGER PRIMARY KEY NOT NULL,
+    id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     name TEXT,
     russianName TEXT
 );
 
 CREATE TABLE direction(
-        id INTEGER PRIMARY KEY NOT NULL,
+        id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
         id_source INTEGER,
         id_destination INTEGER,
         FOREIGN KEY (id_source) REFERENCES towns(id),
@@ -20,21 +20,21 @@ CREATE TABLE direction(
 );
 
 CREATE TABLE driver(
-    id INTEGER PRIMARY KEY NOT NULL,
+    id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     name TEXT,
     phone TEXT,
     access INTEGER
 );
 
 CREATE TABLE passanger(
-    id INTEGER PRIMARY KEY NOT NULL,
+    id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     name TEXT,
     phone TEXT,
     driversPhone TEXT
 );
 
 CREATE TABLE qDriver(
-    id INTEGER PRIMARY KEY NOT NULL,
+    id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     id_driver INTEGER,
     id_time INTEGER,
     id_direction INTEGER,
@@ -46,7 +46,7 @@ CREATE TABLE qDriver(
 );
 
 CREATE TABLE qPassanger(
-    id INTEGER PRIMARY KEY NOT NULL,
+    id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     id_passanger INTEGER,
     id_time INTEGER,
     id_direction INTEGER,

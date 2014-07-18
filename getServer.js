@@ -47,11 +47,16 @@ var met = Var.app.get('/met', function(request, response) {
 var sqlGet = Var.app.get('/sql', function(request, response) {
   var query = Var.url.parse(request.url).query;
   var params = Var.queryString.parse(query);
-  var data = sql.main("SELECT * FROM " + params["table"]);
-  console.log('get ', data);
-  
-  response.send(data);
-  response.end();
+  var Gdata;
+  sql.main("select name from " + params["table"], function(error, rows) {
+    console.log('getServer.js: ' + params['table'] + '\n', rows);
+    response.send(JSON.stringify(rows));
+    //response.write(data);
+    //response.end();
+  });
+ 
+  //response.send(Gdata);
+  //response.end();
 });
 
 exports.Data = Data;
