@@ -24,10 +24,13 @@ var url = Var.app.get('/url', function(request, response) {
 
 var Data = Var.app.get('/data', function(request, response) {
   response.set('Content-Type', 'application/json');
+  var query = Var.url.parse(request.url).query;
+  var params = Var.queryString.parse(query);
+  var direction = params["direction"];
   for(var time in Var.time) {
-    Var.data[time]["passanger_count"] = Var.qPassanger[time].length;
-    Var.data[time]["driver_count"] = Var.qDriver[time].length;
-    Var.data[time]["success_count"] = 0;
+  Var.data[direction][time]["passanger_count"] = Var.qPassanger[time].length;
+  Var.data[direction][time]["driver_count"] = Var.qDriver[time].length;
+  Var.data[direction][time]["success_count"] = 0;
   }
   response.send(JSON.stringify(Var.data));
 });
@@ -48,7 +51,7 @@ var sqlGet = Var.app.get('/sql', function(request, response) {
   var query = Var.url.parse(request.url).query;
   var params = Var.queryString.parse(query);
   var Gdata;
-  sql.main("select name from " + params["table"], function(error, rows) {
+  sql.main("select name from " + params["table"] + ";", function(error, rows) {
     console.log('getServer.js: ' + params['table'] + '\n', rows);
     response.send(JSON.stringify(rows));
     //response.write(data);

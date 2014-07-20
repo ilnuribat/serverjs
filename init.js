@@ -1,13 +1,26 @@
+/*
+*
+* Здесь будем инициализировать данные, заполнять массивы с базы данных. 
+* Актуально это делать после падения процесса нода, либо после вынужденной остановки процесса
+* с целью исправить код, дополнить.
+* Основная цель - научиться вытаскивать данные с БД в qDriver и qPassanger. Тогда можно забыть про потери данных.
+*
+*/
 var Var = require('./variables.js');
 var sql = require('./sql.js');
 
 var direction = sql.main("select count(id) from direction", function (error, rows) {
-    if(error) {console.log("error found!"); exit();} 
-    var directionSize = rows[0]['count(id)'];
-    for(var i = 1; i <= directionSize; i ++) {
-      Var.qDriver[i] = {"0":  [],  "3":  [],  "6":  [],  "9":  [],  "12": [],  "15": [],  "18": [],  "21": [] };
-      Var.qPassanger[i] = {"0":  [],  "3":  [],  "6":  [],  "9":  [],  "12": [],  "15": [],  "18": [],  "21": [] };
-      Var.met[i] = {"0":  [],  "3":  [],  "6":  [],  "9":  [],  "12": [],  "15": [],  "18": [],  "21": [] };
+    if(error) {console.log("error found!"); exit();}
+    Var.directionSize = rows[0]['count(id)'];
+    for(var i = 1; i <= Var.directionSize; i ++) {
+      Var.qDriver[i] = [];
+      Var.qPassanger[i] = [];
+      Var.met[i] = [];
+      for(j = 0; j <= 8; j ++) {
+        Var.qDriver[i][j] = [];
+        Var.qPassanger[i][j] = [];
+        Var.met[i][j] = [];
+      }
     }
   });
 
