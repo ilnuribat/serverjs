@@ -28,16 +28,8 @@ var data = {
   "21": extend({}, time_status_obj)
 }
 //для проверки введенных данных с телефона
-var time = {
-  1: "yes",
-  2: "yes",
-  3: "yes",
-  4: "yes",
-  5: "yes",
-  6: "yes",
-  7: "yes",
-  8: "yes"
-}
+var driver = [];
+var passanger = [];
 var directionSize;
 var qDriver = [];
 var qPassanger = [];
@@ -51,8 +43,9 @@ exports.data = data;
 exports.qDriver = qDriver;
 exports.qPassanger = qPassanger;
 exports.url = url;
-exports.time = time;
 exports.mysql = mysql;
 exports.url = url;
 exports.queryString = queryString;
 exports.directionSize = directionSize;
+exports.driver = driver;
+exports.passanger = passanger;

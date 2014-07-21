@@ -9,8 +9,8 @@
 var Var = require('./variables.js');
 var sql = require('./sql.js');
 
-var direction = sql.main("select count(id) from direction", function (error, rows) {
-    if(error) {console.log("error found!"); exit();}
+sql.main("select count(id) from direction;", function (error, rows) {
+    //if(error) {console.log("error found!"); exit();}
     Var.directionSize = rows[0]['count(id)'];
     for(var i = 1; i <= Var.directionSize; i ++) {
       Var.qDriver[i] = [];
@@ -22,6 +22,17 @@ var direction = sql.main("select count(id) from direction", function (error, row
         Var.met[i][j] = [];
       }
     }
-  });
+});
 
-exports.direction = direction;
+sql.main("select  id from driver;", function(error, rows) {
+  //if(error) {console.log("error: init.js var driver");}
+  for(row in rows){
+    Var.driver[rows[row]["id"]] = 1;
+  }
+});
+
+sql.main("select id from passanger;", function(error, rows) {
+  for(row in rows) {
+    Var.passanger[rows[row]["id"]] = 1;
+  }
+});

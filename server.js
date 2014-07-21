@@ -5,7 +5,6 @@ var init = require('./init.js');
 
 var queue = require('./makeQueue.js');
 
-init.direction;
 get.Data;
 get.Get;
 get.Cities;
