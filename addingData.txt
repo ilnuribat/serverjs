@@ -17,3 +17,15 @@ INSERT INTO `direction`( `id_source`, `id_destination`) VALUES(1, 2);
 INSERT INTO `direction`( `id_source`, `id_destination`) VALUES(1, 3);
 INSERT INTO `direction`( `id_source`, `id_destination`) VALUES(2, 1);
 INSERT INTO `direction`( `id_source`, `id_destination`) VALUES(3, 1);
+
+INSERT INTO `driver`(`name`, `phone`, `access`) VALUES('Ilnur', '9874774911', 1);
+INSERT INTO `driver`(`name`, `phone`, `access`) VALUES('Bulat', '9871473364', 1);
+INSERT INTO `driver`(`name`, `phone`, `access`) VALUES('Vener', '9033522598', 1);
+INSERT INTO `driver`(`name`, `phone`, `access`) VALUES('Rasim', '9874774910', 1);
+INSERT INTO `driver`(`name`, `phone`, `access`) VALUES('Anvar', '9177676176', 1);
+
+INSERT INTO `passanger`(`name`, `phone`) VALUES('Albina', '9874967826');
+INSERT INTO `passanger`(`name`, `phone`) VALUES('Oxana', '9174652911');
+INSERT INTO `passanger`(`name`, `phone`) VALUES('Elena', '9178029887');
+INSERT INTO `passanger`(`name`, `phone`) VALUES('Marina', '9173600636');
+INSERT INTO `passanger`(`name`, `phone`) VALUES('Albina', '9061054409');
