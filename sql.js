@@ -4,7 +4,7 @@ var sqlData;
 
 var main = function (query, callback) {
   connectionSQL = Var.mysql.createConnection( {
-    host: '194.58.100.50', 
+    host: 'localhost', 
     port: 3306,
     database: 'server',
     user: 'root', 
