@@ -4,11 +4,11 @@ var sqlData;
 
 var main = function (query, callback) {
   connectionSQL = Var.mysql.createConnection( {
-    host: 'localhost', 
+    host: '194.58.100.50', 
     port: 3306,
     database: 'server',
     user: 'root', 
-    password: ''
+    password: '1234'
   });
   
   connectionSQL.connect(function(error) {
