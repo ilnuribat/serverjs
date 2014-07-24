@@ -27,10 +27,10 @@ var Data = Var.app.get('/data', function(request, response) {
   var query = Var.url.parse(request.url).query;
   var params = Var.queryString.parse(query);
   var direction = params["direction"];
-  for(var time in Var.time) {
-  Var.data[direction][time]["passanger_count"] = Var.qPassanger[time].length;
-  Var.data[direction][time]["driver_count"] = Var.qDriver[time].length;
-  Var.data[direction][time]["success_count"] = 0;
+  for(var time = 1; time <= 8; time ++) {
+    Var.data[time]["passanger_count"] = Var.qPassanger[direction][time].length;
+    Var.data[time]["driver_count"] = Var.qDriver[direction][time].length;
+    Var.data[time]["success_count"] = 0;
   }
   response.send(JSON.stringify(Var.data));
 });
@@ -52,14 +52,23 @@ var sqlGet = Var.app.get('/sql', function(request, response) {
   var params = Var.queryString.parse(query);
   var Gdata;
   sql.main("select name from " + params["table"] + ";", function(error, rows) {
-    console.log('getServer.js: ' + params['table'] + '\n', rows);
-    response.send(JSON.stringify(rows));
-    //response.write(data);
-    //response.end();
+    var names = [];
+    for(var it in rows)
+      names.push(rows[it]["name"]);
+    response.send(JSON.stringify(names));
   });
  
   //response.send(Gdata);
   //response.end();
+});
+
+Var.app.get('/towns', function(request, response) {
+  sql.main("select russianName from  towns;", function(error, rows) {
+    var names = [];
+    for(var it in rows)
+      names.push(rows[it]["russianName"]);
+    response.send(JSON.stringify(names));
+  });
 });
 
 exports.Data = Data;

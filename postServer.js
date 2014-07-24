@@ -4,6 +4,7 @@ var sql = require('./sql.js');
 //Регистрация водителя, пассажира
 var registration = Var.app.post('/registration', function(request, response) {
   var body = request.body;
+  console.log(body);
   var name = body['name'];
   var phone = body['phone'];
   var human = body['human'];

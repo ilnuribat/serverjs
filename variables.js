@@ -18,14 +18,14 @@ var time_status_obj = {
   "success_count": 0
 }
 var data = {
-  "0": extend({}, time_status_obj),
-  "3": extend({}, time_status_obj),
-  "6": extend({}, time_status_obj),
-  "9": extend({}, time_status_obj),
-  "12": extend({}, time_status_obj),
-  "15": extend({}, time_status_obj),
-  "18": extend({}, time_status_obj),
-  "21": extend({}, time_status_obj)
+  1: extend({}, time_status_obj),
+  2: extend({}, time_status_obj),
+  3: extend({}, time_status_obj),
+  4: extend({}, time_status_obj),
+  5: extend({}, time_status_obj),
+  6: extend({}, time_status_obj),
+  7: extend({}, time_status_obj),
+  8: extend({}, time_status_obj)
 }
 //для проверки введенных данных с телефона
 var driver = [];
