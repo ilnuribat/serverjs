@@ -39,7 +39,7 @@ CREATE TABLE qDriver(
     id_time INTEGER,
     id_direction INTEGER,
     seats INTEGER,
-    qOrder INTEGER,
+    qorder INTEGER,
     FOREIGN KEY (id_driver) REFERENCES driver(id),
     FOREIGN KEY (id_time)REFERENCES  time(id),
     FOREIGN KEY (id_direction)REFERENCES  direction(id)
@@ -51,7 +51,7 @@ CREATE TABLE qPassanger(
     id_time INTEGER,
     id_direction INTEGER,
     booked INTEGER,
-    qOrder INTEGER,
+    qorder INTEGER,
     FOREIGN KEY (id_passanger) REFERENCES passanger(id),
     FOREIGN KEY (id_time)REFERENCES  time(id),
     FOREIGN KEY (id_direction)REFERENCES  direction(id)
