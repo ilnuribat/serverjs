@@ -36,3 +36,22 @@ sql.main("select id from passanger;", function(error, rows) {
     Var.passanger[rows[row]["id"]] = 1;
   }
 });
+
+sql.main("select * from qdriver;", function(error, rows) {
+  for(row in rows) {
+    var qd = rows[row];
+    Var.qDriver[qd["id_direction"]][qd["id_time"]].push({"id": qd["id_driver"], "seats": qd["seats"], "passangersNumbers": []});
+    
+    //    qDriver[direction][time].push({id: id_driver, seats: seats, passangersNumbers: [] });
+  }
+});
+
+sql.main("select * from qpassanger;", function(error, rows) {
+  if(rows[0] == null) 
+    return;
+    
+  for(row in rows) {
+    var qp = rows[row];
+    Var.qPassanger[qp["id_direction"]][qp["id_time"]].push({"id": qp["id_passanger"], "booked": qp["booked"], "driversNumber": qp["driversNumber"]});
+  }
+});
