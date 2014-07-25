@@ -2,7 +2,6 @@ use server
 CREATE TABLE time(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     name TEXT,
-    russianName TEXT
 );
 
 CREATE TABLE towns(
@@ -21,15 +20,15 @@ CREATE TABLE direction(
 
 CREATE TABLE driver(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    name TEXT,
-    phone TEXT,
+    name TEXT NOT NULL,
+    phone TEXT NOT NULL,
     access INTEGER
 );
 
 CREATE TABLE passanger(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    name TEXT,
-    phone TEXT,
+    name TEXT NOT NULL,
+    phone TEXT NOT NULL,
     driversPhone TEXT
 );
 
