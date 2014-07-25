@@ -67,9 +67,7 @@ Var.app.get('/direction', function(request, response) {
   var params = Var.queryString.parse(query);
   var source = params["source"];
   var destination = params["destination"];
-  console.log(params);
   sql.main("select id from direction where id_source = " + source + " && id_destination = " + destination + ";", function(error, rows) {
-    console.log(rows);
     if(rows[0] != null)
       response.send(JSON.stringify(rows[0]["id"])); 
     else 

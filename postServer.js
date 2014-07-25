@@ -51,7 +51,7 @@ var qDriver = Var.app.post('/qdriver', function(request, response) {
   driver_in_queue["seats"] = seats;
  
   Var.qDriver[direction][time].push(driver_in_queue);
-  sql.main('insert into `qdriver`(`id_driver`, `id_time`, `id_direction`, `seats`) values(' + id + ',' + time + ',' + direction + ',' + seats +')', function(error, rows){});
+  sql.main('insert into `qdriver`(`id_driver`, `id_time`, `id_direction`, `seats`) values(' + id + ',' + time + ',' + direction + ',' + seats +');', function(error, rows){});
   response.send(Var.qDriver[direction][time]);
 });
 
@@ -87,6 +87,7 @@ var qPassanger = Var.app.post('/qpassanger', function(request, response) {
   passanger_in_queue["booked"] = booked;
   
   Var.qPassanger[direction][time].push(passanger_in_queue);
+   sql.main('insert into `qpassanger`(`id_passanger`, `id_time`, `id_direction`, `booked`) values(' + id + ',' + time + ',' + direction + ',' + booked+');', function(error, rows){});
   response.send(Var.qPassanger[direction][time]);
 });
 
