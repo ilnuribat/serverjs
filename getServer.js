@@ -62,6 +62,21 @@ var sqlGet = Var.app.get('/sql', function(request, response) {
   //response.end();
 });
 
+Var.app.get('/direction', function(request, response) {
+  var query = Var.url.parse(request.url).query;
+  var params = Var.queryString.parse(query);
+  var source = params["source"];
+  var destination = params["destination"];
+  console.log(params);
+  sql.main("select id from direction where id_source = " + source + " && id_destination = " + destination + ";", function(error, rows) {
+    console.log(rows);
+    if(rows[0] != null)
+      response.send(JSON.stringify(rows[0]["id"])); 
+    else 
+      response.send("0");
+  });
+});
+
 Var.app.get('/towns', function(request, response) {
   sql.main("select russianName from  towns;", function(error, rows) {
     var names = [];
