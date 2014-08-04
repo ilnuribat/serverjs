@@ -19,7 +19,6 @@ var main = function (query, callback) {
   
   connectionSQL.query(query, function(error, rows){
     callback(error, rows);
-    
   });
   connectionSQL.end();  
 };

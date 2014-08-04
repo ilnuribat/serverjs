@@ -17,6 +17,7 @@ var time_status_obj = {
   "driver_count": 0,
   "success_count": 0
 }
+
 var data = {
   1: extend({}, time_status_obj),
   2: extend({}, time_status_obj),
@@ -27,9 +28,11 @@ var data = {
   7: extend({}, time_status_obj),
   8: extend({}, time_status_obj)
 }
-//для проверки введенных данных с телефона
+
+//В этих переменных будут храниться id -шки, чтобы не лезть в БД
 var driver = [];
 var passanger = [];
+
 var directionSize;
 var qDriver = [];
 var qPassanger = [];

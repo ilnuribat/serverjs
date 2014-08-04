@@ -56,7 +56,9 @@ var qDriver = Var.app.post('/qdriver', function(request, response) {
 });
 
 var qPassanger = Var.app.post('/qpassanger', function(request, response) {
+  
   var body = request.body;
+  console.log(body);
   var id = body["id"];
   var booked = body["booked"];
   var time = body["time"];

@@ -65,13 +65,17 @@ var sqlGet = Var.app.get('/sql', function(request, response) {
 Var.app.get('/direction', function(request, response) {
   var query = Var.url.parse(request.url).query;
   var params = Var.queryString.parse(query);
+  console.log(params);
   var source = params["source"];
   var destination = params["destination"];
-  sql.main("select id from direction where id_source = " + source + " && id_destination = " + destination + ";", function(error, rows) {
+  sql.main("select id from direction where id_source = " + source + " AND id_destination = " + destination + ";", function(error, rows) {
+    var directionID = "";
+    console.log(rows);
     if(rows[0] != null)
-      response.send(JSON.stringify(rows[0]["id"])); 
+      directionID = rows[0]["id"]; 
     else 
-      response.send("0");
+      directionID = 0;
+    response.send(JSON.stringify(directionID));
   });
 });
 
