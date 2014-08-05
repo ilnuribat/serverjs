@@ -4,20 +4,26 @@ var sql = require('./sql.js');
 //Регистрация водителя, пассажира
 var registration = Var.app.post('/registration', function(request, response) {
   var body = request.body;
-  console.log(body);
   var name = body['name'];
   var phone = body['phone'];
   var human = body['human'];
   if(human == 'driver') {
     sql.main('insert into `driver`(`name`, `phone`, `access`) values ("' + name +
-      '", "' + phone + '", 1);', function (error, rows) { });
-    response.send('success registration');
+      '", "' + phone + '", 1);', function (error, rows) { 
+        response.send(JSON.stringify(rows.insertId));
+      });
+    return;
   }
   if(human == 'passanger') {
     sql.main('insert into `passanger`(`name`, `phone`) values ("' + name + 
-      '", "' + phone + '");', function (error, rows) {console.log(error + '\n' + rows) });
-    response.send('success registration');
+      '", "' + phone + '");', function (error, rows) {
+        console.log(rows.insertId); 
+        response.send(JSON.stringify(rows.insertId));
+      });
+    
+    return;
   }
+  response.send("not added");
 });
 
 //По этому адресу должно прийти запрос на добавление в очередь.
