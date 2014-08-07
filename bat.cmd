@@ -1,2 +1,3 @@
-curl -d "id=9&booked=4&time=1&direction=1" localhost/qpassanger
-curl -d "id=9&seats=4&time=1&direction=1" localhost/qdriver
+:loop
+curl localhost/registration -d "human=driver&name=TestTime&phone=1"
+goto loop

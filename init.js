@@ -25,7 +25,7 @@ sql.main("select count(id) from direction;", function (error, rows) {
 });
 
 sql.main("select  id from driver;", function(error, rows) {
-  //if(error) {console.log("error: init.js var driver");}
+  if(error) {console.log("error: init.js var driver");}
   for(row in rows){
     Var.driver[rows[row]["id"]] = 1;
   }
@@ -49,7 +49,7 @@ sql.main("select * from qdriver;", function(error, rows) {
 sql.main("select * from qpassanger;", function(error, rows) {
   if(rows[0] == null) 
     return;
-    
+
   for(row in rows) {
     var qp = rows[row];
     Var.qPassanger[qp["id_direction"]][qp["id_time"]].push({"id": qp["id_passanger"], "booked": qp["booked"], "driversNumber": qp["driversNumber"]});

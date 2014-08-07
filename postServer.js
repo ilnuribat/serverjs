@@ -3,6 +3,7 @@ var sql = require('./sql.js');
 
 //Регистрация водителя, пассажира
 var registration = Var.app.post('/registration', function(request, response) {
+  var startTime = Date.now()
   var body = request.body;
   var name = body['name'];
   var phone = body['phone'];
@@ -10,14 +11,13 @@ var registration = Var.app.post('/registration', function(request, response) {
   if(human == 'driver') {
     sql.main('insert into `driver`(`name`, `phone`, `access`) values ("' + name +
       '", "' + phone + '", 1);', function (error, rows) { 
-        response.send(JSON.stringify(rows.insertId));
+        response.send(JSON.stringify(Date.now() - startTime));
       });
     return;
   }
   if(human == 'passanger') {
     sql.main('insert into `passanger`(`name`, `phone`) values ("' + name + 
       '", "' + phone + '");', function (error, rows) {
-        console.log(rows.insertId); 
         response.send(JSON.stringify(rows.insertId));
       });
     
@@ -33,6 +33,7 @@ var qDriver = Var.app.post('/qdriver', function(request, response) {
   var seats = body["seats"];
   var time = body["time"];
   var direction = body["direction"];
+  console.log(body);
   
   //обработка ошибок
   if(Var.qDriver[direction] == undefined){
@@ -43,10 +44,11 @@ var qDriver = Var.app.post('/qdriver', function(request, response) {
     response.send("101");
     return;
   }
-  if(Var.driver[id] != 1) {
+  
+  /*if(Var.driver[id] != 1) {
     response.send("102");
     return;
-  }
+  }*/
   
   var driver_in_queue = {
     "id": 0,
@@ -58,7 +60,7 @@ var qDriver = Var.app.post('/qdriver', function(request, response) {
  
   Var.qDriver[direction][time].push(driver_in_queue);
   sql.main('insert into `qdriver`(`id_driver`, `id_time`, `id_direction`, `seats`) values(' + id + ',' + time + ',' + direction + ',' + seats +');', function(error, rows){});
-  response.send(Var.qDriver[direction][time]);
+  response.send(JSON.stringify(Var.qDriver[direction][time]));
 });
 
 var qPassanger = Var.app.post('/qpassanger', function(request, response) {

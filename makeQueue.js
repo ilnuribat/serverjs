@@ -43,7 +43,7 @@ function find_queue() {
               Var.qPassanger[direction][TIME][iPass]["booked"] = 0;
               
             }
-            console.log(Var.met[direction][TIME]);
+            //console.log(Var.met[direction][TIME]);
             Var.qPassanger[direction][TIME][iPass]["driversNumber"] = driverID;     //Даем номер водителя пассажиру
             
             if(Var.qDriver[direction][TIME][iDrive]["seats"] == 0){
@@ -55,7 +55,7 @@ function find_queue() {
         } else {
           sql.main("delete from qpassanger where id_passanger = " + passangerID + ';', function(error, rows){});
           Var.qPassanger[direction][TIME].splice(iPass, 1);
-          console.log("passanger removed from queue");
+         // console.log("passanger removed from queue");
         }
       }
       
@@ -63,5 +63,3 @@ function find_queue() {
 
   }  
 }
-
-exports.find = find_queue();
