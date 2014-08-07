@@ -8,7 +8,7 @@ var main = function (query, callback) {
     port: 3306,
     database: 'server',
     user: 'root', 
-    password: ''
+    password: '1234'
   });
   
   connectionSQL.connect(function(error) {
