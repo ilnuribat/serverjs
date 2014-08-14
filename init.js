@@ -47,6 +47,7 @@ sql.main("select * from qdriver;", function(error, rows) {
 });
 
 sql.main("select * from qpassanger;", function(error, rows) {
+  console.log("select from qpassanger: ", rows);
   if(rows[0] == null) 
     return;
 
