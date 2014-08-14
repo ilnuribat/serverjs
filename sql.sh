@@ -1,7 +1,7 @@
 use server
 CREATE TABLE time(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    name TEXT,
+    name TEXT
 );
 
 CREATE TABLE towns(
