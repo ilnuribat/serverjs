@@ -32,7 +32,7 @@ CREATE TABLE passanger(
     driversPhone TEXT
 );
 
-CREATE TABLE qDriver(
+CREATE TABLE qdriver(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     id_driver INTEGER,
     id_time INTEGER,
@@ -44,7 +44,7 @@ CREATE TABLE qDriver(
     FOREIGN KEY (id_direction)REFERENCES  direction(id)
 );
 
-CREATE TABLE qPassanger(
+CREATE TABLE qpassanger(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     id_passanger INTEGER,
     id_time INTEGER,
