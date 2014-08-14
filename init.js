@@ -38,16 +38,15 @@ sql.main("select id from passanger;", function(error, rows) {
 });
 
 sql.main("select * from qdriver;", function(error, rows) {
+  if(rows[0] == null) 
+    return;
   for(row in rows) {
     var qd = rows[row];
     Var.qDriver[qd["id_direction"]][qd["id_time"]].push({"id": qd["id_driver"], "seats": qd["seats"], "passangersNumbers": []});
-    
-    //    qDriver[direction][time].push({id: id_driver, seats: seats, passangersNumbers: [] });
   }
 });
 
 sql.main("select * from qpassanger;", function(error, rows) {
-  console.log("select from qpassanger: ", rows);
   if(rows[0] == null) 
     return;
 
