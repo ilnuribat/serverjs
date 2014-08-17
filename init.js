@@ -25,13 +25,14 @@ sql.main("select count(id) from direction;", function (error, rows) {
 });
 
 sql.main("select  id from driver;", function(error, rows) {
-  if(error) {console.log("error: init.js var driver");}
+  
   for(row in rows){
     Var.driver[rows[row]["id"]] = 1;
   }
 });
 
 sql.main("select id from passanger;", function(error, rows) {
+  if(error) {console.log("error: init.js var driver");}
   for(row in rows) {
     Var.passanger[rows[row]["id"]] = 1;
   }

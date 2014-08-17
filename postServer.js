@@ -2,22 +2,24 @@ var Var = require('./variables.js');
 var sql = require('./sql.js');
 
 //Регистрация водителя, пассажира
-var registration = Var.app.post('/registration', function(request, response) {
-  var startTime = Date.now()
+Var.app.post('/registration', function(request, response) {
   var body = request.body;
   var name = body['name'];
   var phone = body['phone'];
   var human = body['human'];
+  console.log("registration:");
   if(human == 'driver') {
     sql.main('insert into `driver`(`name`, `phone`, `access`) values ("' + name +
       '", "' + phone + '", 1);', function (error, rows) { 
-        response.send(JSON.stringify(Date.now() - startTime));
+        console.log(rows);
+        response.send(JSON.stringify(rows.insertId));
       });
     return;
   }
   if(human == 'passanger') {
     sql.main('insert into `passanger`(`name`, `phone`) values ("' + name + 
       '", "' + phone + '");', function (error, rows) {
+        console.log(rows);
         response.send(JSON.stringify(rows.insertId));
       });
     
@@ -27,7 +29,7 @@ var registration = Var.app.post('/registration', function(request, response) {
 });
 
 //По этому адресу должно прийти запрос на добавление в очередь.
-var qDriver = Var.app.post('/qdriver', function(request, response) {
+Var.app.post('/qdriver', function(request, response) {
   var body = request.body;
   var id = body["id"];
   var seats = body["seats"];
@@ -63,7 +65,7 @@ var qDriver = Var.app.post('/qdriver', function(request, response) {
   response.send(JSON.stringify(Var.qDriver[direction][time]));
 });
 
-var qPassanger = Var.app.post('/qpassanger', function(request, response) {
+Var.app.post('/qpassanger', function(request, response) {
   
   var body = request.body;
   console.log(body);
@@ -81,11 +83,12 @@ var qPassanger = Var.app.post('/qpassanger', function(request, response) {
     return;
   }
   if(Var.passanger[id] != 1) {
-    response.send("102");
-    return;
+    response.send("102: There is no such user");
+    //return;
   }
   if(booked < 0 || booked > 6){
     response.send("error 104: incorrect form of booked");
+    return;
   }
   var passanger_in_queue = {
     "id": 0,
@@ -100,7 +103,3 @@ var qPassanger = Var.app.post('/qpassanger', function(request, response) {
    sql.main('insert into `qpassanger`(`id_passanger`, `id_time`, `id_direction`, `booked`) values(' + id + ',' + time + ',' + direction + ',' + booked+');', function(error, rows){});
   response.send(Var.qPassanger[direction][time]);
 });
-
-exports.qDriver = qDriver;
-exports.qPassanger = qPassanger;
-exports.registration = registration;
