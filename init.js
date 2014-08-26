@@ -53,6 +53,7 @@ sql.main("select * from qpassanger;", function(error, rows) {
 
   for(row in rows) {
     var qp = rows[row];
+    console.log("qp, init.js: :", qp);
     Var.qPassanger[qp["id_direction"]][qp["id_time"]].push({"id": qp["id_passanger"], "booked": qp["booked"], "driversNumber": qp["driversNumber"]});
   }
 });

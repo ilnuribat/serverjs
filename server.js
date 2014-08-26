@@ -4,5 +4,5 @@ var post = require('./postServer.js');
 var init = require('./init.js');
 var queue = require('./makeQueue.js');
 
-Var.app.listen(20267);
+Var.app.listen(8080);
 console.log("Server started");

@@ -2,7 +2,20 @@ var Var = require('./variables.js');
 var sql = require('./sql.js');
 
 Var.app.get('/get', function(request, response) {
-  response.send("Hello from getServer.js");
+  var jsonData  = {
+    "done": {
+      "boolean": true,
+      "number": 123,
+      "list": [
+        "field1", 
+        "field2", 
+        "field3", 
+        "field4", 
+        "field5" 
+      ]
+    }
+  }
+  response.send(JSON.stringify(jsonData));
 });
 
 //УРРРАААА АРгентина вышла в финал!
@@ -33,15 +46,15 @@ Var.app.get('/data', function(request, response) {
 });
 
 Var.app.get('/qdriver', function(request, response) {
-  response.send(Var.qDriver);
+  response.send(JSON.stringify(Var.qDriver));
 });
 
 Var.app.get('/qpassanger', function(request, response) {
-  response.send(Var.qPassanger);
+  response.send(JSON.stringify(Var.qPassanger));
 });
 
 Var.app.get('/met', function(request, response) {
-  response.send(Var.met);
+  response.send(JSON.stringify(Var.met));
 });
 
 Var.app.get('/sql', function(request, response) {
@@ -72,11 +85,12 @@ Var.app.get('/direction', function(request, response) {
 });
 
 Var.app.get('/towns', function(request, response) {
-  sql.main("select russianName from  towns;", function(error, rows) {
+  sql.main("select * from  towns;", function(error, rows) {
     var names = [];
     for(var it in rows)
-      names.push(rows[it]["russianName"]);
+      names.push(rows[it]["name"]);
     response.send(JSON.stringify(names));
+    console.log("towns' names");
   });
 });
 
