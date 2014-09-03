@@ -14,6 +14,8 @@ Var.app.post('/registration', function(request, response) {
       '", "' + phone + '", 1);', function (error, rows) { 
         console.log(rows);
         response.send(JSON.stringify(rows.insertId));
+		//обновление массива водителей
+		Var.driver[rows.insertId] = 1;
       });
     return;
   }
@@ -22,14 +24,16 @@ Var.app.post('/registration', function(request, response) {
       '", "' + phone + '");', function (error, rows) {
         console.log(rows);
         response.send(JSON.stringify(rows.insertId));
+		//обновление массива пассажиров
+		Var.passanger[rows.insertId] = 1;
       });
-    
     return;
   }
   response.send("not added");
 });
 
-//По этому адресу должно прийти запрос на добавление в очередь.
+//По этим адресам должно приходить запросы на добавление в очередь.
+
 Var.app.post('/qdriver', function(request, response) {
   var body = request.body;
   var id = body["id"];
@@ -48,10 +52,10 @@ Var.app.post('/qdriver', function(request, response) {
     return;
   }
   
-  /*if(Var.driver[id] != 1) {
-    response.send("102");
+  if(Var.driver[id] != 1) {
+    response.send("102: There is no such user");
     return;
-  }*/
+  }
   
   var driver_in_queue = {
     "id": 0,
@@ -83,10 +87,12 @@ Var.app.post('/qpassanger', function(request, response) {
     response.send("101");
     return;
   }
+  /*
   if(Var.passanger[id] != 1) {
     response.send("102: There is no such user");
-    //return;
+    return;
   }
+  */
   if(booked < 0 || booked > 6){
     response.send("error 104: incorrect form of booked");
     return;
