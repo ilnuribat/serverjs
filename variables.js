@@ -8,14 +8,13 @@ var url = require('url');
 app.use(bodyParser.urlencoded());
 var mysql = require('mysql');
 var fileSystem = require('fs');
-var Url = require("url");
-var queryString = require("querystring");
+var Url = require('url');
+var queryString = require('querystring');
 var clone = require('clone');
 
 var time_status_obj = {
   "passanger_count": 0,
-  "driver_count": 0,
-  "success_count": 0
+  "driver_count": 0
 }
 
 var data = {
@@ -37,7 +36,6 @@ var directionSize;
 var qDriver = [];
 var qPassanger = [];
 var met = [];
-
 
 exports.met = met;
 exports.app = app;
