@@ -1,6 +1,14 @@
+/*
+*
+*	В данном модуле описаны все функции, которые обрабатывают Get запросы. 
+*	Позже модули будут иметь другой, более логичный, компактный, интуитивный вид.
+*
+*/
+
 var Var = require('./variables.js');
 var sql = require('./sql.js');
 
+//функция для проверки тестовой программы. Просто возращает JSON объект.
 Var.app.get('/get', function(request, response) {
   var jsonData  = {
     "done": {
@@ -18,15 +26,7 @@ Var.app.get('/get', function(request, response) {
   response.send(JSON.stringify(jsonData));
 });
 
-//УРРРАААА АРгентина вышла в финал!
-//Шутка, получилось разобрать гет запрос по параметрам
-Var.app.get('/url', function(request, response) {
-  var query = Var.url.parse(request.url).query;
-  var params = Var.queryString.parse(query);
-  response.send(JSON.stringify(params));
-  console.log(params);
-});
-
+//Выдача состояние очереди в указанном направлении
 Var.app.get('/data', function(request, response) {
   response.set('Content-Type', 'application/json');
   var query = Var.url.parse(request.url).query;
@@ -40,15 +40,16 @@ Var.app.get('/data', function(request, response) {
   for(var time = 1; time <= 8; time ++) {
     Var.data[time]["passanger_count"] = Var.qPassanger[direction][time].length;
     Var.data[time]["driver_count"] = Var.qDriver[direction][time].length;
-    Var.data[time]["success_count"] = 0;
   }
   response.send(JSON.stringify(Var.data));
 });
 
+//Выдача содержимого очереди водителей
 Var.app.get('/qdriver', function(request, response) {
   response.send(JSON.stringify(Var.qDriver));
 });
 
+//Выдача содержимого очереди пассажиров
 Var.app.get('/qpassanger', function(request, response) {
   response.send(JSON.stringify(Var.qPassanger));
 });
@@ -57,10 +58,10 @@ Var.app.get('/met', function(request, response) {
   response.send(JSON.stringify(Var.met));
 });
 
+//Выдача столбца "name" таблицы, название передается в параметре запроса
 Var.app.get('/sql', function(request, response) {
   var query = Var.url.parse(request.url).query;
   var params = Var.queryString.parse(query);
-  var Gdata;
   sql.main("select name from " + params["table"] + ";", function(error, rows) {
     var names = [];
     for(var it in rows)
@@ -69,6 +70,7 @@ Var.app.get('/sql', function(request, response) {
   });
 });
 
+//Возвращает код направления поездки
 Var.app.get('/direction', function(request, response) {
   var query = Var.url.parse(request.url).query;
   var params = Var.queryString.parse(query);
@@ -84,6 +86,7 @@ Var.app.get('/direction', function(request, response) {
   });
 });
 
+//Возвращает список доступных городов
 Var.app.get('/towns', function(request, response) {
   sql.main("select * from  towns;", function(error, rows) {
     var names = [];
@@ -94,6 +97,7 @@ Var.app.get('/towns', function(request, response) {
   });
 });
 
+//Удаление участника из очереди.
 Var.app.get('/dropFromQueue', function(request, response) {
   var query = Var.url.parse(request.url).query;
   var params = Var.queryString.parse(query);
@@ -128,10 +132,9 @@ Var.app.get('/dropFromQueue', function(request, response) {
         }
       }
     }
-    //response.send(JSON.stringify(rows));
   });
 });
 
 Var.app.get('/vardriver', function(request, response) {
-  response.send(JSON.stringify(Var.dirver));
+  response.send(JSON.stringify(Var.driver));
 })
