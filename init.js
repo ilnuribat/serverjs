@@ -9,6 +9,7 @@
 var Var = require('./variables.js');
 var sql = require('./sql.js');
 
+//Подготовка массива очередей. Создание, инициализация
 sql.main("select count(id) from direction;", function (error, rows) {
     //if(error) {console.log("error found!"); exit();}
     Var.directionSize = rows[0]['count(id)'];
@@ -16,7 +17,7 @@ sql.main("select count(id) from direction;", function (error, rows) {
       Var.qDriver[i] = [];
       Var.qPassanger[i] = [];
       Var.met[i] = [];
-      for(j = 0; j <= 8; j ++) {
+      for(var j = 0; j <= 8; j ++) {
         Var.qDriver[i][j] = [];
         Var.qPassanger[i][j] = [];
         Var.met[i][j] = [];
@@ -24,13 +25,12 @@ sql.main("select count(id) from direction;", function (error, rows) {
     }
 });
 
-sql.main("select  id from driver;", function(error, rows) {
-  
+//Заполнение Уникальных ключей водителей и пассажиров. Чтобы каждый раз не лезть в БД.
+sql.main("select id from driver;", function(error, rows) {
   for(row in rows){
     Var.driver[rows[row]["id"]] = 1;
   }
 });
-
 sql.main("select id from passanger;", function(error, rows) {
   if(error) {console.log("error: init.js var driver");}
   for(row in rows) {
@@ -38,6 +38,7 @@ sql.main("select id from passanger;", function(error, rows) {
   }
 });
 
+//Восстановление очереди водителей. 
 sql.main("select * from qdriver;", function(error, rows) {
   if(rows[0] == null) 
     return;
@@ -47,6 +48,7 @@ sql.main("select * from qdriver;", function(error, rows) {
   }
 });
 
+//Восстановление очереди пассажиров
 sql.main("select * from qpassanger;", function(error, rows) {
   if(rows[0] == null) 
     return;
