@@ -91,9 +91,11 @@ Var.app.get('/towns', function(request, response) {
   sql.main("select * from  towns;", function(error, rows) {
     var names = [];
     for(var it in rows)
-      names.push(rows[it]["name"]);
-    response.send(JSON.stringify(names));
-    console.log("towns' names");
+      names.push(rows[it]["russianName"]);
+	response.writeHead(200, {"Content-Type": "html/text"});
+    response.write(JSON.stringify(names));
+	response.end();
+    console.log("towns' names:", names);
   });
 });
 
