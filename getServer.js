@@ -67,6 +67,7 @@ Var.app.get('/sql', function(request, response) {
     for(var it in rows)
       names.push(rows[it]["name"]);
     response.send(JSON.stringify(names));
+	console.log(names);
   });
 });
 
