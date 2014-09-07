@@ -1,14 +1,15 @@
+CREATE DATABASE server CHARACTER SET utf8 COLLATE utf8_general_ci;
 use server
 CREATE TABLE time(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    name TEXT
+    name VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci
 );
 
 CREATE TABLE towns(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    name TEXT,
-    russianName TEXT
-);
+    name VARCHAR(20),
+    russianName VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci
+)CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE direction(
         id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -20,16 +21,16 @@ CREATE TABLE direction(
 
 CREATE TABLE driver(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    name TEXT NOT NULL,
-    phone TEXT NOT NULL,
-    access INTEGER
+	name VARCHAR(20) NOT NULL, 
+    phone VARCHAR(20) NOT NULL,
+    access INTEGER	
 );
 
 CREATE TABLE passanger(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    name TEXT NOT NULL,
-    phone TEXT NOT NULL,
-    driversPhone TEXT
+    name VARCHAR(20) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    driversPhone VARCHAR(20)
 );
 
 CREATE TABLE qdriver(
