@@ -19,7 +19,7 @@ Var.app.get('/get', function(request, response) {
         "field2", 
         "field3", 
         "field4", 
-        "field5" 
+        "поле5" 
       ]
     }
   }
