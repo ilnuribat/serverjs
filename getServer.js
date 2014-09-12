@@ -93,7 +93,10 @@ Var.app.get('/towns', function(request, response) {
     var names = [];
     for(var it in rows)
       names.push(rows[it]["russianName"]);
-	response.writeHead(200, {"Content-Type": "html/text"});
+	response.set({
+	  'Content-Type' : 'text/plain',
+	  'charset' : 'utf-8'
+	});
     response.write(JSON.stringify(names));
 	response.end();
     console.log("towns' names:", names);
