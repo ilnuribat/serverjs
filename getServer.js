@@ -1,4 +1,4 @@
-/*
+﻿/*
 *
 *	В данном модуле описаны все функции, которые обрабатывают Get запросы. 
 *	Позже модули будут иметь другой, более логичный, компактный, интуитивный вид.
@@ -23,7 +23,7 @@ Var.app.get('/get', function(request, response) {
       ]
     }
   }
-  response.send(JSON.stringify(jsonData));
+  response.send(JSON.stringify(request.ip));
 });
 
 //Выдача состояние очереди в указанном направлении
