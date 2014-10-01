@@ -25,43 +25,43 @@ sql.main("select count(id) from direction;", function (error, rows) {
         Var.met[i][j] = [];
       }
     }
+	//Заполнение Уникальных ключей водителей и пассажиров. Чтобы каждый раз не лезть в БД.
+	sql.main("select id from driver;", function(error, rows) {
+	  for(row in rows){
+		Var.driver[rows[row]["id"]] = 1;
+	  }
+	});
+	sql.main("select id from passanger;", function(error, rows) {
+	  if(error) {console.log("error: init.js var driver");}
+	  for(row in rows) {
+		Var.passanger[rows[row]["id"]] = 1;
+	  }
+	});
+
+	//Восстановление очереди водителей. 
+	sql.main("select * from qdriver;", function(error, rows) {
+	  if(rows[0] == null) 
+		return;
+	  for(row in rows) {
+		var qd = rows[row];
+		var direction = qd["id_direction"];
+		var time = qd["id_time"];
+		console.log(qd);
+		console.log(Var.qDriver);
+		Var.qDriver[direction][time].push({"id": qd["id_driver"], "seats": qd["seats"], "passangersNumbers": []});
+	  }
+	});
+
+	//Восстановление очереди пассажиров
+	sql.main("select * from qpassanger;", function(error, rows) {
+	  if(rows[0] == null) 
+		return;
+
+	  for(row in rows) {
+		var qp = rows[row];
+		console.log("qp, init.js: :", qp);
+		Var.qPassanger[qp["id_direction"]][qp["id_time"]].push({"id": qp["id_passanger"], "booked": qp["booked"], "driversNumber": qp["driversNumber"]});
+	  }
+	});
 });
 
-//Заполнение Уникальных ключей водителей и пассажиров. Чтобы каждый раз не лезть в БД.
-sql.main("select id from driver;", function(error, rows) {
-  for(row in rows){
-    Var.driver[rows[row]["id"]] = 1;
-  }
-});
-sql.main("select id from passanger;", function(error, rows) {
-  if(error) {console.log("error: init.js var driver");}
-  for(row in rows) {
-    Var.passanger[rows[row]["id"]] = 1;
-  }
-});
-
-//Восстановление очереди водителей. 
-// sql.main("select * from qdriver;", function(error, rows) {
-  // if(rows[0] == null) 
-    // return;
-  // for(row in rows) {
-    // var qd = rows[row];
-	// var direction = qd["id_direction"];
-	// var time = qd["id_time"];
-	// console.log(qd);
-	// console.log(Var.qDriver);
-    // Var.qDriver[direction][time].push({"id": qd["id_driver"], "seats": qd["seats"], "passangersNumbers": []});
-  // }
-// });
-
-//Восстановление очереди пассажиров
-sql.main("select * from qpassanger;", function(error, rows) {
-  if(rows[0] == null) 
-    return;
-
-  for(row in rows) {
-    var qp = rows[row];
-    console.log("qp, init.js: :", qp);
-    Var.qPassanger[qp["id_direction"]][qp["id_time"]].push({"id": qp["id_passanger"], "booked": qp["booked"], "driversNumber": qp["driversNumber"]});
-  }
-});
