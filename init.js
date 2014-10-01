@@ -46,7 +46,7 @@ sql.main("select * from qdriver;", function(error, rows) {
     var qd = rows[row];
 	var direction = qd["id_direction"];
 	var time = qd["id_time"];
-	console.log(rows);
+	console.log(qd);
 	console.log(Var.qDriver);
     Var.qDriver[direction][time].push({"id": qd["id_driver"], "seats": qd["seats"], "passangersNumbers": []});
   }
