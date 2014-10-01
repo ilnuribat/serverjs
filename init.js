@@ -13,6 +13,7 @@ var sql = require('./sql.js');
 sql.main("select count(id) from direction;", function (error, rows) {
     //if(error) {console.log("error found!"); exit();}
     Var.directionSize = rows[0]['count(id)'];
+	console.log('rows count (id) ', rows[0]['count(id)']);
     for(var i = 1; i <= Var.directionSize; i ++) {
       Var.qDriver[i] = [];
       Var.qPassanger[i] = [];
