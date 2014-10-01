@@ -11,7 +11,8 @@ var sql = require('./sql.js');
 
 //Подготовка массива очередей. Создание, инициализация
 sql.main("select count(id) from direction;", function (error, rows) {
-    //if(error) {console.log("error found!"); exit();}
+	if(error) {console.log("error found!"); exit();}
+	console.log("sql.main!");
     Var.directionSize = rows[0]['count(id)'];
 	console.log('rows count (id) ', rows[0]['count(id)']);
     for(var i = 1; i <= Var.directionSize; i ++) {
