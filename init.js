@@ -41,18 +41,18 @@ sql.main("select id from passanger;", function(error, rows) {
 });
 
 //Восстановление очереди водителей. 
-sql.main("select * from qdriver;", function(error, rows) {
-  if(rows[0] == null) 
-    return;
-  for(row in rows) {
-    var qd = rows[row];
-	var direction = qd["id_direction"];
-	var time = qd["id_time"];
-	console.log(qd);
-	console.log(Var.qDriver);
-    Var.qDriver[direction][time].push({"id": qd["id_driver"], "seats": qd["seats"], "passangersNumbers": []});
-  }
-});
+// sql.main("select * from qdriver;", function(error, rows) {
+  // if(rows[0] == null) 
+    // return;
+  // for(row in rows) {
+    // var qd = rows[row];
+	// var direction = qd["id_direction"];
+	// var time = qd["id_time"];
+	// console.log(qd);
+	// console.log(Var.qDriver);
+    // Var.qDriver[direction][time].push({"id": qd["id_driver"], "seats": qd["seats"], "passangersNumbers": []});
+  // }
+// });
 
 //Восстановление очереди пассажиров
 sql.main("select * from qpassanger;", function(error, rows) {
