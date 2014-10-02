@@ -12,9 +12,9 @@ var sql = require('./sql.js');
 //Подготовка массива очередей. Создание, инициализация
 sql.main("select count(id) from direction;", function (error, rows) {
 	if(error) {console.log("error found!"); exit();}
-	console.log("sql.main!");
+	
     Var.directionSize = rows[0]['count(id)'];
-	console.log('rows count (id) ', rows[0]['count(id)']);
+	
     for(var i = 1; i <= Var.directionSize; i ++) {
       Var.qDriver[i] = [];
       Var.qPassanger[i] = [];
@@ -46,8 +46,6 @@ sql.main("select count(id) from direction;", function (error, rows) {
 		var qd = rows[row];
 		var direction = qd["id_direction"];
 		var time = qd["id_time"];
-		console.log(qd);
-		console.log(Var.qDriver);
 		Var.qDriver[direction][time].push({"id": qd["id_driver"], "seats": qd["seats"], "passangersNumbers": []});
 	  }
 	});
@@ -59,7 +57,6 @@ sql.main("select count(id) from direction;", function (error, rows) {
 
 	  for(row in rows) {
 		var qp = rows[row];
-		console.log("qp, init.js: :", qp);
 		Var.qPassanger[qp["id_direction"]][qp["id_time"]].push({"id": qp["id_passanger"], "booked": qp["booked"], "driversNumber": qp["driversNumber"]});
 	  }
 	});
