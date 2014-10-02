@@ -61,4 +61,3 @@ sql.main("select count(id) from direction;", function (error, rows) {
 	  }
 	});
 });
-
