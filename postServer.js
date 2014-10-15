@@ -111,3 +111,15 @@ Var.app.post('/qpassanger', function(request, response) {
    sql.main('insert into `qpassanger`(`id_passanger`, `id_time`, `id_direction`, `booked`) values(' + id + ',' + time + ',' + direction + ',' + booked+');', function(error, rows){});
   response.send(Var.qPassanger[direction][time]);
 });
+
+Var.app.post('/newTown', function(request, response) {
+	var body = request.body;
+	console.log("body: ", body);
+	var name = body["name"];
+	var russianName = body["russianName"];
+	sql.main('INSERT INTO `towns` (`name`, `russianName`) VALUES("' + name +  '", "' + russianName + '");', function(error, rows) {
+		console.log(error);
+		console.log("adding towns ", rows);
+		response.send(rows);
+	});
+});
