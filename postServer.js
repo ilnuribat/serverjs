@@ -136,7 +136,7 @@ Var.app.post('/newTime', function(request, response) {
 	});
 });
 
-Var.app.post('newDirection', function(request, response) {
+Var.app.post('/newDirection', function(request, response) {
 	var body = request.body;
 	var source = body["source"];
 	var destination = body["destination"];
