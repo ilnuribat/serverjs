@@ -135,3 +135,18 @@ Var.app.post('/newTime', function(request, response) {
 		response.send(rows);
 	});
 });
+
+Var.app.post('newDirection', function(request, response) {
+	var body = request.body;
+	var source = body["source"];
+	var destination = body["destination"];
+	sql.main('insert into direction(id_source, id_direction) values("' + source + '", "' + destination + '");', function(error, rows) {
+		if(error){
+			console.log("Error was aquired", error);
+			response.send("Error was aquired" + JSON.stringify(error));
+			return;
+		}
+		response.send(rows);
+	});
+	
+});
