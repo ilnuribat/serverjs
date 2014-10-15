@@ -114,12 +114,24 @@ Var.app.post('/qpassanger', function(request, response) {
 
 Var.app.post('/newTown', function(request, response) {
 	var body = request.body;
-	console.log("body: ", body);
 	var name = body["name"];
 	var russianName = body["russianName"];
 	sql.main('INSERT INTO `towns` (`name`, `russianName`) VALUES("' + name +  '", "' + russianName + '");', function(error, rows) {
 		console.log(error);
 		console.log("adding towns ", rows);
+		response.send(rows);
+	});
+});
+
+Var.app.post('/newTime', function(request, response) {
+	var body = request.body;
+	var name = body["name"];
+	sql.main('INSERT INTO `time` (`name`) VALUES("' + name + '");', function(error, rows) {
+		if(error){
+			console.log("Error was aquired", error);
+			response.send("Error was aquired" + JSON.stringify(error));
+			return;
+		}
 		response.send(rows);
 	});
 });
