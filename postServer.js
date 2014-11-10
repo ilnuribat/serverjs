@@ -40,18 +40,21 @@ Var.app.post('/qdriver', function(request, response) {
   var seats = body["seats"];
   var time = body["time"];
   var direction = body["direction"];
-  console.log(body);
+  //console.log(seats);
   
   //обработка ошибок
   if(Var.qDriver[direction] == undefined){
-    response.send("100");
+    response.send("unknown direction");
     return;
   }
   if(Var.qDriver[direction][time]  == undefined) {
-    response.send("101");
+    response.send("unknown time");
     return;
   }
-  
+  if(seats == undefined)  {
+	response.send("undefined number of seats");
+	return;
+  }
   if(Var.driver[id] != 1) {
     response.send("102: There is no such user");
     return;
