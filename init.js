@@ -60,4 +60,5 @@ sql.main("select count(id) from direction;", function (error, rows) {
 		Var.qPassenger[qp["id_direction"]][qp["id_time"]].push({"id": qp["id_passenger"], "booked": qp["booked"], "driversNumber": qp["driversNumber"]});
 		}
 	});
+	
 });
