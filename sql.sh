@@ -26,7 +26,7 @@ CREATE TABLE driver(
     access INTEGER	
 );
 
-CREATE TABLE passanger(
+CREATE TABLE passenger(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     name VARCHAR(20) NOT NULL,
     phone VARCHAR(20) NOT NULL,
@@ -45,14 +45,14 @@ CREATE TABLE qdriver(
     FOREIGN KEY (id_direction)REFERENCES  direction(id)
 );
 
-CREATE TABLE qpassanger(
+CREATE TABLE qpassenger(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    id_passanger INTEGER,
+    id_passenger INTEGER,
     id_time INTEGER,
     id_direction INTEGER,
     booked INTEGER,
     qorder INTEGER,
-    FOREIGN KEY (id_passanger) REFERENCES passanger(id),
+    FOREIGN KEY (id_passenger) REFERENCES passenger(id),
     FOREIGN KEY (id_time)REFERENCES  time(id),
     FOREIGN KEY (id_direction)REFERENCES  direction(id)
 );

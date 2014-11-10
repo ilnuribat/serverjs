@@ -19,13 +19,13 @@ Var.app.post('/registration', function(request, response) {
       });
     return;
   }
-  if(human == 'passanger') {
-    sql.main('insert into `passanger`(`name`, `phone`) values ("' + name + 
+  if(human == 'passenger') {
+    sql.main('insert into `passenger`(`name`, `phone`) values ("' + name + 
       '", "' + phone + '");', function (error, rows) {
         console.log(rows);
         response.send(JSON.stringify(rows.insertId));
 		//обновление массива пассажиров
-		Var.passanger[rows.insertId] = 1;
+		Var.passenger[rows.insertId] = 1;
       });
     return;
   }
@@ -60,7 +60,7 @@ Var.app.post('/qdriver', function(request, response) {
   var driver_in_queue = {
     "id": 0,
     "seats": 0,
-    "passangersNumbers": []		//Номера всех пассажиров
+    "passengersNumbers": []		//Номера всех пассажиров
   }
   driver_in_queue["id"] = id;
   driver_in_queue["seats"] = seats;
@@ -70,7 +70,7 @@ Var.app.post('/qdriver', function(request, response) {
   response.send(JSON.stringify(Var.qDriver[direction][time]));
 });
 
-Var.app.post('/qpassanger', function(request, response) {
+Var.app.post('/qpassenger', function(request, response) {
   
   var body = request.body;
   console.log(body);
@@ -79,16 +79,16 @@ Var.app.post('/qpassanger', function(request, response) {
   var time = body["time"];
   var direction = body["direction"];
   
-   if(Var.qPassanger[direction] == undefined){
+   if(Var.qPassenger[direction] == undefined){
     response.send("100");
     return;
   }
-  if(Var.qPassanger[direction][time]  == undefined) {
+  if(Var.qPassenger[direction][time]  == undefined) {
     response.send("101");
     return;
   }
   /*
-  if(Var.passanger[id] != 1) {
+  if(Var.passenger[id] != 1) {
     response.send("102: There is no such user");
     return;
   }
@@ -98,18 +98,18 @@ Var.app.post('/qpassanger', function(request, response) {
     return;
   }
   
-  var passanger_in_queue = {
+  var passenger_in_queue = {
     "id": 0,
     "booked": 0,
     "driversNumber": 0		//это то, что потом будем заполнять
   }
   
-  passanger_in_queue["id"] = id;
-  passanger_in_queue["booked"] = booked;
+  passenger_in_queue["id"] = id;
+  passenger_in_queue["booked"] = booked;
   
-  Var.qPassanger[direction][time].push(passanger_in_queue);
-   sql.main('insert into `qpassanger`(`id_passanger`, `id_time`, `id_direction`, `booked`) values(' + id + ',' + time + ',' + direction + ',' + booked+');', function(error, rows){});
-  response.send(Var.qPassanger[direction][time]);
+  Var.qPassenger[direction][time].push(passenger_in_queue);
+   sql.main('insert into `qpassenger`(`id_passenger`, `id_time`, `id_direction`, `booked`) values(' + id + ',' + time + ',' + direction + ',' + booked+');', function(error, rows){});
+  response.send(Var.qPassenger[direction][time]);
 });
 
 Var.app.post('/newTown', function(request, response) {

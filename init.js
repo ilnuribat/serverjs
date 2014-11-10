@@ -3,7 +3,7 @@
 * Здесь будем инициализировать данные, заполнять массивы с базы данных. 
 * Актуально это делать после падения процесса нода, либо после вынужденной остановки процесса
 * с целью исправить код, дополнить.
-* Основная цель - научиться вытаскивать данные с БД в qDriver и qPassanger. Тогда можно забыть про потери данных.
+* Основная цель - научиться вытаскивать данные с БД в qDriver и qPassenger. Тогда можно забыть про потери данных.
 *
 */
 var Var = require('./variables.js');
@@ -17,11 +17,11 @@ sql.main("select count(id) from direction;", function (error, rows) {
 	
     for(var i = 1; i <= Var.directionSize; i ++) {
       Var.qDriver[i] = [];
-      Var.qPassanger[i] = [];
+      Var.qPassenger[i] = [];
       Var.met[i] = [];
       for(var j = 0; j <= 8; j ++) {
         Var.qDriver[i][j] = [];
-        Var.qPassanger[i][j] = [];
+        Var.qPassenger[i][j] = [];
         Var.met[i][j] = [];
       }
     }
@@ -31,10 +31,10 @@ sql.main("select count(id) from direction;", function (error, rows) {
 		Var.driver[rows[row]["id"]] = 1;
 	  }
 	});
-	sql.main("select id from passanger;", function(error, rows) {
+	sql.main("select id from passenger;", function(error, rows) {
 	  if(error) {console.log("error: init.js var driver");}
 	  for(row in rows) {
-		Var.passanger[rows[row]["id"]] = 1;
+		Var.passenger[rows[row]["id"]] = 1;
 	  }
 	});
 
@@ -46,18 +46,18 @@ sql.main("select count(id) from direction;", function (error, rows) {
 		var qd = rows[row];
 		var direction = qd["id_direction"];
 		var time = qd["id_time"];
-		Var.qDriver[direction][time].push({"id": qd["id_driver"], "seats": qd["seats"], "passangersNumbers": []});
+		Var.qDriver[direction][time].push({"id": qd["id_driver"], "seats": qd["seats"], "passengersNumbers": []});
 	  }
 	});
 
 	//Восстановление очереди пассажиров
-	sql.main("select * from qpassanger;", function(error, rows) {
+	sql.main("select * from qpassenger;", function(error, rows) {
 	  if(rows[0] == null) 
 		return;
 
 	  for(row in rows) {
 		var qp = rows[row];
-		Var.qPassanger[qp["id_direction"]][qp["id_time"]].push({"id": qp["id_passanger"], "booked": qp["booked"], "driversNumber": qp["driversNumber"]});
+		Var.qPassenger[qp["id_direction"]][qp["id_time"]].push({"id": qp["id_passenger"], "booked": qp["booked"], "driversNumber": qp["driversNumber"]});
 	  }
 	});
 });

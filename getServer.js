@@ -38,8 +38,8 @@ Var.app.get('/data', function(request, response) {
     return;
   }
   for(var time = 1; time <= 8; time ++) {
-    Var.data[time]["passanger_count"] = Var.qPassanger[direction][time].length;
-    Var.data[time]["driver_count"] = Var.qDriver[direction][time].length;
+    Var.data[time]["passengers"] = Var.qPassenger[direction][time].length;
+    Var.data[time]["drivers"] = Var.qDriver[direction][time].length;
   }
   response.send(JSON.stringify(Var.data));
 });
@@ -50,8 +50,8 @@ Var.app.get('/qdriver', function(request, response) {
 });
 
 //Выдача содержимого очереди пассажиров
-Var.app.get('/qpassanger', function(request, response) {
-  response.send(JSON.stringify(Var.qPassanger));
+Var.app.get('/qpassenger', function(request, response) {
+  response.send(JSON.stringify(Var.qPassenger));
 });
 
 Var.app.get('/met', function(request, response) {
@@ -124,11 +124,11 @@ Var.app.get('/dropFromQueue', function(request, response) {
     }
     
     if(human == "passganer") {
-      for(var iDrive = 0; iPass< Var.qPassanger[direction][time].length; iPass++) {
-        if(Var.qPassanger[direction][time][iPass]["id"] == id) {
-          Var.qPassanger[direction][time].splice(iPass, 1);
-          console.log("passanger with id = " + id + " was dropped from queue");
-          response.send("passanger with id = " + id + " was dropped from queue");
+      for(var iDrive = 0; iPass< Var.qPassenger[direction][time].length; iPass++) {
+        if(Var.qPassenger[direction][time][iPass]["id"] == id) {
+          Var.qPassenger[direction][time].splice(iPass, 1);
+          console.log("passenger with id = " + id + " was dropped from queue");
+          response.send("passenger with id = " + id + " was dropped from queue");
         }
       }
     }

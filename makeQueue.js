@@ -16,13 +16,13 @@ function find_queue() {
     for(var TIME = 1; TIME <= 8; TIME ++){
     
       //Если в очереди никого нет
-      if(Var.qDriver[direction][TIME].length * Var.qPassanger[direction][TIME].length == 0) {
-      } else console.log("time: ", TIME, " direction: ", direction, " queue's size: ", Var.qDriver[direction][TIME].length + Var.qPassanger[direction][TIME].length);
+      if(Var.qDriver[direction][TIME].length * Var.qPassenger[direction][TIME].length == 0) {
+      } else console.log("time: ", TIME, " direction: ", direction, " queue's size: ", Var.qDriver[direction][TIME].length + Var.qPassenger[direction][TIME].length);
       
       //Цикл по всем Пассажирам
-      for(var iPass = 0; iPass < Var.qPassanger[direction][TIME].length; iPass ++) {
-        var booked = Var.qPassanger[direction][TIME][iPass]["booked"];   //Сколько мест забронировать
-        var passangerID = Var.qPassanger[direction][TIME][iPass]["id"];  //ID пассажира
+      for(var iPass = 0; iPass < Var.qPassenger[direction][TIME].length; iPass ++) {
+        var booked = Var.qPassenger[direction][TIME][iPass]["booked"];   //Сколько мест забронировать
+        var passengerID = Var.qPassenger[direction][TIME][iPass]["id"];  //ID пассажира
         
         if(booked > 0) {
           //Цикл по всем водителям
@@ -33,29 +33,29 @@ function find_queue() {
             if(booked <= driverSeats) { // можно посадить пассажира на эту машину
               for(var BOOKEDiter = 0; BOOKEDiter < booked; BOOKEDiter ++)
               //Даем номера пассажиров водителю
-                Var.qDriver[direction][TIME][iDrive]["passangersNumbers"].push(passangerID);
+                Var.qDriver[direction][TIME][iDrive]["passengersNumbers"].push(passengerID);
               
               //Место, куда посылаем встретившихся
-              Var.met[direction][TIME].push({id: passangerID, driversPhone: driverID});
+              Var.met[direction][TIME].push({id: passengerID, driversPhone: driverID});
               
               //Уменьшаем количество свободных мест в машине. Пассажира снимаем с очереди
               Var.qDriver[direction][TIME][iDrive]["seats"] = Var.qDriver[direction][TIME][iDrive]["seats"] - booked;
-              Var.qPassanger[direction][TIME][iPass]["booked"] = 0;
+              Var.qPassenger[direction][TIME][iPass]["booked"] = 0;
               
             }
             //console.log(Var.met[direction][TIME]);
-            Var.qPassanger[direction][TIME][iPass]["driversNumber"] = driverID;     //Даем номер водителя пассажиру
+            Var.qPassenger[direction][TIME][iPass]["driversNumber"] = driverID;     //Даем номер водителя пассажиру
             
             if(Var.qDriver[direction][TIME][iDrive]["seats"] == 0){
-              Var.met[direction][TIME].push({id: driverID, passangersNumbers: Var.qDriver[direction][TIME][iDrive]["passangersNumbers"]});
+              Var.met[direction][TIME].push({id: driverID, passengersNumbers: Var.qDriver[direction][TIME][iDrive]["passengersNumbers"]});
               sql.main("delete from qdriver where id_driver = " + driverID + ';', function(error, rows){});
               Var.qDriver[direction][TIME].splice(iDrive, 1);
             }
           }
         } else {
-          sql.main("delete from qpassanger where id_passanger = " + passangerID + ';', function(error, rows){});
-          Var.qPassanger[direction][TIME].splice(iPass, 1);
-         // console.log("passanger removed from queue");
+          sql.main("delete from qpassenger where id_passenger = " + passengerID + ';', function(error, rows){});
+          Var.qPassenger[direction][TIME].splice(iPass, 1);
+         // console.log("passenger removed from queue");
         }
       }
       

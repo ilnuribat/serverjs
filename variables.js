@@ -13,8 +13,8 @@ var queryString = require('querystring');
 var clone = require('clone');
 
 var time_status_obj = {
-  "passanger_count": 0,
-  "driver_count": 0
+  "passengers": 0,
+  "drivers": 0
 }
 
 var data = {
@@ -30,11 +30,11 @@ var data = {
 
 //В этих переменных будут храниться id -шки, чтобы не лезть в БД
 var driver = [];
-var passanger = [];
+var passenger = [];
 
 var directionSize;
 var qDriver = [];
-var qPassanger = [];
+var qPassenger = [];
 var met = [];
 
 exports.met = met;
@@ -42,11 +42,11 @@ exports.app = app;
 exports.fileSystem = fileSystem;
 exports.data = data;
 exports.qDriver = qDriver;
-exports.qPassanger = qPassanger;
+exports.qPassenger = qPassenger;
 exports.url = url;
 exports.mysql = mysql;
 exports.url = url;
 exports.queryString = queryString;
 exports.directionSize = directionSize;
 exports.driver = driver;
-exports.passanger = passanger;
+exports.passenger = passenger;
