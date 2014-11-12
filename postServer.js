@@ -4,15 +4,15 @@ var sql = require('./sql.js');
 //Регистрация водителя, пассажира
 Var.app.post('/registration', function(request, response) {
 	var body = request.body;
-	console.log(body);
+	//console.log(body);
 	var name = body['name'];
 	var phone = body['phone'];
 	var human = body['human'];
-	console.log("registration:");
+	//console.log("registration:");
 	if(human == 'driver') {
 		sql.main('insert into `driver`(`name`, `phone`, `access`) values ("' + name +
 			'", "' + phone + '", 1);', function (error, rows) { 
-				console.log(rows);
+				//console.log(rows);
 				response.send(JSON.stringify(rows.insertId));
 		//обновление массива водителей
 		Var.driver[rows.insertId] = 1;
@@ -22,7 +22,7 @@ Var.app.post('/registration', function(request, response) {
 	if(human == 'passenger') {
 		sql.main('insert into `passenger`(`name`, `phone`) values ("' + name + 
 			'", "' + phone + '");', function (error, rows) {
-				console.log(rows);
+				//console.log(rows);
 				response.send(JSON.stringify(rows.insertId));
 		//обновление массива пассажиров
 		Var.passenger[rows.insertId] = 1;
@@ -120,8 +120,6 @@ Var.app.post('/newTown', function(request, response) {
 	var name = body["name"];
 	var russianName = body["russianName"];
 	sql.main('INSERT INTO `towns` (`name`, `russianName`) VALUES("' + name +	'", "' + russianName + '");', function(error, rows) {
-		console.log(error);
-		console.log("adding towns ", rows);
 		response.send(rows);
 	});
 });
