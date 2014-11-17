@@ -5,4 +5,3 @@ var init = require('./init.js');
 var queue = require('./makeQueue.js');
 Var.app.listen(8080);
 console.log("Server started");
-//ilnur
