@@ -43,7 +43,6 @@ Var.app.get('/data', function(request, response) {
 		QData.push(Var.qDriver[direction][time].length);
 		
 	}
-	console.log(JSON.stringify(Var.qDriver[2]));
 	response.send(JSON.stringify(QData));
 });
 
@@ -104,7 +103,6 @@ Var.app.get('/towns', function(request, response) {
 Var.app.get('/dropFromQueue', function(request, response) {
 	var query = Var.url.parse(request.url).query;
 	var params = Var.queryString.parse(query);
-	console.log(params);
 	var human = params["human"];
 	var id = params["id"];
 	var direction = params["direction"];
