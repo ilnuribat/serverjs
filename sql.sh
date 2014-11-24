@@ -56,3 +56,11 @@ CREATE TABLE qpassenger(
     FOREIGN KEY (id_time)REFERENCES  time(id),
     FOREIGN KEY (id_direction)REFERENCES  direction(id)
 );
+CREATE TABLE met(
+	id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
+	id_driver INTEGER,
+	id_passenger INTEGER,
+	id_direction INTEGER,
+	id_time INTEGER,
+	DATE VARCHAR(10)
+);
