@@ -37,6 +37,8 @@ var find = function find_queue() {
               
               //Место, куда посылаем встретившихся
               Var.met[direction][TIME].push({id: passengerID, driversPhone: driverID});
+			  sql.main("insert into met(id_driver, id_passenger, id_direction, id_time) \
+				values(" + driverID + ", " + passengerID + ", " + direction + ", " + TIME + ");", function(error, rows){});
               
               //Уменьшаем количество свободных мест в машине. Пассажира снимаем с очереди
               Var.qDriver[direction][TIME][iDrive]["seats"] = Var.qDriver[direction][TIME][iDrive]["seats"] - booked;
