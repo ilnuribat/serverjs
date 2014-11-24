@@ -1,5 +1,6 @@
 var Var = require('./variables.js');
 var sql = require('./sql.js');
+var queue = require('./makeQueue.js');
 
 //Регистрация водителя, пассажира
 Var.app.post('/registration', function(request, response) {
@@ -115,6 +116,7 @@ Var.app.post('/qpassenger', function(request, response) {
 		sql.main('insert into `qpassenger`(`id_passenger`, `id_time`, `id_direction`, `booked`) values(' + id + ',' + time + ',' + direction + ',' + booked+');', 
 			function(error, rows){});
 		response.send(Var.qPassenger[direction][time]);
+		queue.find();
 	});	
 });
 
