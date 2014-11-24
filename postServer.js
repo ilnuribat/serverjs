@@ -52,25 +52,27 @@ Var.app.post('/qdriver', function(request, response) {
 		return;
 	}
 	if(seats == undefined)	{
-	response.send("undefined number of seats");
-	return;
-	}
-	if(Var.driver[id] != 1) {
-		response.send("102: There is no such user");
+		response.send("undefined number of seats");
 		return;
 	}
-	
-	var driver_in_queue = {
-		"id": 0,
-		"seats": 0,
-		"passengersNumbers": []		//Номера всех пассажиров
-	}
-	driver_in_queue["id"] = id;
-	driver_in_queue["seats"] = seats;
- 
-	Var.qDriver[direction][time].push(driver_in_queue);
-	sql.main('insert into `qdriver`(`id_driver`, `id_time`, `id_direction`, `seats`) values(' + id + ',' + time + ',' + direction + ',' + seats +');', function(error, rows){});
-	response.send(JSON.stringify(Var.qDriver[direction][time]));
+	sql.main("select id from driver where id = " + id + ";", function(error, rows) {
+		if(rows[0] == undefined){
+			console.log("there is no such user");
+			response.send("there is no such user");
+			return;
+			var driver_in_queue = {
+				"id": 0,
+				"seats": 0,
+				"passengersNumbers": []		//Номера всех пассажиров
+			}
+			driver_in_queue["id"] = id;
+			driver_in_queue["seats"] = seats;
+		 
+			Var.qDriver[direction][time].push(driver_in_queue);
+			sql.main('insert into `qdriver`(`id_driver`, `id_time`, `id_direction`, `seats`) values(' + id + ',' + time + ',' + direction + ',' + seats +');', function(error, rows){});
+			response.send(JSON.stringify(Var.qDriver[direction][time]));
+		}
+	});	
 });
 
 Var.app.post('/qpassenger', function(request, response) {
@@ -152,3 +154,4 @@ Var.app.post('/newDirection', function(request, response) {
 	});
 	
 });
+//
