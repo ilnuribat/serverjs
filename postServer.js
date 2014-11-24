@@ -76,13 +76,12 @@ Var.app.post('/qdriver', function(request, response) {
 Var.app.post('/qpassenger', function(request, response) {
 	
 	var body = request.body;
-	console.log(body);
 	var id = body["id"];
 	var booked = body["booked"];
 	var time = body["time"];
 	var direction = body["direction"];
 	
-	 if(Var.qPassenger[direction] == undefined){
+	if(Var.qPassenger[direction] == undefined){
 		response.send("100");
 		return;
 	}
@@ -90,16 +89,16 @@ Var.app.post('/qpassenger', function(request, response) {
 		response.send("101");
 		return;
 	}
-	/*
-	if(Var.passenger[id] != 1) {
-		response.send("102: There is no such user");
-		return;
-	}
-	*/
 	if(booked < 0 || booked > 6){
 		response.send("error 104: incorrect form of booked");
 		return;
 	}
+	sql.main("select id from passenger where id = " + id + ";", function(error, rows)
+	{
+		if(rows[0] === undefined)
+			console.log("[0]undefined");
+			
+	});
 	
 	var passenger_in_queue = {
 		"id": 0,
@@ -111,8 +110,10 @@ Var.app.post('/qpassenger', function(request, response) {
 	passenger_in_queue["booked"] = booked;
 	
 	Var.qPassenger[direction][time].push(passenger_in_queue);
-	 sql.main('insert into `qpassenger`(`id_passenger`, `id_time`, `id_direction`, `booked`) values(' + id + ',' + time + ',' + direction + ',' + booked+');', function(error, rows){});
+	sql.main('insert into `qpassenger`(`id_passenger`, `id_time`, `id_direction`, `booked`) values(' + id + ',' + time + ',' + direction + ',' + booked+');', 
+		function(error, rows){});
 	response.send(Var.qPassenger[direction][time]);
+	
 });
 
 Var.app.post('/newTown', function(request, response) {
