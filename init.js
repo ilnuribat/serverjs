@@ -24,19 +24,7 @@ sql.main("select count(id) from direction;", function (error, rows) {
 				Var.met[i][j] = [];
 			}
 		}
-	//Заполнение Уникальных ключей водителей и пассажиров. Чтобы каждый раз не лезть в БД.
-	sql.main("select id from driver;", function(error, rows) {
-		
-		for(row in rows){
-		Var.driver[rows[row]["id"]] = 1;
-		}
-	});
-	sql.main("select id from passenger;", function(error, rows) {
-		if(error) {console.log("error: init.js var driver");}
-		for(row in rows) {
-		Var.passenger[rows[row]["id"]] = 1;
-		}
-	});
+	//Будем каждый раз лезть в БД, чтобы узнать, есть ли такой пользователь
 
 	//Восстановление очереди водителей. 
 	sql.main("select * from qdriver;", function(error, rows) {
