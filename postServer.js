@@ -5,15 +5,15 @@ var queue = require('./makeQueue.js');
 //Регистрация водителя, пассажира
 Var.app.post('/registration', function(request, response) {
 	var body = request.body;
-	//console.log(body);
+	
 	var name = body['name'];
 	var phone = body['phone'];
 	var human = body['human'];
-	//console.log("registration:");
+	
 	if(human == 'driver') {
 		sql.main('insert into `driver`(`name`, `phone`, `access`) values ("' + name +
 			'", "' + phone + '", 1);', function (error, rows) { 
-				//console.log(rows);
+				
 				response.send(JSON.stringify(rows.insertId));
 		//обновление массива водителей
 		Var.driver[rows.insertId] = 1;
@@ -23,7 +23,7 @@ Var.app.post('/registration', function(request, response) {
 	if(human == 'passenger') {
 		sql.main('insert into `passenger`(`name`, `phone`) values ("' + name + 
 			'", "' + phone + '");', function (error, rows) {
-				//console.log(rows);
+				
 				response.send(JSON.stringify(rows.insertId));
 		//обновление массива пассажиров
 		Var.passenger[rows.insertId] = 1;
@@ -41,7 +41,7 @@ Var.app.post('/qdriver', function(request, response) {
 	var seats = body["seats"];
 	var time = body["time"];
 	var direction = body["direction"];
-	//console.log(seats);
+	
 	
 	//обработка ошибок
 	if(Var.qDriver[direction] == undefined){
@@ -57,22 +57,31 @@ Var.app.post('/qdriver', function(request, response) {
 		return;
 	}
 	sql.main("select id from driver where id = " + id + ";", function(error, rows) {
-		if(rows[0] == undefined){
-			console.log("there is no such user");
-			response.send("there is no such user");
-			return;
-			var driver_in_queue = {
-				"id": 0,
-				"seats": 0,
-				"passengersNumbers": []		//Номера всех пассажиров
-			}
-			driver_in_queue["id"] = id;
-			driver_in_queue["seats"] = seats;
-		 
-			Var.qDriver[direction][time].push(driver_in_queue);
-			sql.main('insert into `qdriver`(`id_driver`, `id_time`, `id_direction`, `seats`) values(' + id + ',' + time + ',' + direction + ',' + seats +');', function(error, rows){});
-			response.send(JSON.stringify(Var.qDriver[direction][time]));
+        if (rows[0] == undefined) {
+            console.log("there is no such user");
+            response.send("there is no such user");
+            return;
+        }
+		var driver_in_queue = {
+			"id": 0,
+			"seats": 0,
+			"passengersNumbers": []		//Номера всех пассажиров
 		}
+		driver_in_queue["id"] = id;
+		driver_in_queue["seats"] = seats;
+		 
+		Var.qDriver[direction][time].push(driver_in_queue);
+        sql.main('insert into `qdriver`(`id_driver`, `id_time`, `id_direction`, `seats`) values(' 
+                + id + ',' + time + ',' + direction + ',' + seats + ');', function (error, rows){
+            if (error) {
+                console.log("there is an error with adding passenger to queue");
+                response.send("error with adding driver to queue");
+                return;
+            }
+            response.send("success added to Queue");
+            queue.find();
+        });
+		
 	});	
 });
 
@@ -85,15 +94,15 @@ Var.app.post('/qpassenger', function(request, response) {
 	var direction = body["direction"];
 	
 	if(Var.qPassenger[direction] == undefined){
-		response.send("100");
+		response.send("unknown direction");
 		return;
 	}
 	if(Var.qPassenger[direction][time]	== undefined) {
-		response.send("101");
+		response.send("unknown time");
 		return;
 	}
 	if(booked < 0 || booked > 6){
-		response.send("error 104: incorrect form of booked");
+		response.send("incorrect form of booked");
 		return;
 	}
 	sql.main("select id from passenger where id = " + id + ";", function(error, rows){
@@ -113,10 +122,18 @@ Var.app.post('/qpassenger', function(request, response) {
 		passenger_in_queue["booked"] = booked;
 		
 		Var.qPassenger[direction][time].push(passenger_in_queue);
-		sql.main('insert into `qpassenger`(`id_passenger`, `id_time`, `id_direction`, `booked`) values(' + id + ',' + time + ',' + direction + ',' + booked+');', 
-			function(error, rows){});
-		response.send(Var.qPassenger[direction][time]);
-		queue.find();
+        sql.main('insert into `qpassenger`(`id_passenger`, `id_time`, `id_direction`, `booked`) values(' +
+            id + ',' + time + ',' + direction + ',' + booked + ');', function (error, rows){
+            if (error) {
+                console.log("there is an error with adding passenger to queue");
+                response.send("error with adding passenger to queue");
+                return;
+            }
+            response.send("success added to Queue");
+            queue.find();
+        });
+		
+		
 	});	
 });
 
