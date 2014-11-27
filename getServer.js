@@ -145,12 +145,14 @@ Var.app.get('/queueStatus', function (request, response) {
     var id = params["id"] - 0;
     var direction = params["direction"] - 0;
     var time = params["time"] - 0;
-    if (human != "driver" || human != "passenger") {
+    
+    //Проверка на дурака
+    if (human != "driver" && human != "passenger") {
         console.log("error: incorrect human");
-        repsonse.send("error: incorrect human");
+        response.send("error: incorrect human");
         return;
     }
-    if (direction == undefined || direction > 5 || direction < 0) {
+    if (direction == undefined || direction > Var.directionSize || direction < 0) {
         console.log("unknown direction");
         response.send("unknown direction");
         return;
@@ -165,7 +167,36 @@ Var.app.get('/queueStatus', function (request, response) {
         response.send("unknown id");
         return;
     }
-    sql.main("select id from " + human + ";", function (error, rows) {
+    sql.main("select id from " + human + " where id = " + id + ";", function (error, rows) {
+        if (error) {
+            console.log("errorDB: verify user");
+            console.log(error);
+            return;
+        }
+        if (rows.length != 1) {
+            console.log("errorDB:there is no such user in DB");
+            response.send("error: no such user");
+            return;
+        }
 
+        //Проверка: находится ли пользователь в очереди. Проверяем q{driver/passenger}. 
+        sql.main("select id from q" + human + " where id_" + human + " = " + id + " AND id_direction = " + direction + 
+            " AND id_time = " + time + ";", function (error, rows) {
+            if (rows.length > 0) {
+                //User is on the QUEUE!!
+                response.write("queue");
+            } else
+                response.write("nonQueue");
+            
+            //Далее проверяем в met. Вдруг там номера появились
+            sql.main("SELECT phone FROM " + human + " WHERE id IN (SELECT id_" + human + " from met);", function (error, rows) {
+                if (error)
+                    return;
+                console.log(rows);
+                for (var iter in rows)
+                    response.write("." + rows[iter].phone);
+                response.end();
+            });
+        });        
     });
 });
