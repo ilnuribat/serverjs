@@ -31,8 +31,7 @@ Var.app.get('/data', function(request, response) {
 	var query = Var.url.parse(request.url).query;
 	var params = Var.queryString.parse(query);
 	var direction = params["direction"];
-	if(direction == undefined)
-	{
+    if (direction == undefined || direction > 5 || direction < 0) {
 		response.send("unknown direction");
 		return;
 	}
@@ -138,3 +137,35 @@ Var.app.get('/dropFromQueue', function(request, response) {
 Var.app.get('/vardriver', function(request, response) {
 	response.send(JSON.stringify(Var.driver));
 })
+
+Var.app.get('/queueStatus', function (request, response) {
+    var query = Var.url.parse(request.url).query;
+    var params = Var.queryString.parse(query);
+    var human = params["human"];
+    var id = params["id"] - 0;
+    var direction = params["direction"] - 0;
+    var time = params["time"] - 0;
+    if (human != "driver" || human != "passenger") {
+        console.log("error: incorrect human");
+        repsonse.send("error: incorrect human");
+        return;
+    }
+    if (direction == undefined || direction > 5 || direction < 0) {
+        console.log("unknown direction");
+        response.send("unknown direction");
+        return;
+    }
+    if (time == undefined || time > 8 || time < 0) {
+        console.log("unknown time");
+        response.send("unknown time");
+        return;
+    }
+    if (id == undefined || id < 0) {
+        console.log("unknown id");
+        response.send("unknown id");
+        return;
+    }
+    sql.main("select id from " + human + ";", function (error, rows) {
+
+    });
+});
