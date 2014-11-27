@@ -79,7 +79,7 @@ Var.app.post('/qdriver', function(request, response) {
                 return;
             }
             response.send("success added to Queue");
-            queue.find();
+            //queue.find();
         });
 		
 	});	
@@ -130,10 +130,8 @@ Var.app.post('/qpassenger', function(request, response) {
                 return;
             }
             response.send("success added to Queue");
-            queue.find();
+           // queue.find();
         });
-		
-		
 	});	
 });
 
