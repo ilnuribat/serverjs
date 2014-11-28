@@ -28,7 +28,7 @@ Var.app.get('/get', function(request, response) {
 	
 //Выдача состояние очереди в указанном направлении
 Var.app.get('/data', function(request, response) {
-	var query = Var.url.parse(request.url).query;
+    var query = Var.url.parse(request.url).query;
 	var params = Var.queryString.parse(query);
 	var direction = params["direction"];
     if (direction == undefined || direction > 5 || direction < 0) {
@@ -174,7 +174,7 @@ Var.app.get('/queueStatus', function (request, response) {
             return;
         }
         if (rows.length != 1) {
-            console.log("errorDB:there is no such user in DB");
+            console.log("errorDB: there is no such user in DB");
             response.send("error: no such user");
             return;
         }
