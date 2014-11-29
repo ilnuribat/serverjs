@@ -46,7 +46,8 @@ var find = function find_queue() {
                         }
                         //console.log(Var.met[direction][TIME]);
                         Var.qPassenger[direction][TIME][iPass]["driversNumber"] = driverID;     //Даем номер водителя пассажиру
-            
+                        
+                        //Если у водителя не осталось свободных мест.
                         if(Var.qDriver[direction][TIME][iDrive]["seats"] == 0){
                             Var.met[direction][TIME].push({id: driverID, passengersNumbers: Var.qDriver[direction][TIME][iDrive]["passengersNumbers"]});
                             sql.main("delete from qdriver where id_driver = " + driverID + ';', function (error, rows){
@@ -56,6 +57,7 @@ var find = function find_queue() {
                             });
                             Var.qDriver[direction][TIME].splice(iDrive, 1);
                         }
+                        booked = Var.qPassenger[direction][TIME][iPass]["booked"] - 0;
                     }
                 } else {
                     sql.main("delete from qpassenger where id_passenger = " + passengerID + ';', function (error, rows){
