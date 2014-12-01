@@ -28,6 +28,7 @@ var find = function find_queue() {
                         TIME + ";", function (error, rows) {
                         if (error) console.log("errorDB: could not delete passenger from queue, where passenger has zero booked places");
                     });
+                    Var.qPassenger[direction][TIME].splice(iPass, 1);
                     if (Var.qPassenger[direction][TIME].length <= iPass) 
                         //мы только что просмотрели последнего пассажира в очереди.
                         break;
