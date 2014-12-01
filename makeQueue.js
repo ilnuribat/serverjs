@@ -7,7 +7,7 @@ var sql = require('./sql.js');
 
 //встречаем людей
 var find = function find_queue() {
-    setTimeout(find_queue, 5000);
+    //setTimeout(find_queue, 5000);
     console.log("makeQueue");
     //Цикл по всем направлениям.
     for(var direction = 1; direction <= Var.directionSize; direction ++){
@@ -23,50 +23,52 @@ var find = function find_queue() {
             for(var iPass = 0; iPass < Var.qPassenger[direction][TIME].length; iPass ++) {
                 var booked = Var.qPassenger[direction][TIME][iPass]["booked"] - 0;   //Сколько мест забронировать
                 var passengerID = Var.qPassenger[direction][TIME][iPass]["id"] - 0;  //ID пассажира
-                if(booked > 0) {
-                    //Цикл по всем водителям
-                    for(var iDrive = 0; iDrive < Var.qDriver[direction][TIME].length; iDrive++) {
-                        var driverID = Var.qDriver[direction][TIME][iDrive]["id"] - 0;       //ID водителя
-                        var driverSeats = Var.qDriver[direction][TIME][iDrive]["seats"] - 0; //Сколько свободных мест имеется у водителя
-                        if(booked <= driverSeats) { // можно посадить пассажира на эту машину
-                            for(var BOOKEDiter = 0; BOOKEDiter < booked; BOOKEDiter ++)
-                                //Даем номера пассажиров водителю
-                                Var.qDriver[direction][TIME][iDrive]["passengersNumbers"].push(passengerID);
-                            //Место, куда посылаем встретившихся
-                            Var.met[direction][TIME].push({id: passengerID, driversPhone: driverID});
-                            sql.main("insert into met(id_driver, id_passenger, id_direction, id_time)" +
-                                "values(" + driverID + ", " + passengerID + ", " + direction + ", " + TIME + ");", function (error, rows){
-                                    if (error) {
-                                        console.log("errorDB: adding driver after meeting to MetTable(DB)");
-                                    }
-                                });
-                            //Уменьшаем количество свободных мест в машине. Пассажира снимаем с очереди
-                            Var.qDriver[direction][TIME][iDrive]["seats"] = Var.qDriver[direction][TIME][iDrive]["seats"] - booked;
-                            Var.qPassenger[direction][TIME][iPass]["booked"] = 0;
-                        }
-                        //console.log(Var.met[direction][TIME]);
-                        Var.qPassenger[direction][TIME][iPass]["driversNumber"] = driverID;     //Даем номер водителя пассажиру
-                        
-                        //Если у водителя не осталось свободных мест.
-                        if(Var.qDriver[direction][TIME][iDrive]["seats"] == 0){
-                            Var.met[direction][TIME].push({id: driverID, passengersNumbers: Var.qDriver[direction][TIME][iDrive]["passengersNumbers"]});
-                            sql.main("delete from qdriver where id_driver = " + driverID + ';', function (error, rows){
+                //Цикл по всем водителям
+                for (var iDrive = 0; iDrive < Var.qDriver[direction][TIME].length && booked > 0; iDrive++) {
+                    //Пока в очереди есть водители, у которых уже не осталось мест, 
+                    while (Var.qDriver[direction][TIME][iDrive]["seats"] == 0) {
+                        Var.met[direction][TIME].push({ id: driverID, passengersNumbers: Var.qDriver[direction][TIME][iDrive]["passengersNumbers"] });
+                        sql.main("DELETE FROM qdriver WHERE id_driver = " + driverID + ';', function (error, rows) {
+                            if (error) {
+                                console.log("errorDB: cann't delete driver(driver.seats=0) from database.qdriver");
+                            }
+                        });
+                        Var.qDriver[direction][TIME].splice(iDrive, 1);
+                        if (Var.qDriver[direction][TIME].length <= iDrive)
+                            //Всё, кончилась очередь. Пора выходить отсюда, иначе обращение за пределы массива
+                            break;
+                    }
+                    //ID водителя
+                    var driverID = Var.qDriver[direction][TIME][iDrive]["id"] - 0;
+                    //Сколько свободных мест имеется у водителя
+                    var driverSeats = Var.qDriver[direction][TIME][iDrive]["seats"] - 0; 
+                    if (booked <= driverSeats) {
+                        // можно посадить пассажира на эту машину
+                        //Место, куда посылаем встретившихся
+                        Var.met[direction][TIME].push({id: passengerID, driversPhone: driverID});
+                        sql.main("INSERT INTO met(id_driver, id_passenger, id_direction, id_time)" +
+                            "VALUES(" + driverID + ", " + passengerID + ", " + direction + ", " + TIME + ");", function (error, rows){
                                 if (error) {
-                                    console.log("errorDB: cann't delete driver(driver.seats=0) from database.qdriver");
+                                    console.log("errorDB: adding driver after meeting to MetTable(DB)");
                                 }
                             });
-                            Var.qDriver[direction][TIME].splice(iDrive, 1);
-                        }
-                        booked = Var.qPassenger[direction][TIME][iPass]["booked"] - 0;
+                        //Уменьшаем количество свободных мест в машине. Пассажира снимаем с очереди
+                        Var.qDriver[direction][TIME][iDrive]["seats"] = driverSeats - booked;
+                        driverSeats = Var.qDriver[direction][TIME][iDrive]["seats"] - 0; 
+                        //Соответственно, в БД
+                        sql.main("UPDATE qdriver SET seats = " + driverSeats + " WHERE id_driver = " + driverID +
+                            " AND id_time = " + TIME + " AND id_direction = " + direction + ";", function (error, rows) {
+                            if (error) console.log("errorDB: couldn't decrease count of seats of driver");
+                        });
+
+                        //Говорим пассажиру, что его уже посадили
+                        Var.qPassenger[direction][TIME][iPass]["booked"] = 0;
+                        //console.log(Var.met[direction][TIME]);                        
+                        //Если у водителя не осталось свободных мест.
+                        
+                        booked = 0;
                     }
-                } else {
-                    sql.main("delete from qpassenger where id_passenger = " + passengerID + ';', function (error, rows){
-                        if (error) {
-                            console.log("errorDB: deleting passenger from queue");
-                        }
-                    });
-                Var.qPassenger[direction][TIME].splice(iPass, 1);
-                // console.log("passenger removed from queue");
+                    
                 }
             }
         }
