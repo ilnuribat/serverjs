@@ -7,6 +7,7 @@
 
 var Var = require('./variables.js');
 var sql = require('./sql.js');
+var queue = require('./makeQueue.js');
 
 //функция для проверки тестовой программы. Просто возращает JSON объект.
 Var.app.get('/get', function(request, response) {
@@ -199,4 +200,9 @@ Var.app.get('/queueStatus', function (request, response) {
             });
         });        
     });
+});
+
+Var.app.get('/queueFind', function (request, response) {
+    response.send("queuFind started");
+    queue.find();
 });

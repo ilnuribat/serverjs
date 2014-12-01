@@ -92,7 +92,6 @@ Var.app.post('/qpassenger', function(request, response) {
 	var booked = body["booked"];
 	var time = body["time"];
 	var direction = body["direction"];
-    console.log(body);
 	if(Var.qPassenger[direction] == undefined){
 		response.send("unknown direction");
 		return;
