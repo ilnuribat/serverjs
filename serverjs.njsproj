@@ -23,7 +23,6 @@
   <ItemGroup>
     <Content Include="addingData.txt" />
     <Content Include="data.txt" />
-    <Compile Include="db.js" />
     <Compile Include="getServer.js" />
     <Compile Include="init.js" />
     <Compile Include="makeQueue.js" />
