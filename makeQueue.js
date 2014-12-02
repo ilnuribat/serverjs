@@ -7,7 +7,7 @@ var sql = require('./sql.js');
 
 //встречаем людей
 var find = function find_queue() {
-    //setTimeout(find_queue, 5000);
+    setTimeout(find_queue, 5000);
     console.log("makeQueue");
     //Цикл по всем направлениям.
     for(var direction = 1; direction <= Var.directionSize; direction ++){
