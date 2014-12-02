@@ -37,26 +37,31 @@ Var.app.post('/registration', function(request, response) {
 
 Var.app.post('/qdriver', function(request, response) {
 	var body = request.body;
-	var id = body["id"];
-	var seats = body["seats"];
-	var time = body["time"];
-	var direction = body["direction"];
+	var id = body["id"] - 0;
+	var seats = body["seats"] - 0;
+	var time = body["time"] - 0;
+	var direction = body["direction"] - 0;
 	
 	
-	//обработка ошибок
-	if(Var.qDriver[direction] == undefined){
+    //обработка ошибок
+    //Проверка направления
+	if(direction < 0 || direction > Var.directionSize){
 		response.send("unknown direction");
 		return;
-	}
-	if(Var.qDriver[direction][time]	== undefined) {
+    }
+    
+    //Проверка Времени
+	if(time < 0 || time > 8) {
 		response.send("unknown time");
 		return;
-	}
-	if(seats == undefined)	{
-		response.send("undefined number of seats");
+    }
+    
+    //Проверка количества мест
+	if(seats < 0 || seats > 8)	{
+		response.send("unknown number of seats");
 		return;
 	}
-	sql.main("select id from driver where id = " + id + ";", function(error, rows) {
+	sql.main("SELECT id FROM driver WHERE id = " + id + ";", function(error, rows) {
         if (rows[0] == undefined) {
             console.log("there is no such user");
             response.send("there is no such user");
@@ -71,7 +76,7 @@ Var.app.post('/qdriver', function(request, response) {
 		driver_in_queue["seats"] = seats;
 		 
 		Var.qDriver[direction][time].push(driver_in_queue);
-        sql.main('insert into `qdriver`(`id_driver`, `id_time`, `id_direction`, `seats`) values(' 
+        sql.main('INSERT INTO `qdriver`(`id_driver`, `id_time`, `id_direction`, `seats`) VALUES(' 
                 + id + ',' + time + ',' + direction + ',' + seats + ');', function (error, rows){
             if (error) {
                 console.log("there is an error with adding passenger to queue");
@@ -88,23 +93,29 @@ Var.app.post('/qdriver', function(request, response) {
 Var.app.post('/qpassenger', function(request, response) {
 	
 	var body = request.body;
-	var id = body["id"];
-	var booked = body["booked"];
-	var time = body["time"];
-	var direction = body["direction"];
-	if(Var.qPassenger[direction] == undefined){
-		response.send("unknown direction");
-		return;
-	}
-	if(Var.qPassenger[direction][time]	== undefined) {
-		response.send("unknown time");
-		return;
-	}
+	var id = body["id"] - 0;
+	var booked = body["booked"] - 0;
+	var time = body["time"] - 0;
+	var direction = body["direction"] - 0;
+    
+    //Проверка ошибок
+    //Проверка направления
+    if (direction < 0 || direction > Var.directionSize) {
+        response.send("unknown direction");
+        return;
+    }
+    
+    //Проверка Времени
+    if (time < 0 || time > 8) {
+        response.send("unknown time");
+        return;
+    }
+
 	if(booked < 0 || booked > 6){
 		response.send("incorrect form of booked");
 		return;
 	}
-	sql.main("select id from passenger where id = " + id + ";", function(error, rows){
+	sql.main("SELECT id FROM passenger WHERE id = " + id + ";", function(error, rows){
 		if(rows[0] === undefined)
 		{
 			console.log("there is no such user");
@@ -121,7 +132,7 @@ Var.app.post('/qpassenger', function(request, response) {
 		passenger_in_queue["booked"] = booked;
 		
 		Var.qPassenger[direction][time].push(passenger_in_queue);
-        sql.main('insert into `qpassenger`(`id_passenger`, `id_time`, `id_direction`, `booked`) values(' +
+        sql.main('INSERT INTO `qpassenger`(`id_passenger`, `id_time`, `id_direction`, `booked`) VALUES(' +
             id + ',' + time + ',' + direction + ',' + booked + ');', function (error, rows){
             if (error) {
                 console.log("there is an error with adding passenger to queue");
@@ -160,7 +171,7 @@ Var.app.post('/newDirection', function(request, response) {
 	var body = request.body;
 	var source = body["source"];
 	var destination = body["destination"];
-	sql.main('insert into direction(id_source, id_destination) values("' + source + '", "' + destination + '");', function(error, rows) {
+	sql.main('INSERT INTO direction(id_source, id_destination) VALUES("' + source + '", "' + destination + '");', function(error, rows) {
 		if(error){
 			console.log("Error was aquired", error);
 			response.send("Error was aquired" + JSON.stringify(error));

@@ -168,10 +168,13 @@ Var.app.get('/queueStatus', function (request, response) {
         response.send("unknown id");
         return;
     }
+
+    //Проверка из базы данных. Ищем такого юзера из зарегестрированных
     sql.main("select id from " + human + " where id = " + id + ";", function (error, rows) {
         if (error) {
             console.log("errorDB: verify user");
             console.log(error);
+            response.send("errorDB: " + JSON.stringify(error));
             return;
         }
         if (rows.length != 1) {
@@ -190,12 +193,16 @@ Var.app.get('/queueStatus', function (request, response) {
                 response.write("nonQueue");
             
             //Далее проверяем в met. Вдруг там номера появились
-            sql.main("SELECT phone FROM " + human + " WHERE id IN (SELECT id_" + human + " from met);", function (error, rows) {
+            var ahuman = (human == "driver" ? "passenger" : "driver");
+            sql.main("SELECT phone, name FROM " + ahuman + " WHERE id IN (SELECT id_" + ahuman + " FROM met WHERE id_direction = " +
+                direction + " AND id_time = " + time + " AND id_" + human + " = " + id + "); ", function (error, rows) {
                 if (error)
                     return;
                 console.log(rows);
-                for (var iter in rows)
+                for (var iter in rows) {
                     response.write("." + rows[iter].phone);
+                    response.write("," + rows[iter].name);
+                }
                 response.end();
             });
         });        
