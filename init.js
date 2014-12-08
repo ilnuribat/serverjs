@@ -23,29 +23,30 @@ sql.main("select count(id) from direction;", function (error, rows) {
 				Var.qPassenger[i][j] = [];
 				Var.met[i][j] = [];
 			}
-		}
-	//Будем каждый раз лезть в БД, чтобы узнать, есть ли такой пользователь
-
+    }
 	//Восстановление очереди водителей. 
 	sql.main("select * from qdriver;", function(error, rows) {
 		if(rows[0] == null) 
-		return;
+		    return;
 		for(row in rows) {
-		var qd = rows[row];
-		var direction = qd["id_direction"];
-		var time = qd["id_time"];
-		Var.qDriver[direction][time].push({"id": qd["id_driver"], "seats": qd["seats"], "passengersNumbers": []});
+		    var qd = rows[row];
+		    var direction = qd["id_direction"];
+		    var time = qd["id_time"];
+		    Var.qDriver[direction][time].push({"id": qd["id_driver"], "seats": qd["seats"]});
 		}
 	});
 
 	//Восстановление очереди пассажиров
 	sql.main("select * from qpassenger;", function(error, rows) {
 		if(rows[0] == null) 
-		return;
+		    return;
 
 		for(row in rows) {
-		var qp = rows[row];
-		Var.qPassenger[qp["id_direction"]][qp["id_time"]].push({"id": qp["id_passenger"], "booked": qp["booked"], "driversNumber": qp["driversNumber"]});
+            var qp = rows[row];
+            var direction = qp["id_direction"];
+            var time = qp["id_time"];
+            var date = qp["date"];
+		    Var.qPassenger[direction][time].push({"id": qp["id_passenger"], "booked": qp["booked"]});
 		}
 	});
 	

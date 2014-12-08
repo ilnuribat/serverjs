@@ -40,8 +40,10 @@ Var.app.post('/qdriver', function(request, response) {
 	var id = body["id"] - 0;
 	var seats = body["seats"] - 0;
 	var time = body["time"] - 0;
-	var direction = body["direction"] - 0;
-	
+    var direction = body["direction "] - 0;
+    
+    //Отвечает за дату.
+    var date = body["date"];
 	
     //обработка ошибок
     //Проверка направления
@@ -69,15 +71,14 @@ Var.app.post('/qdriver', function(request, response) {
         }
 		var driver_in_queue = {
 			"id": 0,
-			"seats": 0,
-			"passengersNumbers": []		//Номера всех пассажиров
+			"seats": 0
 		}
 		driver_in_queue["id"] = id;
-		driver_in_queue["seats"] = seats;
-		 
+        driver_in_queue["seats"] = seats;
+
 		Var.qDriver[direction][time].push(driver_in_queue);
-        sql.main('INSERT INTO `qdriver`(`id_driver`, `id_time`, `id_direction`, `seats`) VALUES(' 
-                + id + ',' + time + ',' + direction + ',' + seats + ');', function (error, rows){
+        sql.main('INSERT INTO `qdriver`(`id_driver`, `id_time`, `id_direction`, `seats`, `date`) VALUES(' 
+                + id + ',' + time + ',' + direction + ',' + seats + ', ' + date + ');', function (error, rows){
             if (error) {
                 console.log("there is an error with adding passenger to queue");
                 response.send("error with adding driver to queue");
@@ -86,7 +87,6 @@ Var.app.post('/qdriver', function(request, response) {
             response.send("success added to Queue");
             //queue.find();
         });
-		
 	});	
 });
 
@@ -98,13 +98,13 @@ Var.app.post('/qpassenger', function(request, response) {
 	var time = body["time"] - 0;
 	var direction = body["direction"] - 0;
     
+    var date = body["date"] - 0;
     //Проверка ошибок
     //Проверка направления
     if (direction < 0 || direction > Var.directionSize) {
         response.send("unknown direction");
         return;
     }
-    
     //Проверка Времени
     if (time < 0 || time > 8) {
         response.send("unknown time");
@@ -114,7 +114,11 @@ Var.app.post('/qpassenger', function(request, response) {
 	if(booked < 0 || booked > 6){
 		response.send("incorrect form of booked");
 		return;
-	}
+    }
+    if (date < 0) {
+        response.send("incorrect form of date");
+        return;
+    }
 	sql.main("SELECT id FROM passenger WHERE id = " + id + ";", function(error, rows){
 		if(rows[0] === undefined)
 		{
@@ -123,24 +127,22 @@ Var.app.post('/qpassenger', function(request, response) {
 			return;
 		}
 		var passenger_in_queue = {
-		"id": 0,
-		"booked": 0,
-		"driversNumber": 0		//это то, что потом будем заполнять
+		    "id": 0,
+		    "booked": 0,
 		}
 		
 		passenger_in_queue["id"] = id;
 		passenger_in_queue["booked"] = booked;
 		
 		Var.qPassenger[direction][time].push(passenger_in_queue);
-        sql.main('INSERT INTO `qpassenger`(`id_passenger`, `id_time`, `id_direction`, `booked`) VALUES(' +
-            id + ',' + time + ',' + direction + ',' + booked + ');', function (error, rows){
+        sql.main('INSERT INTO `qpassenger`(`id_passenger`, `id_time`, `id_direction`, `booked`, `date`) VALUES(' +
+            id + ',' + time + ',' + direction + ',' + booked + ', ' + date + ');', function (error, rows){
             if (error) {
                 console.log("there is an error with adding passenger to queue");
                 response.send("error with adding passenger to queue");
                 return;
             }
             response.send("success added to Queue");
-           // queue.find();
         });
 	});	
 });
