@@ -135,10 +135,6 @@ Var.app.get('/dropFromQueue', function(request, response) {
 	});
 });
 
-Var.app.get('/vardriver', function(request, response) {
-	response.send(JSON.stringify(Var.driver));
-})
-
 Var.app.get('/queueStatus', function (request, response) {
     var query = Var.url.parse(request.url).query;
     var params = Var.queryString.parse(query);
@@ -170,7 +166,7 @@ Var.app.get('/queueStatus', function (request, response) {
     }
 
     //Проверка из базы данных. Ищем такого юзера из зарегестрированных
-    sql.main("select id from " + human + " where id = " + id + ";", function (error, rows) {
+    sql.main("SELECT id FROM " + human + " WHERE id = " + id + ";", function (error, rows) {
         if (error) {
             console.log("errorDB: verify user");
             console.log(error);
@@ -184,7 +180,7 @@ Var.app.get('/queueStatus', function (request, response) {
         }
 
         //Проверка: находится ли пользователь в очереди. Проверяем q{driver/passenger}. 
-        sql.main("select id from q" + human + " where id_" + human + " = " + id + " AND id_direction = " + direction + 
+        sql.main("SELECT id FROM q" + human + " where id_" + human + " = " + id + " AND id_direction = " + direction + 
             " AND id_time = " + time + ";", function (error, rows) {
             if (rows.length > 0) {
                 //User is on the QUEUE!!
@@ -211,5 +207,5 @@ Var.app.get('/queueStatus', function (request, response) {
 
 Var.app.get('/queueFind', function (request, response) {
     response.send("queuFind started");
-    queue.find();
+    queue.main();
 });

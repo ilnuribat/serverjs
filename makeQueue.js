@@ -14,13 +14,17 @@ var sql = require('./sql.js');
 
 //встречаем людей
 var mainF = function main() {
-    setTimeout(find_queue, 3000);
+    //setTimeout(find_queue, 3000);
     clear();
     //Очередь по любому чистая, по крайней мере, после вызова clear();
     
     /*
      * Надо сделать цикл по всем дням, где есть люди.*/
-    sql.main("SELECT date FROM qdriver UNION SELECT date FROM qpassenger;", function (error, rows) { 
+    sql.main("SELECT date FROM qdriver UNION SELECT date FROM qpassenger;", function (error, rows) {
+        /* Надо почистить переменные Var.qDriver и Var.qPassenger; - Ибо день теперь другой.  */    
+        console.log(rows, ":");
+        for (var row in rows) console.log(rows[row].date);     
+        for(var direction = 1; direction <= Var.directionSize;direction ++);
         //Цикл по всем направлениям.
         for (var direction = 1; direction <= Var.directionSize; direction++) {
             //Цикл по временам - на каждом интервале по 2 очереди: пассажиры и водители
@@ -36,12 +40,12 @@ var mainF = function main() {
                 for (var iPass = 0; iPass < Var.qPassenger[direction][TIME].length; iPass++) {
                     var booked = Var.qPassenger[direction][TIME][iPass]["booked"] - 0;   //Сколько мест забронировать
                     var passengerID = Var.qPassenger[direction][TIME][iPass]["id"] - 0;  //ID пассажира
-                    
+                    var pID = Var.qPassenger[direction][TIME][iPass]["idDB"] - 0; //Код пассажира в записи БД
                     //Цикл по всем водителям
                     for (var iDrive = 0; iDrive < Var.qDriver[direction][TIME].length && booked > 0; iDrive++) {
                         var driverID = Var.qDriver[direction][TIME][iDrive]["id"] - 0;       //ID водителя
                         var driverSeats = Var.qDriver[direction][TIME][iDrive]["seats"] - 0; //Сколько свободных мест имеется у водителя
-                        
+                        var idDB = Var.qDriver[direction][TIME][iDrive]["idDB"] - 0; //Код этой поездки в строке БД
                         if (booked <= driverSeats) {
                             // можно посадить пассажира на эту машину
                             //Место, куда посылаем встретившихся
@@ -57,9 +61,10 @@ var mainF = function main() {
                             
                             //Уменьшаем количество свободных мест в машине.
                             Var.qDriver[direction][TIME][iDrive]["seats"] = driverSeats - booked;
+                            driverSeats -= booked;
+                            
                             //Изменяем запись в Базе Данных:
-                            sql.main("UPDATE qdriver SET seats = " + Var.qDriver[direction][TIME][iDrive]["seats"] + " WHERE id_driver = " + 
-                            driverID + " AND id_time = " + TIME + " AND id_direction = " + direction + ";", 
+                            sql.main("UPDATE qdriver SET seats = " + Var.qDriver[direction][TIME][iDrive]["seats"] + " WHERE id = " + idDB + ";", 
                             function (error, rows) {
                                 if (error) console.log("errorDB: could not update seats");
                             });
@@ -68,8 +73,7 @@ var mainF = function main() {
                             Var.qPassenger[direction][TIME][iPass]["booked"] = 0;
                             
                             //Меняем запись в Базе Данных, ставим 0 на количестве забронированных мест
-                            sql.main("UPDATE qpassenger SET booked = 0 WHERE id_passenger = " + passengerID + " AND id_direction = " + direction 
-                            + " AND id_time = " + TIME + ";", function (error, rows) {
+                            sql.main("UPDATE qpassenger SET booked = 0 WHERE id = " + idDB + ";", function (error, rows) {
                                 if (error) console.log("errorDB: could update qpassenger.booked to zero");
                             });
                             //Если Пассажира посадили, то смысл дальше идти по водителям?

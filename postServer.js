@@ -11,22 +11,17 @@ Var.app.post('/registration', function(request, response) {
 	var human = body['human'];
 	
 	if(human == 'driver') {
-		sql.main('insert into `driver`(`name`, `phone`, `access`) values ("' + name +
-			'", "' + phone + '", 1);', function (error, rows) { 
+		sql.main('INSERT INTO driver(name, phone,) VALUES ("' + name + '", "' + phone + '");', function (error, rows) { 
 				
 				response.send(JSON.stringify(rows.insertId));
-		//обновление массива водителей
-		Var.driver[rows.insertId] = 1;
+
 			});
 		return;
 	}
 	if(human == 'passenger') {
-		sql.main('insert into `passenger`(`name`, `phone`) values ("' + name + 
-			'", "' + phone + '");', function (error, rows) {
-				
+		sql.main('INSERT INTO passenger(name, phone) VALUES("' + name + '", "' + phone + '");', function (error, rows) {
 				response.send(JSON.stringify(rows.insertId));
-		//обновление массива пассажиров
-		Var.passenger[rows.insertId] = 1;
+		        //обновление массива пассажиров
 			});
 		return;
 	}
@@ -69,23 +64,23 @@ Var.app.post('/qdriver', function(request, response) {
             response.send("there is no such user");
             return;
         }
-		var driver_in_queue = {
-			"id": 0,
-			"seats": 0
-		}
-		driver_in_queue["id"] = id;
-        driver_in_queue["seats"] = seats;
+		
 
-		Var.qDriver[direction][time].push(driver_in_queue);
-        sql.main('INSERT INTO `qdriver`(`id_driver`, `id_time`, `id_direction`, `seats`, `date`) VALUES(' 
-                + id + ',' + time + ',' + direction + ',' + seats + ', ' + date + ');', function (error, rows){
+        sql.main('INSERT INTO qdriver(id_driver, id_time, id_direction, seats, date) VALUES(' 
+                + id + ',' + time + ',' + direction + ',' + seats + ', ' + date + ');', function (error, rows) {
             if (error) {
                 console.log("there is an error with adding passenger to queue");
                 response.send("error with adding driver to queue");
                 return;
             }
+            var driver_in_queue = {
+                "id": id,
+                "seats": seats,
+                "idDB": rows.insertId
+            };
+            Var.qDriver[direction][time].push(driver_in_queue);
+
             response.send("success added to Queue");
-            //queue.find();
         });
 	});	
 });
@@ -126,15 +121,7 @@ Var.app.post('/qpassenger', function(request, response) {
 			response.send("there is no such user");
 			return;
 		}
-		var passenger_in_queue = {
-		    "id": 0,
-		    "booked": 0,
-		}
 		
-		passenger_in_queue["id"] = id;
-		passenger_in_queue["booked"] = booked;
-		
-		Var.qPassenger[direction][time].push(passenger_in_queue);
         sql.main('INSERT INTO `qpassenger`(`id_passenger`, `id_time`, `id_direction`, `booked`, `date`) VALUES(' +
             id + ',' + time + ',' + direction + ',' + booked + ', ' + date + ');', function (error, rows){
             if (error) {
@@ -142,6 +129,16 @@ Var.app.post('/qpassenger', function(request, response) {
                 response.send("error with adding passenger to queue");
                 return;
             }
+            console.log(rows);
+            var passenger_in_queue = {
+                "id": id,
+                "booked": booked,
+                "idDB": rows.insertId
+            }
+            
+            console.log(passenger_in_queue, "...");
+            Var.qPassenger[direction][time].push(passenger_in_queue);
+
             response.send("success added to Queue");
         });
 	});	
