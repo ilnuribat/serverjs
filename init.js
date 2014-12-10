@@ -17,11 +17,9 @@ sql.main("select count(id) from direction;", function (error, rows) {
 		for(var i = 1; i <= Var.directionSize; i ++) {
 			Var.qDriver[i] = [];
 			Var.qPassenger[i] = [];
-			Var.met[i] = [];
 			for(var j = 0; j <= 8; j ++) {
 				Var.qDriver[i][j] = [];
 				Var.qPassenger[i][j] = [];
-				Var.met[i][j] = [];
 			}
     }
 	//Восстановление очереди водителей. 

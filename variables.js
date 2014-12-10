@@ -14,9 +14,7 @@ var queryString = require('querystring');
 var directionSize;
 var qDriver = [];
 var qPassenger = [];
-var met = [];
 
-exports.met = met;
 exports.app = app;
 exports.fileSystem = fileSystem;
 exports.qDriver = qDriver;
