@@ -8,24 +8,6 @@
 var Var = require('./variables.js');
 var sql = require('./sql.js');
 var queue = require('./makeQueue.js');
-
-//функция для проверки тестовой программы. Просто возращает JSON объект.
-Var.app.get('/get', function(request, response) {
-	var jsonData	= {
-		"done": {
-			"boolean": true,
-			"number": 123,
-			"list": [
-				"field1", 
-				"field2", 
-				"field3", 
-				"field4", 
-				"поле5" 
-			]
-		}
-	}
-	response.send(JSON.stringify(request.ip));
-});
 	
 //Выдача состояние очереди в указанном направлении
 Var.app.get('/data', function(request, response) {
