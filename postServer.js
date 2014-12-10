@@ -3,6 +3,7 @@ var sql = require('./sql.js');
 var queue = require('./makeQueue.js');
 
 //Регистрация водителя, пассажира
+//На будущее: проверить номера. Номер должен быт 9-значным. Не должен совпадать в базе
 Var.app.post('/registration', function(request, response) {
 	var body = request.body;
 	
@@ -73,13 +74,6 @@ Var.app.post('/qdriver', function(request, response) {
                 response.send("error with adding driver to queue");
                 return;
             }
-            var driver_in_queue = {
-                "id": id,
-                "seats": seats,
-                "idDB": rows.insertId
-            };
-            Var.qDriver[direction][time].push(driver_in_queue);
-
             response.send("success added to Queue");
         });
 	});	
@@ -129,16 +123,6 @@ Var.app.post('/qpassenger', function(request, response) {
                 response.send("error with adding passenger to queue");
                 return;
             }
-            console.log(rows);
-            var passenger_in_queue = {
-                "id": id,
-                "booked": booked,
-                "idDB": rows.insertId
-            }
-            
-            console.log(passenger_in_queue, "...");
-            Var.qPassenger[direction][time].push(passenger_in_queue);
-
             response.send("success added to Queue");
         });
 	});	
