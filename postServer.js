@@ -36,7 +36,7 @@ Var.app.post('/qdriver', function(request, response) {
 	var id = body["id"] - 0;
 	var seats = body["seats"] - 0;
 	var time = body["time"] - 0;
-    var direction = body["direction "] - 0;
+    var direction = body["direction"] - 0;
     
     //Отвечает за дату.
     var date = body["date"];
@@ -58,7 +58,11 @@ Var.app.post('/qdriver', function(request, response) {
 	if(seats < 0 || seats > 8)	{
 		response.send("unknown number of seats");
 		return;
-	}
+    }
+    if (date < 0 || date == undefined || isNaN(date)) {
+        response.send("incorrect form of date");
+        return;
+    }
 	sql.main("SELECT id FROM driver WHERE id = " + id + ";", function(error, rows) {
         if (rows[0] == undefined) {
             console.log("there is no such user");
@@ -70,7 +74,7 @@ Var.app.post('/qdriver', function(request, response) {
         sql.main('INSERT INTO qdriver(id_driver, id_time, id_direction, seats, date) VALUES(' 
                 + id + ',' + time + ',' + direction + ',' + seats + ', ' + date + ');', function (error, rows) {
             if (error) {
-                console.log("there is an error with adding passenger to queue");
+                console.log("there is an error with adding driver to queue");
                 response.send("error with adding driver to queue");
                 return;
             }
