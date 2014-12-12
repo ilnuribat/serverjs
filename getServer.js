@@ -10,22 +10,32 @@ var sql = require('./sql.js');
 var queue = require('./makeQueue.js');
 	
 //Выдача состояние очереди в указанном направлении
+//Два запроса в БД
 Var.app.get('/data', function(request, response) {
     var query = Var.url.parse(request.url).query;
 	var params = Var.queryString.parse(query);
-	var direction = params["direction"];
-    if (direction == undefined || direction > 5 || direction < 0) {
+    var direction = params["direction"] - 0;
+    var date = params["date"] - 0;
+    if (direction > Var.directionSize || direction < 0) {
 		response.send("unknown direction");
 		return;
-	}
-	var QData = [];
-	for(var time = 1; time <= 8; time ++)
-	QData.push(Var.qPassenger[direction][time].length);
-	for(var time = 1; time <= 8; time ++) {
-		QData.push(Var.qDriver[direction][time].length);
-		
-	}
-	response.send(JSON.stringify(QData));
+    }
+    //в силу кривизны рук буду делать два запроса
+    sql.main("SELECT COUNT(id), id_time FROM qdriver WHERE id_direction = " + direction + 
+        " AND date = " + date + " GROUP BY id_time;", function (error, rows) {
+        var QUEUE = [];
+        for (var i = 0; i <= 16; i++) QUEUE[i] = 0;
+        for (var row in rows) {
+            QUEUE[rows[row]["id_time"]] += rows[row]["COUNT(id)"];
+        }
+        sql.main("SELECT COUNT(id), id_time FROM qpassenger WHERE id_direction = " + direction + 
+        " AND date = " + date + " GROUP BY id_time;", function (error, rows) {
+            for (var row in rows) {
+                QUEUE[rows[row]["id_time"] + 8] += rows[row]["COUNT(id)"];
+            }
+            response.send(JSON.stringify(QUEUE));
+        });
+    });
 });
 
 //Выдача столбца "name" таблицы, название передается в параметре запроса
