@@ -183,7 +183,6 @@ Var.app.get('/queueStatus', function (request, response) {
                 direction + " AND id_time = " + time + " AND id_" + human + " = " + id + "); ", function (error, rows) {
                 if (error)
                     return;
-                console.log(rows);
                 for (var iter in rows) {
                     response.write("." + rows[iter].phone);
                     response.write("," + rows[iter].name);
