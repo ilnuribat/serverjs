@@ -14,8 +14,6 @@ var sql = require('./sql.js');
 
 //встречаем людей
 var mainF = function main() {
-    //setTimeout(find_queue, 3000);
-    clear();
     //Очередь по любому чистая, по крайней мере, после вызова clear();
     
     /*
@@ -23,43 +21,11 @@ var mainF = function main() {
     sql.main("SELECT date FROM qdriver UNION SELECT date FROM qpassenger;", function (error, rows) {
         var dates = [];
         for (var row in rows) dates.push(rows[row].date);
+        delete rows;
         for (var iDate = 0; iDate < dates.length; iDate++) {
             var DATE = dates[iDate];
             //Загружаем водителей
-            sql.main("SELECT id, id_driver, seats, id_time, id_direction FROM qdriver WHERE date = " + DATE + ";", function (error, rows) {
-                //Никого в очереди нету
-                if (rows.length == 0)
-                    return;
-                //Проблема в том, что общая переменная Var.qDriver(Var.qPassenger) ведет себя плохо 
-                //с асинхронными запросами в БД. Похоже, необходимо создать локальный массив, в котором
-                //будем рассамтривать очередь.
-                var qPassenger = [], qDriver = [];
-                for (var i = 1; i <= Var.directionSize; i++) {
-                    qDriver[i] = [];
-                    qPassenger[i] = [];
-                    for (var j = 0; j <= 8; j++) {
-                        qDriver[i][j] = [];
-                        qPassenger[i][j] = [];
-                    }
-                }
-
-                for (var row in rows) {
-                    var id = rows[row]["id"];
-                    var id_driver = rows[row]["id_driver"];
-                    var seats = rows[row]["seats"];
-                    var time = rows[row]["id_time"];
-                    var direction = rows[row]["id_direction"];
-                    driver_in_queue = {
-                        "idDB": id,
-                        "id": id_driver,
-                        "seats": seats
-                    };
-                    qDriver[direction][time].push(driver_in_queue);
-                }
-                //Загружаем пассажиров
-                sql.main("SELECT id, id_passenger, booked, id_time, id_direction FROM qpassenger WHERE date = " + DATE + ";", MakeQueueNoDB);
-                //Загрузили пассажиров
-            });
+            sql.main("SELECT id, id_driver, seats, id_time, id_direction FROM qdriver WHERE date = " + DATE + ";", loadDrivers);
             //Загрузили водителей
         }
         //end: Цикл по дням, в очереди которых есть кто-либо    
@@ -67,11 +33,46 @@ var mainF = function main() {
     //sql.main - Выбор дней, где есть народ
 }
 
-function MakeQueueNoDB(error, rows) {
+var loadDrivers = function (error, rows) {
+    //Проблема в том, что общая переменная Var.qDriver(Var.qPassenger) ведет себя плохо 
+    //с асинхронными запросами в БД. Похоже, необходимо создать локальный массив, в котором
+    //будем рассамтривать очередь.
+    var qDriver = [];
+    for (var i = 1; i <= Var.directionSize; i++) {
+        qDriver[i] = [];
+        for (var j = 0; j <= 8; j++)
+            qDriver[i][j] = [];
+    }
+    
+    for (var row in rows) {
+        var id = rows[row]["id"];
+        var id_driver = rows[row]["id_driver"];
+        var seats = rows[row]["seats"];
+        var time = rows[row]["id_time"];
+        var direction = rows[row]["id_direction"];
+        driver_in_queue = {
+            "idDB": id,
+            "id": id_driver,
+            "seats": seats
+        };
+        qDriver[direction][time].push(driver_in_queue);
+    }
+    //Загружаем пассажиров
+    sql.main("SELECT id, id_passenger, booked, id_time, id_direction FROM qpassenger WHERE date = " + DATE + ";", MakeQueueNoDB(error, rows, qDriver, DATE));
+    //Загрузили пассажиров
+}
+
+function MakeQueueNoDB(error, rows, qDriver, DATE) {
     //Никого в очереди нету
     if (rows.length == 0)
         return;
-    
+    qPassenger = [];
+    for (var i = 1; i <= Var.directionSize; i++) {
+        qPassenger[i] = [];
+        for (var j = 0; j <= 8; j++) 
+            qPassenger[i][j] = [];
+    }
+
     for (var row in rows) {
         var id = rows[row]["id"];
         var id_passenger = rows[row]["id_passenger"];
