@@ -29,16 +29,14 @@ Var.app.post('/registration', function(request, response) {
 	response.send("not added");
 });
 
-//По этим адресам должно приходить запросы на добавление в очередь.
 
+//Встать в очередь
 Var.app.post('/qdriver', function(request, response) {
 	var body = request.body;
 	var id = body["id"] - 0;
 	var seats = body["seats"] - 0;
 	var time = body["time"] - 0;
     var direction = body["direction"] - 0;
-    
-    //Отвечает за дату.
     var date = body["date"];
 	
     //обработка ошибок
@@ -90,8 +88,8 @@ Var.app.post('/qpassenger', function(request, response) {
 	var booked = body["booked"] - 0;
 	var time = body["time"] - 0;
 	var direction = body["direction"] - 0;
-    
     var date = body["date"] - 0;
+
     //Проверка ошибок
     //Проверка направления
     if (direction < 0 || direction > Var.directionSize) {
