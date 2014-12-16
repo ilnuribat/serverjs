@@ -5,4 +5,3 @@ require('./init.js');
 require('./makeQueue.js').main();
 Var.app.listen(8080);
 console.log("Server started");
-
