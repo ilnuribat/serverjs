@@ -132,28 +132,29 @@ Var.app.get('/queueStatus', function (request, response) {
     var id = params["id"] - 0;
     var direction = params["direction"] - 0;
     var time = params["time"] - 0;
-    
+    var date = params["date"] - 0;
+	
     //Проверка на дурака
     if (human != "driver" && human != "passenger") {
         console.log("error: incorrect human");
         response.send("error: incorrect human");
         return;
     }
-    if (direction == undefined || direction > Var.directionSize || direction < 0) {
+    if (direction <= Var.directionSize && direction > 0); else {
         console.log("unknown direction");
         response.send("unknown direction");
         return;
     }
-    if (time == undefined || time > 8 || time < 0) {
+    if (time <= 8 && time > 0); else {
         console.log("unknown time");
         response.send("unknown time");
         return;
     }
-    if (id == undefined || id < 0) {
-        console.log("unknown id");
-        response.send("unknown id");
-        return;
-    }
+	if(date >= 0); else {
+		console.log("unknown date");
+		response.send("unknown date");
+		return;
+	}
 
     //Проверка из базы данных. Ищем такого юзера из зарегестрированных
     sql.main("SELECT id FROM " + human + " WHERE id = " + id + ";", function (error, rows) {
@@ -168,29 +169,39 @@ Var.app.get('/queueStatus', function (request, response) {
             response.send("error: no such user");
             return;
         }
-
-        //Проверка: находится ли пользователь в очереди. Проверяем q{driver/passenger}. 
-        sql.main("SELECT id FROM q" + human + " where id_" + human + " = " + id + " AND id_direction = " + direction + 
-            " AND id_time = " + time + ";", function (error, rows) {
-            if (rows.length > 0) {
-                //User is on the QUEUE!!
-                response.write("Мы ищем");
-            } else
-                response.write("Готово!");
-            
-            //Далее проверяем в met. Вдруг там номера появились
-            var ahuman = (human == "driver" ? "passenger" : "driver");
-            sql.main("SELECT phone, name FROM " + ahuman + " WHERE id IN (SELECT id_" + ahuman + " FROM met WHERE id_direction = " +
-                direction + " AND id_time = " + time + " AND id_" + human + " = " + id + "); ", function (error, rows) {
-                if (error)
-                    return;
-                for (var iter in rows) {
-                    response.write("." + rows[iter].phone);
-                    response.write("," + rows[iter].name);
-                }
-                response.end();
-            });
-        });        
+		sql.main("SELECT id FROM q" + human + " WHERE id_" + human + " = " + id + " AND id_direction = " + direction + " AND id_time = " +
+			time + " AND date = " + date + " UNION SELECT id FROM met WHERE id_" + human + " = " + id + " AND id_direction = " + direction + 
+			" AND id_time = " + time + " AND date = " + date + ";", function(error, rows) {
+			//проверяем, вообще, этот чувак ставал в очередь?
+			console.log(rows, error, human, id, direction, time, date);
+			if(rows.length == 0){
+				console.log("this human didn't stood to queue almost");
+				response.send("you are not in the queue almost");
+				return;
+			}
+			//Проверка: находится ли пользователь в очереди. Проверяем q{driver/passenger}. 
+			sql.main("SELECT id FROM q" + human + " where id_" + human + " = " + id + " AND id_direction = " + direction + 
+				" AND id_time = " + time + ";", function (error, rows) {
+				if (rows.length > 0) {
+					//User is on the QUEUE!!
+					response.write("Мы ищем");
+				} else
+					response.write("Готово!");
+				
+				//Далее проверяем в met. Вдруг там номера появились
+				var ahuman = (human == "driver" ? "passenger" : "driver");
+				sql.main("SELECT phone, name FROM " + ahuman + " WHERE id IN (SELECT id_" + ahuman + " FROM met WHERE id_direction = " +
+					direction + " AND id_time = " + time + " AND id_" + human + " = " + id + "); ", function (error, rows) {
+					if (error)
+						return;
+					for (var iter in rows) {
+						response.write("." + rows[iter].phone);
+						response.write("," + rows[iter].name);
+					}
+					response.end();
+				});
+			});
+		});
     });
 });
 
