@@ -173,10 +173,9 @@ Var.app.get('/queueStatus', function (request, response) {
 			time + " AND date = " + date + " UNION SELECT id FROM met WHERE id_" + human + " = " + id + " AND id_direction = " + direction + 
 			" AND id_time = " + time + " AND date = " + date + ";", function(error, rows) {
 			//проверяем, вообще, этот чувак ставал в очередь?
-			console.log(rows, error, human, id, direction, time, date);
 			if(rows.length == 0){
 				console.log("this human didn't stood to queue almost");
-				response.send("you are not in the queue almost");
+				response.send("Станьте в очередь");
 				return;
 			}
 			//Проверка: находится ли пользователь в очереди. Проверяем q{driver/passenger}. 
