@@ -24,7 +24,7 @@ Var.app.get('/data', function(request, response) {
     sql.main("SELECT COUNT(id), id_time FROM qdriver WHERE id_direction = " + direction + 
         " AND date = " + date + " GROUP BY id_time;", function (error, rows) {
         var QUEUE = [];
-        for (var i = 0; i <= 16; i++) QUEUE[i] = 0;
+        for (var i = 1; i <= 16; i++) QUEUE[i] = 0;
         for (var row in rows) {
             QUEUE[rows[row]["id_time"]] += rows[row]["COUNT(id)"];
         }
@@ -33,6 +33,7 @@ Var.app.get('/data', function(request, response) {
             for (var row in rows) {
                 QUEUE[rows[row]["id_time"] + 8] += rows[row]["COUNT(id)"];
             }
+			QUEUE.splice(0, 1);
             response.send(JSON.stringify(QUEUE));
         });
     });
@@ -173,9 +174,9 @@ Var.app.get('/queueStatus', function (request, response) {
             " AND id_time = " + time + ";", function (error, rows) {
             if (rows.length > 0) {
                 //User is on the QUEUE!!
-                response.write("queue");
+                response.write("Мы ищем");
             } else
-                response.write("nonQueue");
+                response.write("Готово!");
             
             //Далее проверяем в met. Вдруг там номера появились
             var ahuman = (human == "driver" ? "passenger" : "driver");
