@@ -14,7 +14,8 @@ var sql = require('./sql.js');
 
 //встречаем людей
 var mainF = function main() {
-    
+	//Через каждые 10 секунд
+    setTimeout(10*1000);
     //Чистим очередь
     sql.main("DELETE FROM qdriver WHERE seats = 0;", function (error, rows) { });
     sql.main("DELETE FROM qpassenger WHERE booked = 0;", function (error, rows) { });
