@@ -135,6 +135,7 @@ Var.app.post('/qpassenger', function(request, response) {
 });
 
 Var.app.post('/newTown', function(request, response) {
+	return;
 	var body = request.body;
 	var name = body["name"];
 	var russianName = body["russianName"];
@@ -144,6 +145,7 @@ Var.app.post('/newTown', function(request, response) {
 });
 
 Var.app.post('/newTime', function(request, response) {
+	return;
 	var body = request.body;
 	var name = body["name"];
 	sql.main('INSERT INTO `time` (`name`) VALUES("' + name + '");', function(error, rows) {
@@ -157,6 +159,7 @@ Var.app.post('/newTime', function(request, response) {
 });
 
 Var.app.post('/newDirection', function(request, response) {
+	return;
 	var body = request.body;
 	var source = body["source"];
 	var destination = body["destination"];
