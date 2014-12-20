@@ -1,14 +1,14 @@
-CREATE DATABASE server CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE server CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 use server
 CREATE TABLE time(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    name VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci
+    name VARCHAR(20)
 );
 
 CREATE TABLE towns(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     name VARCHAR(20),
-    russianName VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci
+    russianName VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci
 )CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE direction(
