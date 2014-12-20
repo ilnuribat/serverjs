@@ -12,23 +12,27 @@ Var.app.post('/registration', function(request, response) {
 	var human = body['human'];
 	
 	if(human == 'driver') {
-		sql.main('INSERT INTO driver(name, phone,) VALUES ("' + name + '", "' + phone + '");', function (error, rows) { 
-				
+		sql.main('INSERT INTO driver(name, phone) VALUES ("' + name + '", "' + phone + '");', function (error, rows) { 
+				if(error) {
+					console.log("errorDB: couldn't register new driver");
+					response.send("error: couldn't register driver");
+				}
 				response.send(JSON.stringify(rows.insertId));
-
 			});
 		return;
 	}
 	if(human == 'passenger') {
 		sql.main('INSERT INTO passenger(name, phone) VALUES("' + name + '", "' + phone + '");', function (error, rows) {
+				if(error) {
+					console.log("errorDB: couldn't register new passenger");
+					response.send("error: couldn't register passenger");
+				}
 				response.send(JSON.stringify(rows.insertId));
-		        //обновление массива пассажиров
 			});
 		return;
 	}
 	response.send("not added");
 });
-
 
 //Встать в очередь
 Var.app.post('/qdriver', function(request, response) {
