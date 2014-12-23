@@ -69,27 +69,26 @@ var mainF = function main() {
                         for (var j = 0; j <= 8; j++)
                             qPassenger[i][j] = [];
                     }
-                    
-                    for (var row in rows) {
-                        var id = rows[row]["id"];
-                        var id_passenger = rows[row]["id_passenger"];
-                        var booked = rows[row]["booked"];
-                        var time = rows[row]["id_time"];
-                        var direction = rows[row]["id_direction"];
+                    rows.forEach(function (row) {
+                        var id = row["id"];
+                        var id_passenger = row["id_passenger"];
+                        var booked = row["booked"];
+                        var time = row["id_time"];
+                        var direction = row["id_direction"];
                         passenger_in_queue = {
                             "idDB": id,
                             "id": id_passenger,
                             "booked": booked
                         };
                         qPassenger[direction][time].push(passenger_in_queue);
-                    }
+                    });
                     
                     //Цикл по всем направлениям.
                     for (var direction = 1; direction <= Var.directionSize; direction++) {
                         //Цикл по временам - на каждом интервале по 2 очереди: пассажиры и водители
                         //всего 8 интервалов времени с 00:00 - 03:00, 03:00 - 06:00, и т.д с шагом в 3 часа
                         //Кстати. не факт, что с шагом в 3 часа. 
-                        for (var TIME = 1; TIME <= 8; TIME++) {                        
+                        for (var TIME = 1; TIME <= 8; TIME++) {
                             //Цикл по всем Пассажирам
                             for (var iPass = 0; iPass < qPassenger[direction][TIME].length; iPass++) {
                                 var booked = qPassenger[direction][TIME][iPass]["booked"] - 0;   //Сколько мест забронировать
