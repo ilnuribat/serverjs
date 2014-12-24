@@ -180,7 +180,7 @@ Var.app.get('/queueStatus', function (request, response) {
 			}
 			//Проверка: находится ли пользователь в очереди. Проверяем q{driver/passenger}. 
 			sql.main("SELECT id FROM q" + human + " where id_" + human + " = " + id + " AND id_direction = " + direction + 
-				" AND id_time = " + time + ";", function (error, rows) {
+				" AND id_time = " + time + " AND date = " + date + ";", function (error, rows) {
 				if (rows.length > 0) {
 					//User is on the QUEUE!!
 					response.write("Мы ищем");
@@ -190,7 +190,7 @@ Var.app.get('/queueStatus', function (request, response) {
 				//Далее проверяем в met. Вдруг там номера появились
 				var ahuman = (human == "driver" ? "passenger" : "driver");
 				sql.main("SELECT phone, name FROM " + ahuman + " WHERE id IN (SELECT id_" + ahuman + " FROM met WHERE id_direction = " +
-					direction + " AND id_time = " + time + " AND id_" + human + " = " + id + "); ", function (error, rows) {
+					direction + " AND id_time = " + time + " AND id_" + human + " = " + id + " AND date = " + date + "); ", function (error, rows) {
 					if (error)
 						return;
 					for (var iter in rows) {
