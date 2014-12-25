@@ -14,6 +14,7 @@ var queryString = require('querystring');
 var directionSize;
 var qDriver = [];
 var qPassenger = [];
+var blockNewData = false;
 
 exports.app = app;
 exports.fileSystem = fileSystem;
@@ -24,3 +25,4 @@ exports.mysql = mysql;
 exports.url = url;
 exports.queryString = queryString;
 exports.directionSize = directionSize;
+exports.blockNewData = blockNewData;

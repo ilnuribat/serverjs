@@ -4,11 +4,13 @@
 *	таким образом мы можем избежать 
 *	ошибок с кодировками
 *	localhost:8080 <-=-> 194.58.100.50
+*	При добавлении городов на сервере надо сделать curl прямо на сервере(на локалхост). 
 */
 
 curl localhost:8080/newTown -d "name=Ufa&russianName=Уфа"
-curl localhost:8080/newTown -d "name=Uchaly&russianName=Учалы"
 curl localhost:8080/newTown -d "name=Sibay&russianName=Сибай"
+curl localhost:8080/newTown -d "name=Uchaly&russianName=Учалы"
+curl localhost:8080/newTown -d "name=Baymak&russianName=Баймак"
 
 curl localhost:8080/newDirection -d "source=1&destination=2"
 curl localhost:8080/newDirection -d "source=1&destination=3"

@@ -20,6 +20,7 @@ Var.app.get('/data', function(request, response) {
 		response.send("unknown direction");
 		return;
     }
+    
     //в силу кривизны рук буду делать два запроса
     sql.main("SELECT COUNT(id), id_time FROM qdriver WHERE id_direction = " + direction + 
         " AND date = " + date + " GROUP BY id_time;", function (error, rows) {
@@ -33,7 +34,7 @@ Var.app.get('/data', function(request, response) {
             for (var row in rows) {
                 QUEUE[rows[row]["id_time"] + 8] += rows[row]["COUNT(id)"];
             }
-			QUEUE.splice(0, 1);
+            QUEUE.splice(0, 1);
             response.send(JSON.stringify(QUEUE));
         });
     });
@@ -56,14 +57,18 @@ Var.app.get('/direction', function(request, response) {
 	var query = Var.url.parse(request.url).query;
 	var params = Var.queryString.parse(query);
 	var source = params["source"];
-	var destination = params["destination"];
+    var destination = params["destination"];
 	sql.main("SELECT id FROM direction WHERE id_source = " + source + " and id_destination = " + destination + ";", function(error, rows) {
 		var directionID = "";
 		if(rows[0] != null)
 			directionID = rows[0]["id"]; 
 		else 
-			directionID = 0;
-		response.send(JSON.stringify(directionID));
+            directionID = 0;
+
+        var now = new Date().getTime();
+        while (new Date().getTime() < now + 3000) { }
+
+        response.send(JSON.stringify(directionID));
 	});
 });
 

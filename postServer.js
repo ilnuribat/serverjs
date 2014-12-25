@@ -5,8 +5,8 @@ var queue = require('./makeQueue.js');
 //Регистрация водителя, пассажира
 //На будущее: проверить номера. Номер должен быт 9-значным. Не должен совпадать в базе
 Var.app.post('/registration', function(request, response) {
-	var body = request.body;
-	
+    var body = request.body;
+    console.log(body);
 	var name = body['name'];
 	var phone = body['phone'];
 	var human = body['human'];
@@ -135,7 +135,10 @@ Var.app.post('/qpassenger', function(request, response) {
 });
 
 Var.app.post('/newTown', function(request, response) {
-	return;
+	if (Var.blockNewData) {
+        reponse.send("blocked adding new data");
+        return;
+    }
 	var body = request.body;
 	var name = body["name"];
 	var russianName = body["russianName"];
@@ -145,7 +148,10 @@ Var.app.post('/newTown', function(request, response) {
 });
 
 Var.app.post('/newTime', function(request, response) {
-	return;
+    if (Var.blockNewData) {
+        reponse.send("blocked adding new data");
+        return;
+    }
 	var body = request.body;
 	var name = body["name"];
 	sql.main('INSERT INTO `time` (`name`) VALUES("' + name + '");', function(error, rows) {
@@ -159,7 +165,10 @@ Var.app.post('/newTime', function(request, response) {
 });
 
 Var.app.post('/newDirection', function(request, response) {
-	return;
+    if (Var.blockNewData) {
+        reponse.send("blocked adding new data");
+        return;
+    }
 	var body = request.body;
 	var source = body["source"];
 	var destination = body["destination"];
