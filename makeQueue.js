@@ -67,6 +67,11 @@ function makeQueueNoDB(Drivers, Passengers)
     //Вот эти аргументы хранят в себе всех пассажиров/водителей в перемешку.
     if (Drivers.length * Passengers.length == 0)
         return;
+    
+    if (Var.directionSize === undefined) {
+        console.log("MakeQueue.js: MakeQueueNoDB - undefined direction size");
+        return;
+    }
 
     if (Drivers[0].date != Passengers[0].date) {
         console.log("ERROR!");
@@ -75,6 +80,7 @@ function makeQueueNoDB(Drivers, Passengers)
     var DATE = Drivers[0].date;
     //Инициализация новых массивов, с которыми непосредственно будем работать
     var qPassenger = [], qDriver = [];
+    //Var.directionSize - undefined
     for (var i = 1; i <= Var.directionSize; i++) {
         qPassenger[i] = [];
         qDriver[i] = [];
@@ -122,8 +128,8 @@ function makeQueueNoDB(Drivers, Passengers)
                     if (booked <= driverSeats) {
                         // можно посадить пассажира на эту машину
                         //Кидаем в БД запись о встрече пассажира(ов) и водителя
-                        sql.main("INSERT INTO met(id_driver, id_passenger, id_direction, id_time, date)" +
-                                        "VALUES(" + driverID + ", " + passengerID + ", " + direction + ", " + TIME + ", " + DATE + ");", function (error, rows) {
+                        sql.main("INSERT INTO met(id_driver, id_passenger, id_direction, id_time, date, booked)" +
+                                        "VALUES(" + driverID + ", " + passengerID + ", " + direction + ", " + TIME + ", " + DATE + ", " + booked + ");", function (error, rows) {
                             if (error) {
                                 console.log("errorDB: adding driver after meeting to met");
                             }
@@ -133,7 +139,7 @@ function makeQueueNoDB(Drivers, Passengers)
                         qDriver[direction][TIME][iDrive]["seats"] = driverSeats - booked;
                         driverSeats -= booked;
                         
-                        //Изменяем запись в Базе Данных:
+                        //Изменяем запись в Базе Данных: уменьшаем кол-во мест в машине
                         sql.main("UPDATE qdriver SET seats = " + driverSeats + " WHERE id = " + idDB + ";",
                                             function (error, rows) {
                             if (error) console.log("errorDB: could not update seats");
