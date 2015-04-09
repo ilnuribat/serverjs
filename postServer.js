@@ -11,6 +11,9 @@ Var.app.post('/registration', function(request, response) {
 	var phone = body['phone'];
 	var human = body['human'];
 	
+	if(phone.length != 10)
+		console.log("phone number is not 9-symbols");
+	
 	if(human == 'driver') {
 		sql.main('INSERT INTO driver(name, phone) VALUES ("' + name + '", "' + phone + '");', function (error, rows) { 
 				if(error) {

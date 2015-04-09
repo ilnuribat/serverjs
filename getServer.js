@@ -91,9 +91,9 @@ Var.app.get('/dropFromQueue', function(request, response) {
 	var direction = params["direction"] - 0;
     var time = params["time"] - 0;
     var date = params["date"] - 0;
-    
+	
     //Проверки на дурака
-    if (human != "driver" || human != "passenger") {
+    if (human != "driver" && human != "passenger") {
         response.send("unknown human");
         return;
     }
@@ -112,24 +112,44 @@ Var.app.get('/dropFromQueue', function(request, response) {
     
     sql.main("SELECT id FROM driver WHERE id = " + id + ";", function (error, rows) {
         if (rows[0] == undefined) {
-            console.log("there is no such user");
+            console.log("DropFromQueue: There is no such user:" + id);
             response.send("there is no such user");
             return;
         }
-        sql.main("DELETE FROM q" + human + " WHERE id_" + human + " = " + id + " AND id_direction = " + direction + " AND id_time = " + time + 
-        " AND date = " + date + ";", function (error, rows) {
-            if (error) {
-                console.log(error);
-                response.send("error with dropping from queue");
-                return;
-            }
-            response.send("success deleted from queue");
-        });
+		//Если пассажир: нужно проверить, не взял ли он уже водителя
+		//Если взял, то нужно добавить 1 свободное место для водителя
+		//Пассажира, соответственно, снять с очереди. 
+		//Для начала проверить qpassenger
+		if(human == "passenger") {
+			sql.main("SELECT id FROM qpassenger WHERE id_passenger = " + id + " AND id_direction = " + direction + " AND id_time = " + time + 
+				" AND date = " + date + ";", function(error, rows) {
+				if(rows.length == 1) {
+					sql.main("DELETE FROM qpassenger WHERE id = " + rows[0]["id"] + ";", function(error, rows) {
+						response.send("you were successfully removed from queue");
+					});
+				} else if(rows.length > 1) {
+					//Ошибка программы? почему один и тот же человек стоит дважды в очереди?
+					//Удаляем всех
+					var sqlSTR = "DELETE FROM qpassenger WHERE id_passenger = " + id + " AND id_direction = " + 
+						direction + " AND id_time = " + time + " AND date = " + date + ";";
+					console.log(sqlSTR);
+					sql.main(sqlSTR, function(error, rows) {
+						console.log(rows);
+						response.send("many queues!");
+					});
+				} else if(rows.length == 0) {
+					//Пассажира нету в очереди. Видимо, уже нету. Нужно проверить
+					//Теперь надо отправиться на server.met
+					
+				}
+			});
+		} else response.send("driver");
     });
 
     
 });
 
+//Состояние очереди
 Var.app.get('/queueStatus', function (request, response) {
     var query = Var.url.parse(request.url).query;
     var params = Var.queryString.parse(query);

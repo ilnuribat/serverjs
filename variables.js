@@ -8,7 +8,6 @@ var url = require('url');
 app.use(bodyParser.urlencoded());
 var mysql = require('mysql');
 var fileSystem = require('fs');
-var Url = require('url');
 var queryString = require('querystring');
 
 var directionSize;
@@ -20,7 +19,7 @@ exports.app = app;
 exports.fileSystem = fileSystem;
 exports.qDriver = qDriver;
 exports.qPassenger = qPassenger;
-exports.url = url;
+
 exports.mysql = mysql;
 exports.url = url;
 exports.queryString = queryString;
