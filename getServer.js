@@ -74,7 +74,7 @@ Var.app.get('/direction', function(request, response) {
 
 //Возвращает список доступных городов
 Var.app.get('/towns', function(request, response) {
-	sql.main("select * from	towns;", function(error, rows) {
+	sql.main("SELECT * FROM	towns;", function(error, rows) {
 		var names = [];
 		for(var it in rows)
 			names.push(rows[it]["russianName"]);
@@ -120,27 +120,46 @@ Var.app.get('/dropFromQueue', function(request, response) {
 		//Если взял, то нужно добавить 1 свободное место для водителя
 		//Пассажира, соответственно, снять с очереди. 
 		//Для начала проверить qpassenger
-		if(human == "passenger") {
-			sql.main("SELECT id FROM qpassenger WHERE id_passenger = " + id + " AND id_direction = " + direction + " AND id_time = " + time + 
-				" AND date = " + date + ";", function(error, rows) {
-				if(rows.length == 1) {
-					sql.main("DELETE FROM qpassenger WHERE id = " + rows[0]["id"] + ";", function(error, rows) {
-						response.send("you were successfully removed from queue");
-					});
-				} else if(rows.length > 1) {
-					//Ошибка программы? почему один и тот же человек стоит дважды в очереди?
-					//Удаляем всех
-					var sqlSTR = "DELETE FROM qpassenger WHERE id_passenger = " + id + " AND id_direction = " + 
+        if (human == "passenger") {
+            var sqlSTR = "DELETE FROM qpassenger WHERE id_passenger = " + id + " AND id_direction = " + 
 						direction + " AND id_time = " + time + " AND date = " + date + ";";
-					console.log(sqlSTR);
-					sql.main(sqlSTR, function(error, rows) {
-						console.log(rows);
-						response.send("many queues!");
-					});
-				} else if(rows.length == 0) {
+			sql.main(sqlSTR, function(error, rows) {
+                if (rows["affectedRows"] == 1) {
+                    //Был единственный в очереди, сняли с очереди
+                    response.send("successfully removed");
+                }
+                if (rows["affectedRows"] > 1) {
+                    //Здесь нужно поосторожнее. Один и тот человек встал два раза в одну и то же (время, направляние, дата)
+                    //Всех удалили. Такого в идеале не должно быть. В будущем нужно учитывать, сколько раз встают в очередь
+                    response.send("warning: there were more than one of YOU");//забавано получилось
+				} else if(rows["affectedRows"] == 0) {
 					//Пассажира нету в очереди. Видимо, уже нету. Нужно проверить
 					//Теперь надо отправиться на server.met
-					
+					//Тут уже просто так сделать DELETE не получится. Нужно смотреть, кого удаляем.
+                    //Вернуть товарища в очередь, вернуть место водителю
+                    sql.main("SELECT id, id_driver, booked FROM met WHERE id_passenger = " + id + " AND id_direction = " + direction + 
+                        " AND id_time = " + time + " AND date = " + date + ";", function (error, rows){
+                        if (rows.length == 1) {
+                            var id_driver = rows[0]["id_driver"];
+                            var bookedMet = rows[0]["booked"];
+                            console.log(id_driver, ", ", bookedMet);
+                            //Всё ок. пока всё хорошо
+                            //Вернем места водителю
+                            var sqlString = "INSERT INTO qdriver(id_driver, id_direction, id_time, date, seats) VALUES(" + id_driver + ", " + direction +
+                                ", " + time + ", " + date + ", " + bookedMet + ") ON DUPLICATE KEY UPDATE seats = seats + " + bookedMet + ";";
+                            sql.main(sqlString, function (error, rows) {
+                                console.log(rows);
+                            });
+                            //Выкинем пассажира из очереди, пусть выбирает другой, заново встает.
+                            sql.main("DELETE FROM met WHERE id_driver = " + id_driver + " AND id_passenger = " + id + " AND id_direction = " + direction + 
+                                " AND id_time = " + time + " AND date = " + date + ";", function (error, rows) {
+                                response.send("you were successfully removed from queue and from met driver");
+                            });
+                            
+                            
+                        }
+                        
+                    });
 				}
 			});
 		} else response.send("driver");
