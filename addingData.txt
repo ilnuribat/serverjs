@@ -27,38 +27,3 @@ curl localhost:8080/newTime -d "name=12:00-15:00"
 curl localhost:8080/newTime -d "name=15:00-18:00"
 curl localhost:8080/newTime -d "name=18:00-21:00"
 curl localhost:8080/newTime -d "name=21:00-24:00"
-
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=1"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=1"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=1"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=1"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=1"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=1"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=1"
-
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=2"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=2"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=2"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=2"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=2"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=2"
-
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=3"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=3"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=3"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=3"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=3"
-
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=4"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=4"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=4"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=4"
-
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=5"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=5"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=5"
-
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=6"
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=6"
-
-curl localhost:8080/qdriver -d "id=1&seats=4&direction=1&time=7"
