@@ -110,7 +110,7 @@ Var.app.get('/dropFromQueue', function(request, response) {
         return;
     }
     
-    sql.main("SELECT id FROM driver WHERE id = " + id + ";", function (error, rows) {
+    sql.main("SELECT id FROM " + human + " WHERE id = " + id + ";", function (error, rows) {
         if (rows[0] == undefined) {
             console.log("DropFromQueue: There is no such user:" + id);
             response.send("there is no such user");
@@ -123,7 +123,7 @@ Var.app.get('/dropFromQueue', function(request, response) {
         if (human == "passenger") {
             var sqlSTR = "DELETE FROM qpassenger WHERE id_passenger = " + id + " AND id_direction = " + 
 						direction + " AND id_time = " + time + " AND date = " + date + ";";
-			sql.main(sqlSTR, function(error, rows) {
+            sql.main(sqlSTR, function (error, rows) {
                 if (rows["affectedRows"] == 1) {
                     //Был единственный в очереди, сняли с очереди
                     response.send("successfully removed");
@@ -132,13 +132,13 @@ Var.app.get('/dropFromQueue', function(request, response) {
                     //Здесь нужно поосторожнее. Один и тот человек встал два раза в одну и то же (время, направляние, дата)
                     //Всех удалили. Такого в идеале не должно быть. В будущем нужно учитывать, сколько раз встают в очередь
                     response.send("warning: there were more than one of YOU");//забавано получилось
-				} else if(rows["affectedRows"] == 0) {
-					//Пассажира нету в очереди. Видимо, уже нету. Нужно проверить
-					//Теперь надо отправиться на server.met
-					//Тут уже просто так сделать DELETE не получится. Нужно смотреть, кого удаляем.
+                } else if (rows["affectedRows"] == 0) {
+                    //Пассажира нету в очереди. Видимо, уже нету. Нужно проверить
+                    //Теперь надо отправиться на server.met
+                    //Тут уже просто так сделать DELETE не получится. Нужно смотреть, кого удаляем.
                     //Вернуть товарища в очередь, вернуть место водителю
                     sql.main("SELECT id, id_driver, booked FROM met WHERE id_passenger = " + id + " AND id_direction = " + direction + 
-                        " AND id_time = " + time + " AND date = " + date + ";", function (error, rows){
+                        " AND id_time = " + time + " AND date = " + date + ";", function (error, rows) {
                         if (rows.length == 1) {
                             var id_driver = rows[0]["id_driver"];
                             var bookedMet = rows[0]["booked"];
@@ -155,14 +155,15 @@ Var.app.get('/dropFromQueue', function(request, response) {
                                 " AND id_time = " + time + " AND date = " + date + ";", function (error, rows) {
                                 response.send("you were successfully removed from queue and from met driver");
                             });
-                            
-                            
                         }
                         
                     });
-				}
-			});
-		} else response.send("driver");
+                }
+            });
+        } else {
+            //Если водитель, то мы можем снять с очееди только в том случае, если у него 
+            response.send("driver");
+        }
     });
 
     
