@@ -9,7 +9,7 @@ var Var = require('./variables.js');
 var sql = require('./sql.js');
 var queue = require('./makeQueue.js');
 	
-//Выдача состояние очереди в указанном направлении
+//Выдача состояния очереди в указанном направлении
 //Два запроса в БД
 Var.app.get('/data', function(request, response) {
     var query = Var.url.parse(request.url).query;
