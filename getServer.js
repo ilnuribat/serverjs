@@ -307,11 +307,9 @@ Var.app.get('/destTowns', function (request, response) {
             rows.forEach(function (row) {
                 fullTowns[row["russianName"]]["count"] = row["count"];
             });
-            console.log(fullTowns);
             for (var oneTown in fullTowns) {
                 fullArray.push(oneTown + " (" + fullTowns[oneTown]["count"] + ")" );
             }
-            console.log(fullArray);
             response.send(fullArray);
         });
 
