@@ -1,3 +1,4 @@
+DROP DATABASE server;
 CREATE DATABASE server CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 use server
 CREATE TABLE time(
