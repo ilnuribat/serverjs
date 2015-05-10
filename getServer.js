@@ -20,8 +20,12 @@ Var.app.get('/data', function(request, response) {
 		response.send("unknown direction");
 		return;
     }
-    
-    //в силу кривизны рук буду делать два запроса
+    var sqlQuery = 
+		"SELECT time.name AS 'time', COUNT(id_passenger) AS 'passengers', COUNT(id_driver) AS 'drivers' " + 
+		"FROM time " + 
+		"LEFT JOIN qpassenger ON qpassenger.id_time = time.id " + 
+		"LEFT JOIN qdriver ON time.id = qdriver.id_time " +
+		"WHERE";
     sql.main("SELECT COUNT(id), id_time FROM qdriver WHERE id_direction = " + direction + 
         " AND date = " + date + " GROUP BY id_time;", function (error, rows) {
         var QUEUE = [];
@@ -254,4 +258,40 @@ Var.app.get('/queueStatus', function (request, response) {
 Var.app.get('/queueFind', function (request, response) {
     response.send("queuFind started");
     queue.main();
+});
+
+Var.app.get('/destTowns', function (request, response) {
+    var query = Var.url.parse(request.url).query;
+    var params = Var.queryString.parse(query);
+    var sourceTown = params["source"];
+    var date = params["date"];
+    var ahuman = params["human"] == "driver" ? "qpassenger" : "qdriver";
+    var sqlQuery = 'SELECT id, russianName FROM towns';
+    sql.main(sqlQuery, function (error, towns) {
+        var fullTowns = {};
+        towns.forEach(function (townName) {
+            fullTowns[townName["russianName"]] = {};
+            fullTowns[townName["russianName"]]["id"] = townName["id"];
+            fullTowns[townName["russianName"]]["count"] = 0;
+        });
+
+        var queryCounts = 'SELECT towns.russianName AS "russianName", count(id_destination) AS "count" FROM ' + ahuman +
+        ' INNER JOIN direction ON direction.id = id_direction INNER JOIN towns ON id_destination = towns.id ' +
+        'WHERE date = ' + date + ' AND id_source = ' + sourceTown + 
+        ' GROUP BY id_destination;';
+
+        sql.main(queryCounts, function (error, rows) {
+            var fullArray = [];
+            rows.forEach(function (row) {
+                fullTowns[row["russianName"]]["count"] = row["count"];
+            });
+            console.log(fullTowns);
+            for (var oneTown in fullTowns) {
+                fullArray.push(oneTown + " (" + fullTowns[oneTown]["count"] + ")" );
+            }
+            console.log(fullArray);
+            response.send(fullArray);
+        });
+
+    });
 });
