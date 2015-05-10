@@ -145,7 +145,7 @@ Var.app.get('/dropFromQueue', function(request, response) {
             sql.main(sqlSTR, function (error, rows) {
                 if (rows["affectedRows"] == 1) {
                     //Был единственный в очереди, сняли с очереди
-                    response.send("successfully removed");
+                    response.send("success");
                 }
                 if (rows["affectedRows"] > 1) {
                     //Здесь нужно поосторожнее. Один и тот человек встал два раза в одну и то же (время, направляние, дата)
@@ -172,7 +172,7 @@ Var.app.get('/dropFromQueue', function(request, response) {
                             //Выкинем пассажира из очереди, пусть выбирает другой, заново встает.
                             sql.main("DELETE FROM met WHERE id_driver = " + id_driver + " AND id_passenger = " + id + " AND id_direction = " + direction + 
                                 " AND id_time = " + time + " AND date = " + date + ";", function (error, rows) {
-                                response.send("you were successfully removed from queue and from met driver");
+                                response.send("success");
                             });
                         }
                         
@@ -181,7 +181,14 @@ Var.app.get('/dropFromQueue', function(request, response) {
             });
         } else {
             //Если водитель, то мы можем снять с очееди только в том случае, если у него 
-            response.send("driver");
+            var sqlStr = "DELETE FROM qdriver WHERE id_driver = " + id + " AND id_direction = " + 
+						direction + " AND id_time = " + time + " AND date = " + date + ";"
+            sql.main(sqlSTR, function (error, rows) {
+                if (error)
+                    response.send(error);
+                else response.send("success");
+            });
+            
         }
     });
 
@@ -293,7 +300,7 @@ Var.app.get('/destTowns', function (request, response) {
         var queryCounts = 'SELECT towns.russianName AS "russianName", count(id_destination) AS "count" FROM ' + ahuman +
         ' INNER JOIN direction ON direction.id = id_direction INNER JOIN towns ON id_destination = towns.id ' +
         'WHERE date = ' + date + ' AND id_source = ' + sourceTown + 
-        ' GROUP BY id_destination;';
+        ' GROUP BY id_destination ORDER BY id_destination;';
 
         sql.main(queryCounts, function (error, rows) {
             var fullArray = [];
