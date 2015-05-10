@@ -10,37 +10,52 @@ var sql = require('./sql.js');
 var queue = require('./makeQueue.js');
 	
 //Выдача состояния очереди в указанном направлении
-//Два запроса в БД
 Var.app.get('/data', function(request, response) {
     var query = Var.url.parse(request.url).query;
 	var params = Var.queryString.parse(query);
     var direction = params["direction"] - 0;
     var date = params["date"] - 0;
+    if (date < 0 || date > 999999) {
+        response.send("unknown date");
+        return;
+    }
     if (direction > Var.directionSize || direction < 0) {
 		response.send("unknown direction");
 		return;
     }
     var sqlQuery = 
-		"SELECT time.name AS 'time', COUNT(id_passenger) AS 'passengers', COUNT(id_driver) AS 'drivers' " + 
-		"FROM time " + 
-		"LEFT JOIN qpassenger ON qpassenger.id_time = time.id " + 
-		"LEFT JOIN qdriver ON time.id = qdriver.id_time " +
-		"WHERE";
-    sql.main("SELECT COUNT(id), id_time FROM qdriver WHERE id_direction = " + direction + 
-        " AND date = " + date + " GROUP BY id_time;", function (error, rows) {
-        var QUEUE = [];
-        for (var i = 1; i <= 16; i++) QUEUE[i] = 0;
-        for (var row in rows) {
-            QUEUE[rows[row]["id_time"]] += rows[row]["COUNT(id)"];
-        }
-        sql.main("SELECT COUNT(id), id_time FROM qpassenger WHERE id_direction = " + direction + 
-        " AND date = " + date + " GROUP BY id_time;", function (error, rows) {
-            for (var row in rows) {
-                QUEUE[rows[row]["id_time"] + 8] += rows[row]["COUNT(id)"];
-            }
-            QUEUE.splice(0, 1);
-            response.send(JSON.stringify(QUEUE));
-        });
+        "SELECT time.id, time.name AS 'time', count(qpassenger.id) AS 'passengers', count(qdriver.id) AS 'drivers' " +
+        //    ",qdriver.date, qpassenger.date " +
+        "FROM time " +
+        "LEFT JOIN qpassenger ON qpassenger.id_time = time.id " +
+        "LEFT JOIN qdriver ON qdriver.id_time = time.id " +
+        "WHERE (qdriver.date = " + date + "  AND qdriver.id_direction = " + direction + ") " +
+        "OR ( qpassenger.date = " + date + " AND qpassenger.id_direction = " + direction + ")" +
+        "GROUP BY time.id " +
+    
+        "UNION " +
+    
+        "SELECT time.id, time.name, 0 AS 'passenger', 0 AS 'driver' " + //", NULL, NULL " +
+        "FROM time " +
+        "WHERE time.id NOT IN( " +
+            "SELECT time.id " +
+            "FROM time " +
+            "LEFT JOIN qpassenger ON qpassenger.id_time = time.id " +
+            "LEFT JOIN qdriver ON qdriver.id_time = time.id " +
+            "WHERE (qdriver.date = " + date + "  AND qdriver.id_direction = " + direction + ") " +
+            "OR ( qpassenger.date = " + date + " AND qpassenger.id_direction = " + direction + ")" +
+            "GROUP BY time.id " +
+        ") " +
+        "GROUP BY id " +
+        "ORDER BY id " +
+        ";";
+
+    var oldSqlQuery = "SELECT COUNT(id), id_time FROM qdriver WHERE id_direction = " + direction + 
+        " AND date = " + date + " GROUP BY id_time;";
+    sql.main(sqlQuery, function (error, rows) {
+        console.log(error);
+        console.log(rows);
+        response.send(rows);
     });
 });
 
