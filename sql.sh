@@ -8,8 +8,8 @@ CREATE TABLE time(
 
 CREATE TABLE towns(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    name VARCHAR(20),
-    russianName VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci
+    name VARCHAR(30),
+    russianName VARCHAR(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci
 )CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE direction(
