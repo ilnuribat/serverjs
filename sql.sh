@@ -22,7 +22,7 @@ CREATE TABLE direction(
 CREATE TABLE driver(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
 	name VARCHAR(20) NOT NULL COLLATE utf8_unicode_ci,
-    phone VARCHAR(10) NOT NULL,
+    phone VARCHAR(11) NOT NULL,
     access INTEGER,
 	UNIQUE KEY uniquePhone(phone)	
 )CHARACTER SET utf8 COLLATE utf8_general_ci;
@@ -30,7 +30,7 @@ CREATE TABLE driver(
 CREATE TABLE passenger(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     name VARCHAR(20) NOT NULL COLLATE utf8_unicode_ci,
-    phone VARCHAR(10) NOT NULL,
+    phone VARCHAR(11) NOT NULL,
 	UNIQUE KEY uniquePhone(phone)
 )CHARACTER SET utf8 COLLATE utf8_general_ci;
 
