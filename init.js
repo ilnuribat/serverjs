@@ -1,6 +1,7 @@
 var Var = require('./variables.js');
 var sql = require('./sql.js');
 
-sql.main("SELECT COUNT(id) AS 'count' FROM direction;", function (error, rows) {
-    Var.directionSize = rows[0]["count"];
+sql.main("SELECT MAX(id) AS 'max', MIN(id) AS 'min' FROM direction;", function (error, rows) {
+    Var.directionMax = rows[0]["max"];
+    Var.directionMin = rows[0]["min"];
 });
