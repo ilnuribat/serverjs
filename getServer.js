@@ -210,9 +210,8 @@ Var.app.get('/queueStatus', function (request, response) {
         return;
     }
     if (direction <= Var.directionSize && direction > 0); else {
-        console.log("unknown direction");
-        response.send("unknown direction");
-        return;
+        //response.send("unknown direction");
+        //return;
     }
     if (time <= 8 && time > 0); else {
         console.log("unknown time");
