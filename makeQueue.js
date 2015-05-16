@@ -87,12 +87,16 @@ function makeQueueNoDB(Drivers, Passengers)
 
     //Раскидываем по универсальным массивам, 3-мерным.
     for (var i = 0; i < Drivers.length; i++) {
+        var element = {
+            "idDB": Drivers[i].idDB,
+            "id": Drivers[i].id_driver,
+            "seats": Drivers[i].seats
+        };
+        console.log(element);
         var direction = Drivers[i].id_direction;
         var time = Drivers[i].id_time;
-        var id_driver = Drivers[i].id_driver;
-        var idDB = Drivers[i].idDB;
-        var seats = Drivers[i].seats;
-        qDriver[direction][time].push({"idDB": idDB, "id": id_driver, "seats": seats});
+
+        qDriver[direction][time].push(element);
     }
     for (var i = 0; i < Passengers.length; i++) {
         var direction = Passengers[i].id_direction;
