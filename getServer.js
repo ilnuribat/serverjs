@@ -21,7 +21,7 @@ Var.app.get('/data', function(request, response) {
     }
     if (direction > Var.directionSize || direction < 0) {
 		response.send("unknown direction");
-		return;
+		//return;
     }
     var sqlQuery = 
         "SELECT time.id, time.name AS 'time', count(qpassenger.id) AS 'passengers', count(qdriver.id) AS 'drivers' " +
