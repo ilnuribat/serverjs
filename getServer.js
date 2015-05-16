@@ -20,7 +20,7 @@ Var.app.get('/data', function(request, response) {
         return;
     }
     if (direction > Var.directionSize || direction < 0) {
-		response.send("unknown direction");
+		//response.send("unknown direction");
 		//return;
     }
     var sqlQuery = 
