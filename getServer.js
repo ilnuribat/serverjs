@@ -19,10 +19,7 @@ Var.app.get('/data', function(request, response) {
         response.send("unknown date");
         return;
     }
-    if (direction > Var.directionSize || direction < 0) {
-		//response.send("unknown direction");
-		//return;
-    }
+
     var sqlQuery = 
         "SELECT time.id, time.name AS 'time', count(qpassenger.id) AS 'passengers', count(qdriver.id) AS 'drivers' " +
         //    ",qdriver.date, qpassenger.date " +
@@ -114,10 +111,7 @@ Var.app.get('/dropFromQueue', function(request, response) {
         response.send("unknown human");
         return;
     }
-    if (direction < 0 || direction > Var.directionSize) {
-        response.send("unknown direction");
-        return;
-    }
+
     if (time < 0 || time > 8) {
         response.send("unknown time");
         return;
@@ -209,20 +203,20 @@ Var.app.get('/queueStatus', function (request, response) {
         response.send("error: incorrect human");
         return;
     }
-    if (direction <= Var.directionSize && direction > 0); else {
-        //response.send("unknown direction");
-        //return;
-    }
-    if (time <= 8 && time > 0); else {
+
+    if (isNaN(time) || time > 8 || time < 0) {
         console.log("unknown time");
         response.send("unknown time");
         return;
     }
-	if(date >= 0); else {
-		console.log("unknown date");
-		response.send("unknown date");
-		return;
-	}
+    if (isNaN(date) || date < 0 || date == undefined) {
+        response.send("incorrect form of date");
+        return;
+    }
+    if (isNaN(direction) || direction < Var.directionMin || direction > Var.directionMax) {
+        console.log("unknown direction");
+        response.send("unknown direction" + JSON.stringify(params["direction"]));
+    }
 
     //Проверка из базы данных. Ищем такого юзера из зарегестрированных
     sql.main("SELECT id FROM " + human + " WHERE id = " + id + ";", function (error, rows) {
@@ -242,11 +236,11 @@ Var.app.get('/queueStatus', function (request, response) {
 			" AND id_time = " + time + " AND date = " + date + ";", function(error, rows) {
 			
 			//проверяем, вообще, этот чувак ставал в очередь?
-			if(rows.length == 0){
-				console.log("this human didn't stood to queue almost");
-				response.send("Станьте в очередь");
-				return;
-			}
+            if (error) {
+                response.send(error);
+                console.log(error);
+                return;
+            }
 			
 			//Проверка: находится ли пользователь в очереди. Проверяем q{driver/passenger}. 
 			sql.main("SELECT id FROM q" + human + " where id_" + human + " = " + id + " AND id_direction = " + direction + 
