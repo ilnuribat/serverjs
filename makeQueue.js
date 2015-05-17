@@ -4,7 +4,7 @@ var sql = require('./sql.js');
 //встречаем людей
 var mainF = function main() {
 	//Через каждые 10 секунд
-    setTimeout(main, 3*1000);
+    setTimeout(main, 5*1000);
     //Чистим очередь
     sql.main("DELETE FROM qdriver WHERE seats = 0;", function (error, rows) { });
     sql.main("DELETE FROM qpassenger WHERE booked = 0;", function (error, rows) { });
@@ -67,11 +67,6 @@ function makeQueueNoDB(Drivers, Passengers)
     //Вот эти аргументы хранят в себе всех пассажиров/водителей в перемешку.
     if (Drivers.length * Passengers.length == 0)
         return;
-    
-    if (Var.directionSize === undefined) {
-        console.log("MakeQueue.js: MakeQueueNoDB - undefined direction size");
-        return;
-    }
 
     if (Drivers[0].date != Passengers[0].date) {
         console.log("ERROR!");
@@ -80,8 +75,8 @@ function makeQueueNoDB(Drivers, Passengers)
     var DATE = Drivers[0].date;
     //Инициализация новых массивов, с которыми непосредственно будем работать
     var qPassenger = [], qDriver = [];
-    //Var.directionSize - undefined
-    for (var i = 1; i <= Var.directionSize; i++) {
+    
+    for (var i = Var.directionMin; i <= Var.directionMax; i++) {
         qPassenger[i] = [];
         qDriver[i] = [];
         for (var j = 0; j <= 8; j++) {
@@ -92,12 +87,16 @@ function makeQueueNoDB(Drivers, Passengers)
 
     //Раскидываем по универсальным массивам, 3-мерным.
     for (var i = 0; i < Drivers.length; i++) {
+        var element = {
+            "idDB": Drivers[i].idDB,
+            "id": Drivers[i].id_driver,
+            "seats": Drivers[i].seats
+        };
+        console.log(element);
         var direction = Drivers[i].id_direction;
         var time = Drivers[i].id_time;
-        var id_driver = Drivers[i].id_driver;
-        var idDB = Drivers[i].idDB;
-        var seats = Drivers[i].seats;
-        qDriver[direction][time].push({"idDB": idDB, "id": id_driver, "seats": seats});
+
+        qDriver[direction][time].push(element);
     }
     for (var i = 0; i < Passengers.length; i++) {
         var direction = Passengers[i].id_direction;
@@ -109,7 +108,7 @@ function makeQueueNoDB(Drivers, Passengers)
     }
 
     //Цикл по всем направлениям.
-    for (var direction = 1; direction <= Var.directionSize; direction++) {
+    for (var direction = Var.directionMin; direction <= Var.directionMax; direction++) {
         //Цикл по временам - на каждом интервале по 2 очереди: пассажиры и водители
         //всего 8 интервалов времени с 00:00 - 03:00, 03:00 - 06:00, и т.д с шагом в 3 часа
         //Кстати. не факт, что с шагом в 3 часа.

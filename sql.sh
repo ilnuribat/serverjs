@@ -1,3 +1,4 @@
+DROP DATABASE server;
 CREATE DATABASE server CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 use server
 CREATE TABLE time(
@@ -7,8 +8,8 @@ CREATE TABLE time(
 
 CREATE TABLE towns(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    name VARCHAR(20),
-    russianName VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci
+    name VARCHAR(30),
+    russianName VARCHAR(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci
 )CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE direction(
@@ -22,7 +23,7 @@ CREATE TABLE direction(
 CREATE TABLE driver(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
 	name VARCHAR(20) NOT NULL COLLATE utf8_unicode_ci,
-    phone VARCHAR(10) NOT NULL,
+    phone VARCHAR(11) NOT NULL,
     access INTEGER,
 	UNIQUE KEY uniquePhone(phone)	
 )CHARACTER SET utf8 COLLATE utf8_general_ci;
@@ -30,7 +31,7 @@ CREATE TABLE driver(
 CREATE TABLE passenger(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     name VARCHAR(20) NOT NULL COLLATE utf8_unicode_ci,
-    phone VARCHAR(10) NOT NULL,
+    phone VARCHAR(11) NOT NULL,
 	UNIQUE KEY uniquePhone(phone)
 )CHARACTER SET utf8 COLLATE utf8_general_ci;
 

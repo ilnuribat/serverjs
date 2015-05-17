@@ -10,9 +10,13 @@ Var.app.post('/registration', function(request, response) {
 	var name = body['name'];
 	var phone = body['phone'];
 	var human = body['human'];
-	
-	if(phone.length != 10)
-		console.log("phone number is not 9-symbols");
+    console.log(phone.length);
+    if (phone.length != 11) {
+        console.log("phone number is not 11-symbols");
+        response.send("phone number is not 11-symbols");
+        return;
+    }
+    
 	
 	if(human == 'driver') {
 		sql.main('INSERT INTO driver(name, phone) VALUES ("' + name + '", "' + phone + '");', function (error, rows) { 
@@ -49,8 +53,8 @@ Var.app.post('/qdriver', function(request, response) {
     //обработка ошибок
     //Проверка направления
 	if(direction < 0 || direction > Var.directionSize){
-		response.send("unknown direction");
-		return;
+		//response.send("unknown direction");
+		//return;
     }
     
     //Проверка Времени
@@ -100,8 +104,8 @@ Var.app.post('/qpassenger', function(request, response) {
     //Проверка ошибок
     //Проверка направления
     if (direction < 0 || direction > Var.directionSize) {
-        response.send("unknown direction");
-        return;
+        //response.send("unknown direction");
+        //return;
     }
     //Проверка Времени
     if (time < 0 || time > 8) {

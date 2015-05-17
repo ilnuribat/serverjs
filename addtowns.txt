@@ -1,0 +1,27 @@
+﻿use server;
+
+SET character_set_server=utf8;
+SET character_set_client=utf8;
+SET character_set_connection=utf8;
+SET character_set_results=utf8;
+
+INSERT INTO towns(id, name, russianName) VALUES
+(1, "Shaksha", "Шакша"), 
+(2, "Sipaylovo", "Сипайлово"),
+(3, "Timashevo", "Тимашево"),
+(4, "Alekseevka", "Алексеевка"),
+(5, "Milovka", "Миловка"),
+(6, "Dmitrievka", "Дмитриевка"), 
+(7, "Avdon", "Авдон"),
+(8, "Dema", "Дема"),
+(9, "TC Mega", "ТЦ Мега"),
+(10, "Telecentr", "Телецентр"),
+(11, "Tramvainaya", "Трамвайная"),
+(12, "Birskiy trakt", "Бирский тракт"), 
+(13, "Mendeleeva", "Менделеева"),
+(14, "Airport", "Аэропорт"),
+(15, "Nijegorodka", "Нижегородка");
+
+INSERT INTO direction(id_source, id_destination) 
+SELECT towns.id AS 'id_source', t.id AS 'id_destination' 
+FROM towns INNER JOIN towns AS t WHERE towns.id <> t.id;

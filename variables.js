@@ -10,7 +10,8 @@ var mysql = require('mysql');
 var fileSystem = require('fs');
 var queryString = require('querystring');
 
-var directionSize;
+var directionMax;
+var directionMin;
 var qDriver = [];
 var qPassenger = [];
 var blockNewData = false;
@@ -23,5 +24,6 @@ exports.qPassenger = qPassenger;
 exports.mysql = mysql;
 exports.url = url;
 exports.queryString = queryString;
-exports.directionSize = directionSize;
+exports.directionMax = directionMax;
+exports.directionMin = directionMin;
 exports.blockNewData = blockNewData;

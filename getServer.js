@@ -9,34 +9,48 @@ var Var = require('./variables.js');
 var sql = require('./sql.js');
 var queue = require('./makeQueue.js');
 	
-//Выдача состояние очереди в указанном направлении
-//Два запроса в БД
+//Выдача состояния очереди в указанном направлении
 Var.app.get('/data', function(request, response) {
     var query = Var.url.parse(request.url).query;
 	var params = Var.queryString.parse(query);
     var direction = params["direction"] - 0;
     var date = params["date"] - 0;
-    if (direction > Var.directionSize || direction < 0) {
-		response.send("unknown direction");
-		return;
+    if (date < 0 || date > 999999) {
+        response.send("unknown date");
+        return;
     }
+
+    var sqlQuery = 
+        "SELECT time.id, time.name AS 'time', count(qpassenger.id) AS 'passengers', count(qdriver.id) AS 'drivers' " +
+        //    ",qdriver.date, qpassenger.date " +
+        "FROM time " +
+        "LEFT JOIN qpassenger ON qpassenger.id_time = time.id " +
+        "LEFT JOIN qdriver ON qdriver.id_time = time.id " +
+        "WHERE (qdriver.date = " + date + "  AND qdriver.id_direction = " + direction + ") " +
+        "OR ( qpassenger.date = " + date + " AND qpassenger.id_direction = " + direction + ")" +
+        "GROUP BY time.id " +
     
-    //в силу кривизны рук буду делать два запроса
-    sql.main("SELECT COUNT(id), id_time FROM qdriver WHERE id_direction = " + direction + 
-        " AND date = " + date + " GROUP BY id_time;", function (error, rows) {
-        var QUEUE = [];
-        for (var i = 1; i <= 16; i++) QUEUE[i] = 0;
-        for (var row in rows) {
-            QUEUE[rows[row]["id_time"]] += rows[row]["COUNT(id)"];
-        }
-        sql.main("SELECT COUNT(id), id_time FROM qpassenger WHERE id_direction = " + direction + 
-        " AND date = " + date + " GROUP BY id_time;", function (error, rows) {
-            for (var row in rows) {
-                QUEUE[rows[row]["id_time"] + 8] += rows[row]["COUNT(id)"];
-            }
-            QUEUE.splice(0, 1);
-            response.send(JSON.stringify(QUEUE));
-        });
+        "UNION " +
+    
+        "SELECT time.id, time.name, 0 AS 'passenger', 0 AS 'driver' " + //", NULL, NULL " +
+        "FROM time " +
+        "WHERE time.id NOT IN( " +
+            "SELECT time.id " +
+            "FROM time " +
+            "LEFT JOIN qpassenger ON qpassenger.id_time = time.id " +
+            "LEFT JOIN qdriver ON qdriver.id_time = time.id " +
+            "WHERE (qdriver.date = " + date + "  AND qdriver.id_direction = " + direction + ") " +
+            "OR ( qpassenger.date = " + date + " AND qpassenger.id_direction = " + direction + ")" +
+            "GROUP BY time.id " +
+        ") " +
+        "GROUP BY id " +
+        "ORDER BY id " +
+        ";";
+
+    var oldSqlQuery = "SELECT COUNT(id), id_time FROM qdriver WHERE id_direction = " + direction + 
+        " AND date = " + date + " GROUP BY id_time;";
+    sql.main(sqlQuery, function (error, rows) {
+        response.send(rows);
     });
 });
 
@@ -101,10 +115,7 @@ Var.app.get('/dropFromQueue', function(request, response) {
         response.send("unknown human");
         return;
     }
-    if (direction < 0 || direction > Var.directionSize) {
-        response.send("unknown direction");
-        return;
-    }
+
     if (time < 0 || time > 8) {
         response.send("unknown time");
         return;
@@ -130,7 +141,7 @@ Var.app.get('/dropFromQueue', function(request, response) {
             sql.main(sqlSTR, function (error, rows) {
                 if (rows["affectedRows"] == 1) {
                     //Был единственный в очереди, сняли с очереди
-                    response.send("successfully removed");
+                    response.send("success");
                 }
                 if (rows["affectedRows"] > 1) {
                     //Здесь нужно поосторожнее. Один и тот человек встал два раза в одну и то же (время, направляние, дата)
@@ -157,7 +168,7 @@ Var.app.get('/dropFromQueue', function(request, response) {
                             //Выкинем пассажира из очереди, пусть выбирает другой, заново встает.
                             sql.main("DELETE FROM met WHERE id_driver = " + id_driver + " AND id_passenger = " + id + " AND id_direction = " + direction + 
                                 " AND id_time = " + time + " AND date = " + date + ";", function (error, rows) {
-                                response.send("you were successfully removed from queue and from met driver");
+                                response.send("success");
                             });
                         }
                         
@@ -166,7 +177,14 @@ Var.app.get('/dropFromQueue', function(request, response) {
             });
         } else {
             //Если водитель, то мы можем снять с очееди только в том случае, если у него 
-            response.send("driver");
+            var sqlStr = "DELETE FROM qdriver WHERE id_driver = " + id + " AND id_direction = " + 
+						direction + " AND id_time = " + time + " AND date = " + date + ";"
+            sql.main(sqlSTR, function (error, rows) {
+                if (error)
+                    response.send(error);
+                else response.send("success");
+            });
+            
         }
     });
 
@@ -189,21 +207,20 @@ Var.app.get('/queueStatus', function (request, response) {
         response.send("error: incorrect human");
         return;
     }
-    if (direction <= Var.directionSize && direction > 0); else {
-        console.log("unknown direction");
-        response.send("unknown direction");
-        return;
-    }
-    if (time <= 8 && time > 0); else {
+
+    if (isNaN(time) || time > 8 || time < 0) {
         console.log("unknown time");
         response.send("unknown time");
         return;
     }
-	if(date >= 0); else {
-		console.log("unknown date");
-		response.send("unknown date");
-		return;
-	}
+    if (isNaN(date) || date < 0 || date == undefined) {
+        response.send("incorrect form of date");
+        return;
+    }
+    if (isNaN(direction) || direction < Var.directionMin || direction > Var.directionMax) {
+        console.log("unknown direction");
+        response.send("unknown direction" + JSON.stringify(params["direction"]));
+    }
 
     //Проверка из базы данных. Ищем такого юзера из зарегестрированных
     sql.main("SELECT id FROM " + human + " WHERE id = " + id + ";", function (error, rows) {
@@ -223,11 +240,11 @@ Var.app.get('/queueStatus', function (request, response) {
 			" AND id_time = " + time + " AND date = " + date + ";", function(error, rows) {
 			
 			//проверяем, вообще, этот чувак ставал в очередь?
-			if(rows.length == 0){
-				console.log("this human didn't stood to queue almost");
-				response.send("Станьте в очередь");
-				return;
-			}
+            if (error) {
+                response.send(error);
+                console.log(error);
+                return;
+            }
 			
 			//Проверка: находится ли пользователь в очереди. Проверяем q{driver/passenger}. 
 			sql.main("SELECT id FROM q" + human + " where id_" + human + " = " + id + " AND id_direction = " + direction + 
@@ -258,4 +275,38 @@ Var.app.get('/queueStatus', function (request, response) {
 Var.app.get('/queueFind', function (request, response) {
     response.send("queuFind started");
     queue.main();
+});
+
+Var.app.get('/destTowns', function (request, response) {
+    var query = Var.url.parse(request.url).query;
+    var params = Var.queryString.parse(query);
+    var sourceTown = params["source"];
+    var date = params["date"];
+    var ahuman = params["human"] == "driver" ? "qpassenger" : "qdriver";
+    var sqlQuery = 'SELECT id, russianName FROM towns';
+    sql.main(sqlQuery, function (error, towns) {
+        var fullTowns = {};
+        towns.forEach(function (townName) {
+            fullTowns[townName["russianName"]] = {};
+            fullTowns[townName["russianName"]]["id"] = townName["id"];
+            fullTowns[townName["russianName"]]["count"] = 0;
+        });
+
+        var queryCounts = 'SELECT towns.russianName AS "russianName", count(id_destination) AS "count" FROM ' + ahuman +
+        ' INNER JOIN direction ON direction.id = id_direction INNER JOIN towns ON id_destination = towns.id ' +
+        'WHERE date = ' + date + ' AND id_source = ' + sourceTown + 
+        ' GROUP BY id_destination ORDER BY id_destination;';
+
+        sql.main(queryCounts, function (error, rows) {
+            var fullArray = [];
+            rows.forEach(function (row) {
+                fullTowns[row["russianName"]]["count"] = row["count"];
+            });
+            for (var oneTown in fullTowns) {
+                fullArray.push(oneTown + " (" + fullTowns[oneTown]["count"] + ")" );
+            }
+            response.send(fullArray);
+        });
+
+    });
 });
