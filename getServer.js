@@ -74,6 +74,10 @@ Var.app.get('/direction', function(request, response) {
 
 //Возвращает список доступных городов
 Var.app.get('/towns', function(request, response) {
+	var query = Var.url.parse(request.url).query;
+	var params = Var.queryString.parse(query);
+	var yuldash = params['yuldash'];
+	
 	sql.main("SELECT * FROM	towns;", function(error, rows) {
 		var names = [];
 		for(var it in rows)
