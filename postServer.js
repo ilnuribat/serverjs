@@ -10,7 +10,7 @@ Var.app.post('/registration', function(request, response) {
 	var name = body['name'];
 	var phone = body['phone'];
 	var human = body['human'];
-    console.log(phone.length);
+    console.log("register:", name, phone, human);
     if (phone.length != 11) {
         console.log("phone number is not 11-symbols");
         response.send("phone number is not 11-symbols");
@@ -23,7 +23,7 @@ Var.app.post('/registration', function(request, response) {
 				if(error) {
 					console.log("errorDB: couldn't register new driver");
 					response.send("error: couldn't register driver");
-				}
+				} else
 				response.send(JSON.stringify(rows.insertId));
 			});
 		return;
