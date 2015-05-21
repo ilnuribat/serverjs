@@ -33,6 +33,7 @@ Var.app.post('/registration', function(request, response) {
 				if(error) {
 					console.log("errorDB: couldn't register new passenger");
 					response.send("error: couldn't register passenger");
+					return;
 				}
 				response.send(JSON.stringify(rows.insertId));
 			});
