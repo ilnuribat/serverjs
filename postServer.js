@@ -19,22 +19,29 @@ Var.app.post('/registration', function(request, response) {
     
 	
 	if(human == 'driver') {
-		sql.main('INSERT INTO driver(name, phone) VALUES ("' + name + '", "' + phone + '");', function (error, rows) { 
+        sql.main('INSERT INTO driver(name, phone) VALUES ("' + name + '", "' + phone + 
+                '") ON DUPLICATE KEY UPDATE name = VALUES(name);', function (error, rows) {
+                console.log(rows);
+                console.log(error);
 				if(error) {
-					console.log("errorDB: couldn't register new driver");
-					response.send("error: couldn't register driver");
-				} else
+					console.log(error);
+                response.send("Такой номер уже есть");
+                return;
+				}
 				response.send(JSON.stringify(rows.insertId));
 			});
 		return;
 	}
 	if(human == 'passenger') {
-		sql.main('INSERT INTO passenger(name, phone) VALUES("' + name + '", "' + phone + '");', function (error, rows) {
+        sql.main('INSERT INTO passenger(name, phone) VALUES("' + name + '", "' + phone + 
+                '") ON DUPLICATE KEY UPDATE name = VALUES(name);', function (error, rows) {
+                console.log(rows);
+                console.log(error);
 				if(error) {
 					console.log(error);
 					response.send("Такой номер уже есть");
 					return;
-				}
+				} 
 				response.send(JSON.stringify(rows.insertId));
 			});
 		return;
