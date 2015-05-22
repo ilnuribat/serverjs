@@ -95,7 +95,7 @@ Var.app.get('/towns', function(request, response) {
 });
 
 //Удаление участника из очереди.
-Var.app.get('/dropFromQueue', function(request, response) {
+Var.app.get('/dropFromQueue', function (request, response) {
 	var query = Var.url.parse(request.url).query;
 	var params = Var.queryString.parse(query);
 	var human = params["human"];
@@ -103,25 +103,35 @@ Var.app.get('/dropFromQueue', function(request, response) {
 	var direction = params["direction"] - 0;
     var time = params["time"] - 0;
     var date = params["date"] - 0;
-	
+    var logTime = new Date().toLocaleTimeString();
+    console.log(logTime, "/dropFromQueue");
+    console.log("\thuman: " + human + ", id: " + id + ", direction: " + direction + ", time: " + time + ", date: " + date); 
     //Проверки на дурака
     if (human != "driver" && human != "passenger") {
+        console.log("\thuman is driver or passenger");
         response.send("unknown human");
         return;
     }
 
-    if (time < 0 || time > 8) {
+    if (isNaN(time) || time < 0 || time > 8) {
+        console.log("\ttime is not a number or incorrect");
         response.send("unknown time");
         return;
     }
-    if (date < 0) {
+    if (isNaN(date) || date < 0) {
+        console.log("\tdate is not a number or incorrect");
         response.send("unknown date");
+        return;
+    }
+    if (isNaN(id)) {
+        console.log("\tid is not a number");
+        response.send("no id was sent");
         return;
     }
     
     sql.main("SELECT id FROM " + human + " WHERE id = " + id + ";", function (error, rows) {
         if (rows[0] == undefined) {
-            console.log("DropFromQueue: There is no such user:" + id);
+            console.log("\tno such user");
             response.send("there is no such user");
             return;
         }
@@ -135,42 +145,54 @@ Var.app.get('/dropFromQueue', function(request, response) {
             sql.main(sqlSTR, function (error, rows) {
                 if (rows["affectedRows"] == 1) {
                     //Был единственный в очереди, сняли с очереди
+                    console.log("\tsuccess removed, he was only in queue");
                     response.send("success");
+                    return;
                 }
-                if (rows["affectedRows"] > 1) {
-                    //Здесь нужно поосторожнее. Один и тот человек встал два раза в одну и то же (время, направляние, дата)
-                    //Всех удалили. Такого в идеале не должно быть. В будущем нужно учитывать, сколько раз встают в очередь
-                    response.send("warning: there were more than one of YOU");//забавано получилось
-                } else if (rows["affectedRows"] == 0) {
-                    //Пассажира нету в очереди. Видимо, уже нету. Нужно проверить
-                    //Теперь надо отправиться на server.met
-                    //Тут уже просто так сделать DELETE не получится. Нужно смотреть, кого удаляем.
-                    //Вернуть товарища в очередь, вернуть место водителю
-                    sql.main("SELECT id, id_driver, booked FROM met WHERE id_passenger = " + id + " AND id_direction = " + direction + 
-                        " AND id_time = " + time + " AND date = " + date + ";", function (error, rows) {
-                        if (rows.length == 1) {
-                            var id_driver = rows[0]["id_driver"];
-                            var bookedMet = rows[0]["booked"];
-                            console.log(id_driver, ", ", bookedMet);
-                            //Всё ок. пока всё хорошо
-                            //Вернем места водителю
-                            var sqlString = "INSERT INTO qdriver(id_driver, id_direction, id_time, date, seats) VALUES(" + id_driver + ", " + direction +
-                                ", " + time + ", " + date + ", " + bookedMet + ") ON DUPLICATE KEY UPDATE seats = seats + " + bookedMet + ";";
-                            sql.main(sqlString, function (error, rows) {
-                                console.log(rows);
-                            });
-                            //Выкинем пассажира из очереди, пусть выбирает другой, заново встает.
-                            sql.main("DELETE FROM met WHERE id_driver = " + id_driver + " AND id_passenger = " + id + " AND id_direction = " + direction + 
-                                " AND id_time = " + time + " AND date = " + date + ";", function (error, rows) {
-                                response.send("success");
-                            });
-                        }
-                        
+                
+                //Пассажира нету в очереди. Видимо, уже нету. Нужно проверить
+                //Теперь надо отправиться на server.met
+                //Тут уже просто так сделать DELETE не получится. Нужно смотреть, кого удаляем.
+                //Вернуть товарища в очередь, вернуть место водителю
+                sqlQuery = "SELECT id, id_driver, booked FROM met WHERE id_passenger = " + id + " AND id_direction = "
+                     + direction + " AND id_time = " + time + " AND date = " + date + ";"
+                sql.main(sqlQuery, function (error, rows) {
+                    //здесь rows.length очень даже может быть равен нулю
+                    if (rows.length == 0) {
+                        console.log("\tpassenger was not in queue");
+                        response.send("success");
+                        return;
+                    }
+                    var id_driver = rows[0]["id_driver"];
+                    var bookedMet = rows[0]["booked"];
+                    console.log("\tid_driver: " + id_driver + ", booked in met: " + bookedMet);
+                    //Всё ок. пока всё хорошо
+                    //Вернем места водителю
+                    var sqlString = "INSERT INTO qdriver(id_driver, id_direction, id_time, date, seats) VALUES(" + id_driver + ", " 
+                        + direction + ", " + time + ", " + date + ", " + bookedMet + ") " + 
+                        "ON DUPLICATE KEY UPDATE seats = seats + " + bookedMet + ";";
+                    sql.main(sqlString, function (error, rows) {
+                        if (error)
+                            console.log("\tError on adding seats to driver:" + error);
+                        else
+                            console.log("\tsucces adding seats to driver");
                     });
-                }
+                    //Выкинем пассажира из очереди, пусть выбирает другой, заново встает.
+                    sql.main("DELETE FROM met WHERE id_driver = " + id_driver + " AND id_passenger = " + id + 
+                        " AND id_direction = " + direction + " AND id_time = " + time + " AND date = " + date + ";", 
+                        function (error, rows) {
+                            if (error)
+                                console.log("\terror with deleting passenger from queue: " + error);
+                            else {
+                                console.log("\tsuccess removed passenger from queue");
+                                response.send("success");
+                            }
+                    });
+                });
             });
         } else {
-            //Если водитель, то мы можем снять с очееди только в том случае, если у него 
+            //Если водитель, то мы можем снять с очереди только в том случае, если у него э?э
+            //По факту снимаем только с очереди, сколько он получил в met, столько при нем останется
             var sqlStr = "DELETE FROM qdriver WHERE id_driver = " + id + " AND id_direction = " + 
 						direction + " AND id_time = " + time + " AND date = " + date + ";"
             sql.main(sqlSTR, function (error, rows) {
@@ -178,11 +200,8 @@ Var.app.get('/dropFromQueue', function(request, response) {
                     response.send(error);
                 else response.send("success");
             });
-            
         }
-    });
-
-    
+    });    
 });
 
 //Состояние очереди
@@ -194,7 +213,9 @@ Var.app.get('/queueStatus', function (request, response) {
     var direction = params["direction"] - 0;
     var time = params["time"] - 0;
     var date = params["date"] - 0;
-	
+    var logTime = new Date().toLocaleTimeString();
+    console.log(logTime, "/queueStatus");
+    console.log("\thuman: " + human + ", id: " + id + ", direction: " + ", time: " + time + ", date: " + date);
     //Проверка на дурака
     if (human != "driver" && human != "passenger") {
         console.log("error: incorrect human");
@@ -207,7 +228,8 @@ Var.app.get('/queueStatus', function (request, response) {
         response.send("unknown time");
         return;
     }
-    if (isNaN(date) || date < 0 || date == undefined) {
+    if (isNaN(date) || date < 0) {
+        console.log("\tincorrect date");
         response.send("incorrect form of date");
         return;
     }
