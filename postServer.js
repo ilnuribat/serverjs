@@ -49,52 +49,12 @@ Var.app.post('/qdriver', function(request, response) {
 	var time = body["time"] - 0;
     var direction = body["direction"] - 0;
     var date = body["date"];
-	console.log(new Date().getTime(), ": qdriverId: " + id + ",\ttime: " + time + ",\tdirection: " + direction + "seats:" + seats);
-    //обработка ошибок
-    //Проверка направления
-    if (direction < Var.directionMin || direction > Var.directionMax) {
-        console.log("\tunknown direction");
-		response.send("\tunknown direction");
-		return;
-    }
+    var logTime = new Date().toLocaleTimeString();
+    var human = "driver";
+    console.log(logTime, ":: driverId: " + id + ",\ttime: " + time + ",\tdirection: " + direction + ",\tseats:" + seats);
     
-    //Проверка Времени
-    if (time < 0 || time > 8) {
-        console.log("\tunknown time");
-		response.send("unknown time");
-		return;
-    }
-    
-    //Проверка количества мест
-    if (seats < 0 || seats > 4) {
-        console.log("\tunknown seats");
-		response.send("unknown number of seats");
-		return;
-    }
-    if (date < 0) {
-        console.log("\tincorrect form of date");
-        response.send("incorrect form of date");
-        return;
-    }
-	sql.main("SELECT id FROM driver WHERE id = " + id + ";", function(error, rows) {
-        if (rows[0] == undefined) {
-            console.log("\tno such user", id);
-            response.send("error 404: userID");
-            return;
-        }
-		
-        sql.main('INSERT INTO qdriver(id_driver, id_time, id_direction, seats, date) VALUES(' 
-                + id + ',' + time + ',' + direction + ',' + seats + ', ' + date + ');', function (error, rows) {
-            if (error) {
-                console.log("\t\t", error);
-                response.send("error with adding driver to queue");
-                return;
-            }
-            response.send("success added to Queue");
-            console.log("\t\tuser was added to Queue(id, time, direction, seats, date): ", id, time, direction, seats, date);
-        });
+    addingToQueue(response, id, seats, time, direction, date, human);
 
-	});
 });
 
 Var.app.post('/qpassenger', function(request, response) {
@@ -108,11 +68,11 @@ Var.app.post('/qpassenger', function(request, response) {
     var human = "passenger";
     console.log(logTime, ":: qpassengerId: " + id + ",\ttime: " + time + ",\tdirection: " + direction + ",\tbooked:" + booked);
 
-    addingToQueue(id, booked, time, direction, date, human);
+    addingToQueue(response, id, booked, time, direction, date, human);
 });
 
 //This will be general function, because /qpassenger and /qdriver have lot of identical lines
-function addingToQueue(id, bookedSeats, time, direction, date, human) {
+function addingToQueue(response, id, bookedSeats, time, direction, date, human) {
     //Проверка ошибок
     //Проверка направления
     if (isNaN(direction) || direction < Var.directionMin || direction > Var.directionMax) {
@@ -140,23 +100,23 @@ function addingToQueue(id, bookedSeats, time, direction, date, human) {
 	sql.main("SELECT id FROM " + human + " WHERE id = " + id + ";", function(error, rows){
 		if(rows[0] === undefined)
 		{
-            console.lsog(":\tno such user", id);
+            console.lsog("\tno such user", id);
             response.send("error 404: userID");
             return;
         }
         var titleBookedSeats = human == 'driver' ? 'seats' : 'booked';
         var sqlQuery = 'INSERT INTO q' + human + '(id_' + human + ', id_time, id_direction, ' 
-            + titleBookedSeats + 'booked, date) VALUES(' + id + ',' + time + ',' + direction + ',' + 
+            + titleBookedSeats + ', date) VALUES(' + id + ', ' + time + ', ' + direction + ', ' + 
             bookedSeats + ', ' + date + ') ON DUPLICATE KEY UPDATE ' + titleBookedSeats + ' = VALUES(' + titleBookedSeats + ');';
 
         sql.main(sqlQuery, function (error, rows){
                 if (error) {
-                    console.log(":\t:\tDuplicate key? :\t", error);
+                    console.log("\tDuplicate key? \t", error);
                     response.send("error with adding " + titleBookedSeats + " to queue");
                     return;
                 }
                 response.send("success added to Queue");
-                console.log(":\t:\tuser was added to Queue(id, time, direction, seats, date): ", id, time, direction, bookedSeats, date);
+                console.log("\tsuccess added");
         });
 	});
 }
