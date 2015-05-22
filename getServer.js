@@ -47,8 +47,6 @@ Var.app.get('/data', function(request, response) {
         "ORDER BY id " +
         ";";
 
-    var oldSqlQuery = "SELECT COUNT(id), id_time FROM qdriver WHERE id_direction = " + direction + 
-        " AND date = " + date + " GROUP BY id_time;";
     sql.main(sqlQuery, function (error, rows) {
         response.send(rows);
     });
