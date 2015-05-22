@@ -218,13 +218,13 @@ Var.app.get('/queueStatus', function (request, response) {
     console.log("\thuman: " + human + ", id: " + id + ", direction: " + ", time: " + time + ", date: " + date);
     //Проверка на дурака
     if (human != "driver" && human != "passenger") {
-        console.log("error: incorrect human");
+        console.log("\tincorrect human");
         response.send("error: incorrect human");
         return;
     }
 
     if (isNaN(time) || time > 8 || time < 0) {
-        console.log("unknown time");
+        console.log("\tunknown time");
         response.send("unknown time");
         return;
     }
@@ -234,31 +234,27 @@ Var.app.get('/queueStatus', function (request, response) {
         return;
     }
     if (isNaN(direction) || direction < Var.directionMin || direction > Var.directionMax) {
-        console.log("unknown direction");
+        console.log("\tunknown direction");
         response.send("unknown direction" + JSON.stringify(params["direction"]));
+        return;
     }
 
     //Проверка из базы данных. Ищем такого юзера из зарегестрированных
     sql.main("SELECT id FROM " + human + " WHERE id = " + id + ";", function (error, rows) {
         if (error) {
-            console.log("errorDB: verify user");
-            console.log(error);
-            response.send("errorDB: " + JSON.stringify(error));
+            console.log("\tthis user is not registred" + error);
+            response.send("no such user");
             return;
         }
-        if (rows.length != 1) {
-            console.log("errorDB: there is no such user in DB");
-            response.send("error: no such user");
-            return;
-        }
+        
+        //Хорошее место для оптимизации. Я делаю 1 лишний запрос в БД.
+        //проверяем таблицы очереди и встреч, ищем нашего юзера. Встал ли он в очередь
 		sql.main("SELECT id FROM q" + human + " WHERE id_" + human + " = " + id + " AND id_direction = " + direction + " AND id_time = " +
 			time + " AND date = " + date + " UNION SELECT id FROM met WHERE id_" + human + " = " + id + " AND id_direction = " + direction + 
 			" AND id_time = " + time + " AND date = " + date + ";", function(error, rows) {
-			
-			//проверяем, вообще, этот чувак ставал в очередь?
             if (error) {
+                console.log("\tuser not found in queue or met. error: " + error);
                 response.send(error);
-                console.log(error);
                 return;
             }
 			
@@ -280,7 +276,8 @@ Var.app.get('/queueStatus', function (request, response) {
 					for (var iter in rows) {
 						response.write("." + rows[iter].phone);
 						response.write("," + rows[iter].name);
-					}
+                    }
+                    console.log("\tsuccess");
 					response.end();
 				});
 			});
