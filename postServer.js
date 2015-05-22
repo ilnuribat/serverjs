@@ -150,16 +150,3 @@ Var.app.post('/qpassenger', function(request, response) {
         });
 	});	
 });
-
-Var.app.post('/newTown', function(request, response) {
-	if (Var.blockNewData) {
-        reponse.send("blocked adding new data");
-        return;
-    }
-	var body = request.body;
-	var name = body["name"];
-	var russianName = body["russianName"];
-	sql.main('INSERT INTO `towns` (`name`, `russianName`) VALUES("' + name +	'", "' + russianName + '");', function(error, rows) {
-		response.send(rows);
-	});
-});
