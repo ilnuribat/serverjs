@@ -72,15 +72,13 @@ Var.app.get('/direction', function(request, response) {
 	var params = Var.queryString.parse(query);
 	var source = params["source"];
     var destination = params["destination"];
-	sql.main("SELECT id FROM direction WHERE id_source = " + source + " and id_destination = " + destination + ";", function(error, rows) {
-		var directionID = "";
-		if(rows[0] != null)
-			directionID = rows[0]["id"]; 
+    sql.main("SELECT id FROM direction WHERE id_source = " + source + " and id_destination = " + destination + ";", 
+        function (error, rows) {
+		var directionID;
+		if(rows[0] != undefined)
+			directionID = rows[0]["id"];
 		else 
             directionID = 0;
-
-        var now = new Date().getTime();
-        while (new Date().getTime() < now + 3000) { }
 
         response.send(JSON.stringify(directionID));
 	});
@@ -272,6 +270,7 @@ Var.app.get('/queueStatus', function (request, response) {
     });
 });
 
+//запуск обработчика очереди в ручном режиме
 Var.app.get('/queueFind', function (request, response) {
     response.send("queuFind started");
     queue.main();
