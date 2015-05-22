@@ -105,8 +105,14 @@ Var.app.post('/qpassenger', function(request, response) {
 	var direction = body["direction"] - 0;
     var date = body["date"] - 0;
     var logTime = new Date().toLocaleTimeString();
-    var human = body["human"];
+    var human = "passenger";
     console.log(logTime, ":: qpassengerId: " + id + ",\ttime: " + time + ",\tdirection: " + direction + ",\tbooked:" + booked);
+
+    addingToQueue(id, booked, time, direction, date, human);
+});
+
+//This will be general function, because /qpassenger and /qdriver have lot of identical lines
+function addingToQueue(id, bookedSeats, time, direction, date, human) {
     //Проверка ошибок
     //Проверка направления
     if (isNaN(direction) || direction < Var.directionMin || direction > Var.directionMax) {
@@ -121,7 +127,7 @@ Var.app.post('/qpassenger', function(request, response) {
         return;
     }
 
-    if (isNaN(booked) || booked < 0 || booked > 4) {
+    if (isNaN(bookedSeats) || bookedSeats < 0 || bookedSeats > 4) {
         console.log("\tincorrect number of booked");
 		response.send("incorrect number of booked");
 		return;
@@ -131,23 +137,26 @@ Var.app.post('/qpassenger', function(request, response) {
         response.send("incorrect numberof date");
         return;
     }
-	sql.main("SELECT id FROM passenger WHERE id = " + id + ";", function(error, rows){
+	sql.main("SELECT id FROM " + human + " WHERE id = " + id + ";", function(error, rows){
 		if(rows[0] === undefined)
 		{
             console.lsog(":\tno such user", id);
             response.send("error 404: userID");
             return;
-		}
-        var sqlQuery = 'INSERT INTO `qpassenger`(`id_passenger`, `id_time`, `id_direction`, `booked`, `date`) VALUES(' +
-            id + ',' + time + ',' + direction + ',' + booked + ', ' + date + ') ON DUPLICATE KEY UPDATE booked = VALUES(booked);';
+        }
+        var titleBookedSeats = human == 'driver' ? 'seats' : 'booked';
+        var sqlQuery = 'INSERT INTO q' + human + '(id_' + human + ', id_time, id_direction, ' 
+            + titleBookedSeats + 'booked, date) VALUES(' + id + ',' + time + ',' + direction + ',' + 
+            bookedSeats + ', ' + date + ') ON DUPLICATE KEY UPDATE ' + titleBookedSeats + ' = VALUES(' + titleBookedSeats + ');';
+
         sql.main(sqlQuery, function (error, rows){
                 if (error) {
                     console.log(":\t:\tDuplicate key? :\t", error);
-                    response.send("error with adding driver to queue");
+                    response.send("error with adding " + titleBookedSeats + " to queue");
                     return;
                 }
                 response.send("success added to Queue");
-                console.log(":\t:\tuser was added to Queue(id, time, direction, seats, date): ", id, time, direction, booked, date);
+                console.log(":\t:\tuser was added to Queue(id, time, direction, seats, date): ", id, time, direction, bookedSeats, date);
         });
-	});	
-});
+	});
+}
