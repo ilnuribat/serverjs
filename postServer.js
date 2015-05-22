@@ -31,8 +31,8 @@ Var.app.post('/registration', function(request, response) {
 	if(human == 'passenger') {
 		sql.main('INSERT INTO passenger(name, phone) VALUES("' + name + '", "' + phone + '");', function (error, rows) {
 				if(error) {
-					console.log("errorDB: couldn't register new passenger");
-					response.send("error: couldn't register passenger");
+					console.log(error);
+					response.send("Такой номер уже есть");
 					return;
 				}
 				response.send(JSON.stringify(rows.insertId));
@@ -89,6 +89,7 @@ Var.app.post('/qdriver', function(request, response) {
                 return;
             }
             response.send("success added to Queue");
+            console.log("user was added to Queue(id, time, direction, seats, date): ", id, time, direction, seats, date);
         });
 	});	
 });
@@ -138,6 +139,7 @@ Var.app.post('/qpassenger', function(request, response) {
                 return;
             }
             response.send("success added to Queue");
+            console.log("passsenger was added to Queue(id, time, direction, booked, date): ", id, time, direction, booked, date);
         });
 	});	
 });
