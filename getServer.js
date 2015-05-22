@@ -90,7 +90,7 @@ Var.app.get('/towns', function(request, response) {
 	var params = Var.queryString.parse(query);
 	var yuldash = params['yuldash'];
 	
-	sql.main("SELECT * FROM	towns;", function(error, rows) {
+	sql.main("SELECT russianName FROM towns;", function(error, rows) {
 		var names = [];
 		for(var it in rows)
 			names.push(rows[it]["russianName"]);
