@@ -100,7 +100,7 @@ function addingToQueue(response, id, bookedSeats, time, direction, date, human) 
 	sql.main("SELECT id FROM " + human + " WHERE id = " + id + ";", function(error, rows){
 		if(rows[0] === undefined)
 		{
-            console.lsog("\tno such user", id);
+            console.log("\tno such user", id);
             response.send("error 404: userID");
             return;
         }
