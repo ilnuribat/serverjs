@@ -88,8 +88,7 @@ Var.app.get('/direction', function(request, response) {
 Var.app.get('/towns', function(request, response) {
 	var query = Var.url.parse(request.url).query;
 	var params = Var.queryString.parse(query);
-	var yuldash = params['yuldash'];
-	
+    var yuldash = params['yuldash'];
 	sql.main("SELECT russianName FROM towns;", function(error, rows) {
 		var names = [];
 		for(var it in rows)
