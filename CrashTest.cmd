@@ -1,8 +1,5 @@
 use server;
 
-SET character_set_server=utf8;
-SET character_set_client=utf8;
-SET character_set_connection=utf8;
 SET character_set_results=utf8;
 
 SELECT towns.name, dest.name, time.name, date, seats, driver.name 
