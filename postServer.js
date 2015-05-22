@@ -17,35 +17,27 @@ Var.app.post('/registration', function(request, response) {
         return;
     }
     
+    if (name.length == 0) {
+        console.log("name is NULL");
+        response.send("name is NULL");
+        return;
+    }
 	
-	if(human == 'driver') {
-        sql.main('INSERT INTO driver(name, phone) VALUES ("' + name + '", "' + phone + 
+    if (human == 'driver' || human == 'passenger') {
+        sql.main('INSERT INTO ' + human + '(name, phone) VALUES ("' + name + '", "' + phone + 
                 '") ON DUPLICATE KEY UPDATE name = VALUES(name);', function (error, rows) {
-                console.log(rows);
-                console.log(error);
-				if(error) {
-					console.log(error);
-                response.send("Такой номер уже есть");
-                return;
-				}
-				response.send(JSON.stringify(rows.insertId));
-			});
-		return;
-	}
-	if(human == 'passenger') {
-        sql.main('INSERT INTO passenger(name, phone) VALUES("' + name + '", "' + phone + 
-                '") ON DUPLICATE KEY UPDATE name = VALUES(name);', function (error, rows) {
-                console.log(rows);
-                console.log(error);
-				if(error) {
-					console.log(error);
-					response.send("Такой номер уже есть");
-					return;
-				} 
-				response.send(JSON.stringify(rows.insertId));
-			});
-		return;
-	}
+            sql.main("SELECT id FROM " + human + " WHERE phone = " + phone + ";", function (error, rows) {
+                console.log("\t\tID: ", rows[0]["id"]);
+                if (error) {
+                    console.log(error);
+                    response.send(JSON.stringify(error));
+                    return;
+                }
+                response.send(JSON.stringify(rows[0]["id"]));
+            });
+        });
+        return;
+    }
 	response.send("not added");
 });
 
@@ -57,46 +49,49 @@ Var.app.post('/qdriver', function(request, response) {
 	var time = body["time"] - 0;
     var direction = body["direction"] - 0;
     var date = body["date"];
-	
+	console.log(new Date().getTime(), ": qdriverId: " + id + ",\ttime: " + time + ",\tdirection: " + direction + "seats:" + seats);
     //обработка ошибок
     //Проверка направления
-	if(direction < 0 || direction > Var.directionSize){
-		//response.send("unknown direction");
-		//return;
+    if (direction < Var.directionMin || direction > Var.directionMax) {
+        console.log("\tunknown direction");
+		response.send("\tunknown direction");
+		return;
     }
     
     //Проверка Времени
-	if(time < 0 || time > 8) {
+    if (time < 0 || time > 8) {
+        console.log("\tunknown time");
 		response.send("unknown time");
 		return;
     }
     
     //Проверка количества мест
-	if(seats < 0 || seats > 8)	{
+    if (seats < 0 || seats > 4) {
+        console.log("\tunknown seats");
 		response.send("unknown number of seats");
 		return;
     }
-    if (date < 0 || date == undefined || isNaN(date)) {
+    if (date < 0) {
+        console.log("\tincorrect form of date");
         response.send("incorrect form of date");
         return;
     }
 	sql.main("SELECT id FROM driver WHERE id = " + id + ";", function(error, rows) {
         if (rows[0] == undefined) {
-            console.log("there is no such user");
-            response.send("there is no such user");
+            console.log("\tno such user", id);
+            response.send("error 404: userID");
             return;
         }
 		
-
         sql.main('INSERT INTO qdriver(id_driver, id_time, id_direction, seats, date) VALUES(' 
                 + id + ',' + time + ',' + direction + ',' + seats + ', ' + date + ');', function (error, rows) {
             if (error) {
-                console.log("there is an error with adding driver to queue");
+                console.log("\t\t", error);
                 response.send("error with adding driver to queue");
                 return;
             }
             response.send("success added to Queue");
-            console.log("user was added to Queue(id, time, direction, seats, date): ", id, time, direction, seats, date);
+            console.log("\t\tuser was added to Queue(id, time, direction, seats, date): ", id, time, direction, seats, date);
         });
 	});	
 });
@@ -109,44 +104,49 @@ Var.app.post('/qpassenger', function(request, response) {
 	var time = body["time"] - 0;
 	var direction = body["direction"] - 0;
     var date = body["date"] - 0;
-
+    
+    console.log(new Date().getTime(), ": qpassengerId: " + id + ",\ttime: " + time + ",\tdirection: " + direction + "booked:" + booked);
     //Проверка ошибок
     //Проверка направления
-    if (direction < 0 || direction > Var.directionSize) {
-        //response.send("unknown direction");
-        //return;
+    if (direction < Var.directionMin || direction > Var.directionMax) {
+        console.log("\tunknown direction");
+        response.send("unknown direction");
+        return;
     }
     //Проверка Времени
     if (time < 0 || time > 8) {
-        response.send("unknown time");
+        console.log("\incorrect number of time");
+        response.send("incorrect number of time");
         return;
     }
 
-	if(booked < 0 || booked > 6){
-		response.send("incorrect form of booked");
+    if (booked < 0 || booked > 4) {
+        console.log("incorrect number of booked");
+		response.send("incorrect number of booked");
 		return;
     }
     if (date < 0) {
-        response.send("incorrect form of date");
+        console.log("\tincorrect number of date");
+        response.send("incorrect numberof date");
         return;
     }
 	sql.main("SELECT id FROM passenger WHERE id = " + id + ";", function(error, rows){
 		if(rows[0] === undefined)
 		{
-			console.log("there is no such user");
-			response.send("there is no such user");
-			return;
+            console.log("\tno such user", id);
+            response.send("error 404: userID");
+            return;
 		}
 		
         sql.main('INSERT INTO `qpassenger`(`id_passenger`, `id_time`, `id_direction`, `booked`, `date`) VALUES(' +
             id + ',' + time + ',' + direction + ',' + booked + ', ' + date + ');', function (error, rows){
             if (error) {
-                console.log("there is an error with adding passenger to queue");
-                response.send("error with adding passenger to queue");
+                console.log("\t\t", error);
+                response.send("error with adding driver to queue");
                 return;
             }
             response.send("success added to Queue");
-            console.log("passsenger was added to Queue(id, time, direction, booked, date): ", id, time, direction, booked, date);
+            console.log("\t\tuser was added to Queue(id, time, direction, seats, date): ", id, time, direction, seats, date);
         });
 	});	
 });
