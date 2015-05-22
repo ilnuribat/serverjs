@@ -22,7 +22,6 @@ Var.app.get('/data', function(request, response) {
 
     var sqlQuery = 
         "SELECT time.id, time.name AS 'time', count(qpassenger.id) AS 'passengers', count(qdriver.id) AS 'drivers' " +
-        //    ",qdriver.date, qpassenger.date " +
         "FROM time " +
         "LEFT JOIN qpassenger ON qpassenger.id_time = time.id " +
         "LEFT JOIN qdriver ON qdriver.id_time = time.id " +
@@ -32,7 +31,7 @@ Var.app.get('/data', function(request, response) {
     
         "UNION " +
     
-        "SELECT time.id, time.name, 0 AS 'passenger', 0 AS 'driver' " + //", NULL, NULL " +
+        "SELECT time.id, time.name, 0 AS 'passenger', 0 AS 'driver' " +
         "FROM time " +
         "WHERE time.id NOT IN( " +
             "SELECT time.id " +
