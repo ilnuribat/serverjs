@@ -92,7 +92,6 @@ function makeQueueNoDB(Drivers, Passengers)
             "id": Drivers[i].id_driver,
             "seats": Drivers[i].seats
         };
-        console.log(element);
         var direction = Drivers[i].id_direction;
         var time = Drivers[i].id_time;
 
