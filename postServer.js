@@ -6,11 +6,12 @@ var queue = require('./makeQueue.js');
 //На будущее: проверить номера. Номер должен быт 9-значным. Не должен совпадать в базе
 Var.app.post('/registration', function(request, response) {
     var body = request.body;
-    console.log(body);
 	var name = body['name'];
 	var phone = body['phone'];
-	var human = body['human'];
-    console.log("register:", name, phone, human);
+    var human = body['human'];
+
+    var logTime = new Date().toLocaleTimeString();
+    console.log(logTime, " :: /registration", name, phone, human);
     if (phone.length != 11) {
         console.log("phone number is not 11-symbols");
         response.send("phone number is not 11-symbols");
