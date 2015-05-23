@@ -15,8 +15,12 @@ Var.app.get('/data', function(request, response) {
 	var params = Var.queryString.parse(query);
     var direction = params["direction"] - 0;
     var date = params["date"] - 0;
-    if (date < 0 || date > 999999) {
+    if (isNaN(date) || date < 0) {
         response.send("unknown date");
+        return;
+    }
+    if (isNaN(direction)) {
+        response.send("no direction is set up");
         return;
     }
 
@@ -214,8 +218,8 @@ Var.app.get('/queueStatus', function (request, response) {
     var time = params["time"] - 0;
     var date = params["date"] - 0;
     var logTime = new Date().toLocaleTimeString();
-    console.log(logTime, "/queueStatus");
-    console.log("\thuman: " + human + ", id: " + id + ", direction: " + ", time: " + time + ", date: " + date);
+    //console.log(logTime, "/queueStatus");
+    //console.log("\thuman: " + human + ", id: " + id + ", direction: " + ", time: " + time + ", date: " + date);
     //Проверка на дурака
     if (human != "driver" && human != "passenger") {
         console.log("\tincorrect human");
@@ -277,7 +281,7 @@ Var.app.get('/queueStatus', function (request, response) {
 						response.write("." + rows[iter].phone);
 						response.write("," + rows[iter].name);
                     }
-                    console.log("\tsuccess");
+                    //console.log("\tsuccess");
 					response.end();
 				});
 			});
