@@ -194,7 +194,8 @@ Var.app.get('/dropFromQueue', function (request, response) {
             //Если водитель, то мы можем снять с очереди только в том случае, если у него э?э
             //По факту снимаем только с очереди, сколько он получил в met, столько при нем останется
             var sqlStr = "DELETE FROM qdriver WHERE id_driver = " + id + " AND id_direction = " + 
-						direction + " AND id_time = " + time + " AND date = " + date + ";"
+						direction + " AND id_time = " + time + " AND date = " + date + ";";
+	    
             sql.main(sqlSTR, function (error, rows) {
                 if (error)
                     response.send(error);
