@@ -108,7 +108,7 @@ Var.app.get('/dropFromQueue', function (request, response) {
     var time = params["time"] - 0;
     var date = params["date"] - 0;
     var logTime = new Date().toLocaleTimeString();
-    console.log(logTime, "/dropFromQueue");
+    console.log(logTime, " :: /dropFromQueue");
     console.log("\thuman: " + human + ", id: " + id + ", direction: " + direction + ", time: " + time + ", date: " + date); 
     //Проверки на дурака
     if (human != "driver" && human != "passenger") {
