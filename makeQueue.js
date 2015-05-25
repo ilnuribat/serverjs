@@ -126,6 +126,7 @@ function makeQueueNoDB(Drivers, Passengers)
                     if (booked <= driverSeats) {
                         // можно посадить пассажира на эту машину
                         //Кидаем в БД запись о встрече пассажира(ов) и водителя
+						console.log(new Date().toLocaleTimeString(), ', /makeQueue, found!');
                         sql.main("INSERT INTO met(id_driver, id_passenger, id_direction, id_time, date, booked)" +
                                         "VALUES(" + driverID + ", " + passengerID + ", " + direction + ", " + TIME + ", " + DATE + ", " + booked + ");", function (error, rows) {
                             if (error) {
