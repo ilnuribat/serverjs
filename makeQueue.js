@@ -3,7 +3,9 @@ var sql = require('./sql.js');
 
 //встречаем людей
 var mainF = function main() {
-	//Через каждые 10 секунд
+    //Заглушка на далекое будущее
+    return;
+    //Через каждые 10 секунд
     setTimeout(main, 5*1000);
     //Чистим очередь
     sql.main("DELETE FROM qdriver WHERE seats = 0;", function (error, rows) { });
