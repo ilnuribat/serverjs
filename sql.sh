@@ -25,10 +25,11 @@ CREATE TABLE driver(
 
 CREATE TABLE qdriver(
     id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    id_driver INTEGER,
-    id_direction INTEGER,
-    date DATE,
-	time VARCHAR(5),
+    id_driver INTEGER NOT NULL,
+    id_direction INTEGER NOT NULL,
+    date DATE NOT NULL,
+	time VARCHAR(5) NOT NULL,
+	exactPlace VARCHAR(30),
 	UNIQUE KEY uniqueDriverInQueue(id_driver, id_direction, date, time),
     FOREIGN KEY (id_driver) REFERENCES driver(id),
     FOREIGN KEY (id_direction)REFERENCES  direction(id)
