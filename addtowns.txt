@@ -6,17 +6,19 @@ SET character_set_connection=utf8;
 SET character_set_results=utf8;
 
 INSERT INTO towns(id, name, russianName) VALUES
-(1, "Shaksha", "Шакша"), 
+(1, "Shamonino", "Шамонино"),
 (2, "Sipaylovo", "Сипайлово"),
-(3, "Avdon", "Авдон"),
-(4, "Dema", "Дема"),
-(5, "TC Mega", "ТЦ Мега"),
-(6, "Telecentr", "Телецентр"),
-(7, "Tramvainaya", "Трамвайная"),
-(8, "Birskiy trakt", "Бирский тракт"
-(9, "Mendeleeva", "Менделеева"),
-(10, "Airport", "Аэропорт"),
-(11, "Nijegorodka", "Нижегородка");
+(3, "Ashan, Mega", "Ашан, Мега"),
+(4, "Zorge str", "ул. Зорге"),
+(5, "Telecentr", "Телецентр"),
+(6, "Tramvainaya", "Трамвайная"),
+(7, "Mendeleeva", "Менделеева"),
+(8, "Airport", "Аэропорт"),
+(9, "Chernikovka", "Черниковка"),
+(10, "Doc", "Док"),
+(11, "Inors", "Инорс"),
+(12, "Zelenaya Roshya", "Зеленая роща"),
+(13, "Nijegorodka", "Нижегородка");
 
 INSERT INTO direction(id_source, id_destination) 
 	SELECT towns.id AS 'id_source', t.id AS 'id_destination' 
